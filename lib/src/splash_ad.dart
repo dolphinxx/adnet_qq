@@ -9,11 +9,14 @@ enum SplashAdEvent {
   onAdExposure,
   onRequestPermissionsFailed,
 }
+
+typedef SplashAdEventCallback = Function(SplashAdEvent event, dynamic arguments);
+
 class SplashAd extends StatefulWidget {
 
   final String posId;
 
-  final ValueSetter<SplashAdEvent> adEventCallback;
+  final SplashAdEventCallback adEventCallback;
 
   final bool showOnCreate;
 
@@ -63,7 +66,7 @@ class SplashAdState extends State<SplashAd> {
           event = SplashAdEvent.onRequestPermissionsFailed;
           break;
       }
-      widget.adEventCallback(event);
+      widget.adEventCallback(event, call.arguments);
     }
   }
 

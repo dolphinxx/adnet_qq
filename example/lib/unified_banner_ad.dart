@@ -1,23 +1,22 @@
-import 'package:flutter/material.dart' hide Banner;
 import 'package:adnet_qq/adnet_qq.dart';
+import 'package:flutter/material.dart' hide Banner;
 
 class UnifiedBannerAdDemo extends StatefulWidget {
+  final String posId;
+
+  UnifiedBannerAdDemo(this.posId);
+
   @override
   UnifiedBannerAdDemoState createState() => UnifiedBannerAdDemoState();
 }
 
 class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
-  double adHeight;
+  bool _adClosed = false;
   GlobalKey<UnifiedBannerAdState> _adKey = GlobalKey();
-
-  TextEditingController _editingController;
-  FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    this._editingController = TextEditingController(text: '4080052898050840');
-    this._focusNode = FocusNode();
   }
 
   @override
@@ -27,20 +26,26 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
       body: Column(
         children: <Widget>[
           Container(
-            height: adHeight??1,
-            child: _editingController.text.length == 0 ? null : UnifiedBannerAd(_editingController.text, key: _adKey, onAdReceived: _onAdReceived,refreshOnCreate: true),
+            height: _adClosed ? 0 : MediaQuery.of(context).size.width / UnifiedBannerAd.ratio,
+            child: _adClosed ? Container() : UnifiedBannerAd(widget.posId, key: _adKey, adEventCallback: _adEventCallback,refreshOnCreate: true),
           ),
+
           Row(
             children: <Widget>[
               RaisedButton(
-                onPressed: () => _adKey.currentState?.refreshAd(),
+                onPressed: (){
+                  this.setState(() {
+                    this._adClosed = false;
+                  });
+                  _adKey.currentState?.refreshAd();
+                },
                 child: Text('刷新广告'),
               ),
               RaisedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
                   if(this.mounted) {
-                    this.setState(() {adHeight = null;});
+                    this.setState(() {_adClosed = true;});
                   }
                 },
                 child: Text('关闭广告'),
@@ -51,10 +56,7 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
             children: <Widget>[
               Text('广告位ID：'),
               Expanded(
-                child: TextField(
-                  focusNode: _focusNode,
-                  controller: _editingController,
-                ),
+                child: Text(widget.posId),
               ),
             ],
           )
@@ -63,11 +65,14 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
     );
   }
 
-  void _onAdReceived(dynamic params) {
-    if(this.mounted) {
-      this.setState(() {
-        adHeight = MediaQuery.of(context).size.width / 6.4;
-      });
+  void _adEventCallback(UnifiedBannerAdEvent event, dynamic arguments) {
+    if(event == UnifiedBannerAdEvent.onAdClosed) {
+      if(this.mounted) {
+        this.setState(() {
+          _adClosed = true;
+        });
+      }
     }
   }
+
 }

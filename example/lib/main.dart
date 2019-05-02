@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             RaisedButton(
                 onPressed: () => navigatorKey.currentState.push(MaterialPageRoute(builder: (context) {
-              return UnifiedBannerAdDemo();
+              return UnifiedBannerAdDemo('4080052898050840');
               })),
               child: Text('横幅2.0'),
             ),
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _handleAdEvent(SplashAdEvent event) {
+  void _handleAdEvent(SplashAdEvent event, dynamic arguments) {
     switch(event) {
       case SplashAdEvent.onNoAd:
       case SplashAdEvent.onAdDismiss:
