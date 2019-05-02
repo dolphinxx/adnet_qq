@@ -122,3 +122,43 @@ class NativeExpressAdState extends State<NativeExpressAd> {
     super.dispose();
   }
 }
+
+class NativeExpressAdWidget extends StatefulWidget {
+  final String posId;
+  final GlobalKey<NativeExpressAdState> adKey = GlobalKey();
+  final NativeExpressAdEventCallback adEventCallback;
+
+  NativeExpressAdWidget(this.posId, {this.adEventCallback});
+
+  @override
+  NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState();
+}
+
+class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
+  double _height = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Divider(),
+        Container(
+          height: _height,
+          child: NativeExpressAd(widget.posId, key: widget.adKey, adEventCallback: _adEventCallback,refreshOnCreate: true,),
+        ),
+      ],
+    );
+  }
+
+  void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
+    if(widget.adEventCallback != null) {
+      widget.adEventCallback(event, arguments);
+    }
+    if(event == NativeExpressAdEvent.onLayout && this.mounted) {
+      this.setState(() {
+        _height = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
+      });
+      return;
+    }
+  }
+}

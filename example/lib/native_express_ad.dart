@@ -74,7 +74,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
             height: 200,
             color: Colors.deepOrange,
           ),
-          NativeExpressItem('2000629911207832'),
+          NativeExpressAdWidget('2000629911207832'),
           Divider(),
           Container(
             height: 200,
@@ -103,46 +103,4 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
       });
     }
   }
-}
-
-class NativeExpressItem extends StatefulWidget {
-  final String posId;
-
-  NativeExpressItem(this.posId);
-
-  @override
-  NativeExpressItemState createState() => NativeExpressItemState();
-}
-
-class NativeExpressItemState extends State<NativeExpressItem> {
-  bool _removed = false;
-  double _height = 1.0;
-
- @override
- Widget build(BuildContext context) {
-   return _removed ? Container() : Column(
-     children: <Widget>[
-       Divider(),
-       Container(
-         height: _height,
-         child: NativeExpressAd(widget.posId, adEventCallback: _adEventCallback,refreshOnCreate: true,),
-       ),
-     ],
-   );
-  }
-
- void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
-   if(event == NativeExpressAdEvent.onLayout && this.mounted) {
-     this.setState(() {
-       _height = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
-     });
-     return;
-   }
-   if(event == NativeExpressAdEvent.onAdClosed) {
-     this.setState(() {
-       // or remove ad widget
-       _removed = true;
-     });
-   }
- }
 }
