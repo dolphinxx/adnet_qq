@@ -139,14 +139,9 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Divider(),
-        Container(
-          height: _height,
-          child: NativeExpressAd(widget.posId, key: widget.adKey, adEventCallback: _adEventCallback,refreshOnCreate: true,),
-        ),
-      ],
+    return Container(
+      height: _height,
+      child: NativeExpressAd(widget.posId, key: widget.adKey, adEventCallback: _adEventCallback,refreshOnCreate: true,),
     );
   }
 

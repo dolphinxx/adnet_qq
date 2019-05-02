@@ -74,6 +74,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
             height: 200,
             color: Colors.deepOrange,
           ),
+          Divider(),
           NativeExpressAdWidget('2000629911207832'),
           Divider(),
           Container(
