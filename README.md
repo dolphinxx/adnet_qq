@@ -25,6 +25,21 @@ create a file `gdt_file_path.xml` in src/main/res/xml with following content:
 </paths>
 ```
 
+add following to proguard-rules.pro if obfuscate
+```
+-keep class com.qq.e.** {
+    public protected *;
+}
+-keep class android.support.v4.**{
+    public *;
+}
+-keep class android.support.v7.**{
+    public *;
+}
+-keep class MTT.ThirdAppInfoNew { *; }
+-keep class com.tencent.** { *; }
+```
+
 ## Notice
 call `AdnetQqPlugin.config(appId: 'your appId')` before creating ads.
 
