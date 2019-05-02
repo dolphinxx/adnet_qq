@@ -116,7 +116,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
             final int targetWidth = container.getMeasuredWidth();
             final int targetHeight = container.getMeasuredHeight();
             float density = displayMetrics.density;
-            Log.d("-------", targetWidth + "," + targetHeight + "," + density);
+//            Log.d("-------", targetWidth + "," + targetHeight + "," + density);
 
             Map<String, Object> params = new HashMap<>();
             params.put("width", targetWidth/density);
