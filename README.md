@@ -1,14 +1,32 @@
 # adnet_qq
 
-A new Flutter plugin for adnet_qq.
+A new Flutter plugin for adnet_qq(Android only).
 
-## Getting Started
+## Prerequisites
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.io/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+if targetSDKVersion >= 24
+add following content to AndroidManifest.xml
+```
+<provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="your_package_name.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/gdt_file_path" />
+</provider>
+```
+create a file `gdt_file_path.xml` in src/main/res/xml with following content:
+```
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 这个下载路径也不可以修改，必须为GDTDOWNLOAD -->
+    <external-path name="gdt_sdk_download_path" path="GDTDOWNLOAD" />
+</paths>
+```
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Notice
+call `AdnetQqPlugin.config(appId: 'your appId')` before creating ads.
+
+## Bugs
+App may crash when rotate if contains more than one NativeExpressAd

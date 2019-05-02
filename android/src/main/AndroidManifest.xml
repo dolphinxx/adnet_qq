@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />    <!-- 如果需要精确定位的话请加上此权限 -->
+    <!--uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /-->    <!-- 如果需要精确定位的话请加上此权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />    <!-- targetSdkVersion >= 26 时需要配置此权限，否则无法进行安装app的动作 -->
 
@@ -16,17 +16,6 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <!-- targetSDKVersion >= 24时才需要添加这个provider。provider的authorities属性的值为${applicationId}.fileprovider，请开发者根据自己的${applicationId}来设置这个值，例如本例中applicationId为"com.qq.e.union.demo"。 -->
-        <!--<provider-->
-        <!--android:name="android.support.v4.content.FileProvider"-->
-        <!--android:authorities="com.whaleread.flutter.plugin.adnet_qq.fileprovider"-->
-        <!--android:exported="false"-->
-        <!--android:grantUriPermissions="true">-->
-        <!--<meta-data-->
-        <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
-        <!--android:resource="@xml/gdt_file_path" />-->
-        <!--</provider>-->
-
         <!-- 声明SDK所需要的组件 -->
         <service
             android:name="com.qq.e.comm.DownloadService"
