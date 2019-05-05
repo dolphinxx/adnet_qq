@@ -2,6 +2,12 @@
 
 A new Flutter plugin for adnet_qq(Android only).
 
+Android only currently.
+
+Only support native_express(原生广告模板方式), splash(开屏广告), unified_banner(Banner 2.0), unified_interstitial(插屏2.0) ads.
+
+This plugin uses `Android标准版 4.28.902` instead of `Android X5内核加强版 4.28.902`, because the X5 version does not support 64bit.
+
 ## Prerequisites
 
 if targetSDKVersion >= 24
