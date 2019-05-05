@@ -7,7 +7,13 @@ import 'unified_banner_ad.dart';
 import 'native_express_ad.dart';
 import 'unified_interstitial_ad.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  try {
+    AdnetQqPlugin.config(appId: '1101152570').then((_) => SplashAd('8863364436303842593', backgroundImage: 'com.whaleread.flutter.plugin.adnet_qq_example:mipmap/splash_bg').showAd());
+  } on PlatformException {
+  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -16,8 +22,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  bool _splashAdDismissed = false;
-  bool _splashAdPresent = false;
 
   @override
   void initState() {
@@ -26,15 +30,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    try {
-      await AdnetQqPlugin.config(appId: '1101152570');
-    } on PlatformException {
-    }
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return _splashAdDismissed ? MaterialApp(
+    return MaterialApp(
       navigatorKey: navigatorKey,
       home: Scaffold(
         appBar: AppBar(
@@ -63,38 +64,6 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
       ),
-    ) : MaterialApp(
-      navigatorKey: navigatorKey,
-      home: WillPopScope(
-        onWillPop: () async => false,
-        child: Container(
-          child: SplashAd('8863364436303842593', showOnCreate: true, adEventCallback: _handleAdEvent,),
-        ),
-      ),
     );
-  }
-
-  void _handleAdEvent(SplashAdEvent event, dynamic arguments) {
-    switch(event) {
-      case SplashAdEvent.onNoAd:
-      case SplashAdEvent.onAdDismiss:
-      if(this.mounted) {
-        this.setState(() {_splashAdDismissed = true;});
-      }
-      break;
-      case SplashAdEvent.onAdPresent:
-        this._splashAdPresent = true;
-        break;
-      case SplashAdEvent.onRequestPermissionsFailed:
-      // 因为我们不强制用户授权，防止广告加载出现意外导致一直停留在splash界面，用户拒绝授权5秒后如果还没有加载广告也没有关闭广告，则隐藏splash
-        Future.delayed(Duration(seconds: 5), () {
-          if(_splashAdDismissed == false && _splashAdPresent != true && this.mounted) {
-            this.setState(() {_splashAdDismissed = true;});
-          }
-        });
-        break;
-      case SplashAdEvent.onAdExposure:
-        break;
-    }
   }
 }

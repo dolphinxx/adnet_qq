@@ -17,6 +17,8 @@ public class AdnetQqPlugin implements MethodCallHandler {
   private static AdnetQqPlugin instance;
   private static Map<String, FlutterUnifiedInterstitial> unifiedInterstitialMap = new HashMap<>();
 
+  private static SplashAd splashAd;
+
   public static Activity getActivity() {
     return registrar.activity();
   }
@@ -48,7 +50,7 @@ public class AdnetQqPlugin implements MethodCallHandler {
         }
         result.success(true);
         break;
-      case "createUnifiedInterstitialAd":
+      case "createUnifiedInterstitialAd": {
         String posId = (String)((Map)call.arguments).get("posId");
         if(posId == null) {
           result.error("posId cannot be null!", null, null);
@@ -59,6 +61,26 @@ public class AdnetQqPlugin implements MethodCallHandler {
         }
         result.success(true);
         break;
+      }
+      case "showSplash": {
+        String posId = (String)((Map)call.arguments).get("posId");
+        String backgroundImage = null;
+        if(((Map)call.arguments).containsKey("backgroundImage")) {
+          backgroundImage = (String)((Map)call.arguments).get("backgroundImage");
+        }
+        if(splashAd != null) {
+          splashAd.close();
+        }
+        splashAd = new SplashAd(registrar.activity(), registrar.messenger(), posId, backgroundImage);
+        splashAd.show();
+        break;
+      }
+      case "closeSplash": {
+        if(splashAd != null) {
+          splashAd.close();
+          splashAd = null;
+        }
+      }
       default:
         result.notImplemented();
     }

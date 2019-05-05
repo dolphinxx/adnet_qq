@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'constants.dart';
+import 'adnet_qq_plugin.dart';
+
 enum SplashAdEvent {
   onNoAd,
   onAdDismiss,
@@ -12,42 +12,25 @@ enum SplashAdEvent {
 
 typedef SplashAdEventCallback = Function(SplashAdEvent event, dynamic arguments);
 
-class SplashAd extends StatefulWidget {
-
+class SplashAd {
   final String posId;
+
+  /// splash background image
+  ///
+  ///
+  final String backgroundImage;
 
   final SplashAdEventCallback adEventCallback;
 
-  final bool showOnCreate;
-
-  SplashAd(this.posId, {Key key, this.adEventCallback, this.showOnCreate,}) : super(key: key);
-
-  @override
-  SplashAdState createState() => SplashAdState();
-}
-
-class SplashAdState extends State<SplashAd> {
   MethodChannel _methodChannel;
-  @override
-  Widget build(BuildContext context) {
-    return AndroidView(
-      viewType: '$PLUGIN_ID/splash',
-      onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: {'posId': widget.posId},
-      creationParamsCodec: StandardMessageCodec(),
-    );
-  }
 
-  void _onPlatformViewCreated(int id) {
-    this._methodChannel = MethodChannel('$PLUGIN_ID/splash_$id');
+  SplashAd(this.posId, {this.backgroundImage, this.adEventCallback}) {
+    this._methodChannel = MethodChannel('$PLUGIN_ID/splash');
     this._methodChannel.setMethodCallHandler(_handleMethodCall);
-    if(this.widget.showOnCreate == true) {
-      this.showAd();
-    }
   }
 
   Future<void> _handleMethodCall(MethodCall call) async {
-    if(widget.adEventCallback != null) {
+    if(adEventCallback != null) {
       SplashAdEvent event;
       switch (call.method) {
         case 'onNoAd':
@@ -66,18 +49,15 @@ class SplashAdState extends State<SplashAd> {
           event = SplashAdEvent.onRequestPermissionsFailed;
           break;
       }
-      widget.adEventCallback(event, call.arguments);
+      adEventCallback(event, call.arguments);
     }
   }
 
   Future<void> showAd() async {
-    if(_methodChannel != null) {
-      await _methodChannel.invokeMethod('show');
-    }
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage});
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> closeAd() async {
+    await AdnetQqPlugin.channel.invokeMethod('closeSplash');
   }
 }
