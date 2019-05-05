@@ -31,6 +31,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
     private FrameLayout container;
 
     private String posId;
+    private int count = 5;
 
     public FlutterNativeExpressView(Context context, BinaryMessenger messenger, int id, Map<String, Object> params) {
         if (PluginSettings.APP_ID == null) {
@@ -43,6 +44,9 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         container.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 //        container.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.posId = (String) params.get("posId");
+        if(params.containsKey("count") && params.get("count") != null) {
+            this.count = (int)params.get("count");
+        }
     }
 
     @Override
@@ -95,7 +99,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
                 .setAutoPlayPolicy(VideoOption.AutoPlayPolicy.WIFI) // 设置什么网络环境下可以自动播放视频
                 .setAutoPlayMuted(true) // 设置自动播放视频时，是否静音
                 .build()); // setVideoOption是可选的，开发者可根据需要选择是否配置
-        nativeExpressAD.loadAD(1);
+        nativeExpressAD.loadAD(count);
     }
 
     @Override

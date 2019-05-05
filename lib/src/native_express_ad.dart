@@ -23,11 +23,14 @@ class NativeExpressAd extends StatefulWidget {
 
   final String posId;
 
+  /// ad count to request, default value is 5
+  final int requestCount;
+
   final NativeExpressAdEventCallback adEventCallback;
 
   final bool refreshOnCreate;
 
-  NativeExpressAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate}) : super(key: key);
+  NativeExpressAd(this.posId, {Key key, this.requestCount:5, this.adEventCallback, this.refreshOnCreate}) : super(key: key);
 
   @override
   NativeExpressAdState createState() => NativeExpressAdState();
@@ -41,7 +44,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
     return AndroidView(
       viewType: '$PLUGIN_ID/native_express',
       onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: {'posId': widget.posId},
+      creationParams: {'posId': widget.posId, 'count': widget.requestCount},
       creationParamsCodec: StandardMessageCodec(),
     );
   }
@@ -125,10 +128,11 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
 class NativeExpressAdWidget extends StatefulWidget {
   final String posId;
+  final int requestCount;
   final GlobalKey<NativeExpressAdState> adKey = GlobalKey();
   final NativeExpressAdEventCallback adEventCallback;
 
-  NativeExpressAdWidget(this.posId, {this.adEventCallback});
+  NativeExpressAdWidget(this.posId, {this.requestCount, this.adEventCallback});
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState();
@@ -141,7 +145,7 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: _height,
-      child: NativeExpressAd(widget.posId, key: widget.adKey, adEventCallback: _adEventCallback,refreshOnCreate: true,),
+      child: NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, adEventCallback: _adEventCallback,refreshOnCreate: true,),
     );
   }
 
