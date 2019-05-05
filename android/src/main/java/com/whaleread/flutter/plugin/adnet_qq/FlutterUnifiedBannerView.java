@@ -82,7 +82,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
     public void onNoAD(AdError adError) {
         Log.d(
                 TAG,
-                String.format("Banner onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(),
+                String.format("onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(),
                         adError.getErrorMsg()));
         methodChannel.invokeMethod("onNoAd", null);
     }

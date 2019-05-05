@@ -127,7 +127,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
 
     @Override
     public void onNoAD(AdError adError) {
-        Log.d(TAG, String.format("Banner onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(), adError.getErrorMsg()));
+        Log.d(TAG, String.format("onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(), adError.getErrorMsg()));
         methodChannel.invokeMethod("onNoAd", null);
     }
 

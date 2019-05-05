@@ -76,7 +76,7 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
 
     @Override
     public void onNoAD(AdError adError) {
-        Log.d(TAG, String.format("UnifiedInterstitial onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(), adError.getErrorMsg()));
+        Log.d(TAG, String.format("onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(), adError.getErrorMsg()));
         iad = null;
         methodChannel.invokeMethod("onNoAd", adError.getErrorCode());
     }
