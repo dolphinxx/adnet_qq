@@ -99,7 +99,7 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
 
   @override
   void dispose() {
-    closeAd();
+//    closeAd();
     super.dispose();
   }
 }

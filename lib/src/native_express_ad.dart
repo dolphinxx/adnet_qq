@@ -121,7 +121,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   @override
   void dispose() {
-    closeAd();
+//    closeAd();
     super.dispose();
   }
 }
