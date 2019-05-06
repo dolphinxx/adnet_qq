@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.qq.e.ads.cfg.VideoOption;
@@ -84,6 +83,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
 
     @Override
     public void dispose() {
+        methodChannel.setMethodCallHandler(null);
         // 使用完了每一个NativeExpressADView之后都要释放掉资源
         if (nativeExpressADView != null) {
             nativeExpressADView.destroy();

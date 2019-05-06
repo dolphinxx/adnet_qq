@@ -51,6 +51,7 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
                     iad.destroy();
                     iad = null;
                 }
+                methodChannel.setMethodCallHandler(null);
                 result.success(true);
                 break;
             default:

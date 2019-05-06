@@ -61,6 +61,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
 
     @Override
     public void dispose() {
+        methodChannel.setMethodCallHandler(null);
         if(this.bv != null) {
             try {
                 this.bv.destroy();

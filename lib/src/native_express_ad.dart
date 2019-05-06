@@ -30,7 +30,7 @@ class NativeExpressAd extends StatefulWidget {
 
   final bool refreshOnCreate;
 
-  NativeExpressAd(this.posId, {Key key, this.requestCount:5, this.adEventCallback, this.refreshOnCreate}) : super(key: key);
+  const NativeExpressAd(this.posId, {Key key, this.requestCount:5, this.adEventCallback, this.refreshOnCreate}) : super(key: key);
 
   @override
   NativeExpressAdState createState() => NativeExpressAdState();
@@ -45,7 +45,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
       viewType: '$PLUGIN_ID/native_express',
       onPlatformViewCreated: _onPlatformViewCreated,
       creationParams: {'posId': widget.posId, 'count': widget.requestCount},
-      creationParamsCodec: StandardMessageCodec(),
+      creationParamsCodec: const StandardMessageCodec(),
     );
   }
 
@@ -129,10 +129,10 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 class NativeExpressAdWidget extends StatefulWidget {
   final String posId;
   final int requestCount;
-  final GlobalKey<NativeExpressAdState> adKey = GlobalKey();
+  final GlobalKey<NativeExpressAdState> adKey;
   final NativeExpressAdEventCallback adEventCallback;
 
-  NativeExpressAdWidget(this.posId, {this.requestCount, this.adEventCallback});
+  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.adEventCallback}):adKey = adKey??GlobalKey();
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState();

@@ -27,7 +27,7 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
 public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry.RequestPermissionsResultListener, SplashADListener {
-    private static final String TAG = FlutterSplashView.class.getSimpleName();
+    private static final String TAG = SplashAd.class.getSimpleName();
 
     private final MethodChannel methodChannel;
 
@@ -77,6 +77,7 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
     }
 
     public void close() {
+        methodChannel.setMethodCallHandler(null);
         if(splashAD != null) {
             ((ViewGroup)container.getParent()).removeView(container);
             splashAD = null;

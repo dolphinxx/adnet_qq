@@ -34,7 +34,6 @@ public class AdnetQqPlugin implements MethodCallHandler {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), PluginSettings.PLUGIN_ID);
     channel.setMethodCallHandler(instance);
     registrar.platformViewRegistry().registerViewFactory(PluginSettings.UNIFIED_BANNER_VIEW_ID, new FlutterUnifiedBannerViewFactory(registrar.messenger()));
-    registrar.platformViewRegistry().registerViewFactory(PluginSettings.SPLASH_VIEW_ID, new FlutterSplashViewFactory(registrar.messenger()));
     registrar.platformViewRegistry().registerViewFactory(PluginSettings.NATIVE_EXPRESS_VIEW_ID, new FlutterNativeExpressViewFactory(registrar.messenger()));
   }
 
