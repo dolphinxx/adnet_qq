@@ -118,14 +118,15 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
             lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-        if (!(activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        }
+//        if (!(activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+//            lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
+//        }
 
         // 权限都已经有了，那么直接调用SDK
         if (lackedPermission.size() == 0) {
             fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
         } else {
+            Log.d(TAG, "request splash Ad permissions");
             // 请求所缺少的权限，在onRequestPermissionsResult中再看是否获得权限，如果获得权限就可以调用SDK，否则不要调用SDK。
             String[] requestPermissions = new String[lackedPermission.size()];
             lackedPermission.toArray(requestPermissions);
@@ -145,19 +146,24 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
     @Override
     public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Activity activity = AdnetQqPlugin.getActivity();
-        if (requestCode == 1024 && hasAllPermissionsGranted(grantResults)) {
-            fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
-        } else {
-            // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
+        if (requestCode == 1024) {
+            if(hasAllPermissionsGranted(grantResults)) {
+                Log.d(TAG, "splash ad permissions granted");
+                fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
+            } else {
+                // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
 //            Toast.makeText(activity, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
 //            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
 //            intent.setData(Uri.parse("package:" + activity.getPackageName()));
 //            activity.startActivity(intent);
 //            activity.finish();
-            fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
-            methodChannel.invokeMethod("onRequestPermissionsFailed", null);
+                Log.d(TAG, "splash ad permissions rejected");
+                fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
+                methodChannel.invokeMethod("onRequestPermissionsFailed", null);
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -172,6 +178,7 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
      */
     private void fetchSplashAD(Activity activity, View skipContainer,
                                String appId, String posId, SplashADListener adListener, int fetchDelay) {
+        Log.d(TAG, "fetching splash Ad");
         if(splashAD != null) {
             return;
         }
