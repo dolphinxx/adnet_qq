@@ -4,22 +4,29 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.util.AdError;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -34,6 +41,7 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
     private String posId;
     private FrameLayout container;
     private SplashAD splashAD;
+    private boolean forcePermissions;
 //    /**
 //     * 为防止无广告时造成视觉上类似于"闪退"的情况，设定无广告时页面跳转根据需要延迟一定时间，demo
 //     * 给出的延时逻辑是从拉取广告开始算开屏最少持续多久，仅供参考，开发者可自定义延时逻辑，如果开发者采用demo
@@ -46,13 +54,14 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
 //    private long fetchSplashADTime = 0;
 //    private Handler handler = new Handler(Looper.getMainLooper());
 
-    public SplashAd(Context context, BinaryMessenger messenger, String posId, String backgroundImage) {
+    public SplashAd(Context context, BinaryMessenger messenger, String posId, String backgroundImage, boolean forcePermissions) {
         if(PluginSettings.APP_ID == null) {
             throw new IllegalStateException("App Id must be configured before creating ad view");
         }
         this.methodChannel = new MethodChannel(messenger, PluginSettings.PLUGIN_ID + "/splash" );
         this.methodChannel.setMethodCallHandler(this);
         this.posId = posId;
+        this.forcePermissions = forcePermissions;
         container = new FrameLayout(context);
         container.setBackgroundColor(Color.WHITE);
         Activity activity = AdnetQqPlugin.getActivity();
@@ -78,8 +87,8 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
 
     public void close() {
         methodChannel.setMethodCallHandler(null);
+        ((ViewGroup)container.getParent()).removeView(container);
         if(splashAD != null) {
-            ((ViewGroup)container.getParent()).removeView(container);
             splashAD = null;
         }
     }
@@ -126,13 +135,17 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
         if (lackedPermission.size() == 0) {
             fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
         } else {
-            Log.d(TAG, "request splash Ad permissions");
             // 请求所缺少的权限，在onRequestPermissionsResult中再看是否获得权限，如果获得权限就可以调用SDK，否则不要调用SDK。
             String[] requestPermissions = new String[lackedPermission.size()];
             lackedPermission.toArray(requestPermissions);
-            activity.requestPermissions(requestPermissions, 1024);
+            AdnetQqPlugin.getRegistrar().addRequestPermissionsResultListener(this);
+            _requestCode = Integer.parseInt(new SimpleDateFormat("MMddHHmmss", Locale.CHINA).format(new Date()));
+            activity.requestPermissions(requestPermissions, _requestCode);
+            Log.d(TAG, "request splash Ad permissions...");
         }
     }
+
+    private int _requestCode;
 
     private boolean hasAllPermissionsGranted(int[] grantResults) {
         for (int grantResult : grantResults) {
@@ -145,21 +158,24 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
 
     @Override
     public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult " + requestCode);
         Activity activity = AdnetQqPlugin.getActivity();
-        if (requestCode == 1024) {
+        if (requestCode == _requestCode) {
             if(hasAllPermissionsGranted(grantResults)) {
                 Log.d(TAG, "splash ad permissions granted");
                 fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
             } else {
-                // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
-//            Toast.makeText(activity, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
-//            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//            intent.setData(Uri.parse("package:" + activity.getPackageName()));
-//            activity.startActivity(intent);
-//            activity.finish();
                 Log.d(TAG, "splash ad permissions rejected");
-                fetchSplashAD(activity, null, PluginSettings.APP_ID, posId, this, 0);
-                methodChannel.invokeMethod("onRequestPermissionsFailed", null);
+                if(forcePermissions) {
+                    // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
+                    Toast.makeText(activity, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.parse("package:" + activity.getPackageName()));
+                    activity.startActivity(intent);
+                    activity.finish();
+                } else {
+                    methodChannel.invokeMethod("onRequestPermissionsFailed", null);
+                }
             }
             return true;
         }
