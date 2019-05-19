@@ -15,16 +15,20 @@ typedef SplashAdEventCallback = Function(SplashAdEvent event, dynamic arguments)
 class SplashAd {
   final String posId;
 
-  /// splash background image
+  /// splash background image, white if not specified.
   ///
   ///
   final String backgroundImage;
+
+  ///
+  /// whether close app when use rejected permissions, default false
+  final bool forcePermissions;
 
   final SplashAdEventCallback adEventCallback;
 
   MethodChannel _methodChannel;
 
-  SplashAd(this.posId, {this.backgroundImage, this.adEventCallback}) {
+  SplashAd(this.posId, {this.backgroundImage, this.adEventCallback, this.forcePermissions}) {
     this._methodChannel = MethodChannel('$PLUGIN_ID/splash');
     this._methodChannel.setMethodCallHandler(_handleMethodCall);
   }
@@ -54,7 +58,7 @@ class SplashAd {
   }
 
   Future<void> showAd() async {
-    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage});
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'forcePermissions': forcePermissions??false});
   }
 
   Future<void> closeAd() async {

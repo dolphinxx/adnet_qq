@@ -67,10 +67,14 @@ public class AdnetQqPlugin implements MethodCallHandler {
         if(((Map)call.arguments).containsKey("backgroundImage")) {
           backgroundImage = (String)((Map)call.arguments).get("backgroundImage");
         }
+        boolean forcePermissions = false;
+        if(((Map)call.arguments).containsKey("forcePermissions")) {
+          forcePermissions = (boolean)((Map)call.arguments).get("forcePermissions");
+        }
         if(splashAd != null) {
           splashAd.close();
         }
-        splashAd = new SplashAd(registrar.activity(), registrar.messenger(), posId, backgroundImage);
+        splashAd = new SplashAd(registrar.activity(), registrar.messenger(), posId, backgroundImage, forcePermissions);
         splashAd.show();
         break;
       }
