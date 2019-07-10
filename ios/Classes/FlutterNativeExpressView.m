@@ -94,6 +94,7 @@
     if([@"close" isEqual:call.method] && adv) {
         [adv removeFromSuperview];
         ad.delegate = nil;
+        adv = nil;
         result(@(YES));
         return;
     }
@@ -102,7 +103,7 @@
 /**
  * 拉取原生模板广告成功
  */
-- (void)nativeExpressAdSuccessToLoad:(GDTNativeExpressAd *)nativeExpressAd views:(NSArray<__kindof GDTNativeExpressAdView *> *)views{
+- (void)nativeExpressAdSuccessToLoad:(GDTNativeExpressAd *)nativeExpressAd views:(NSMutableArray<__kindof GDTNativeExpressAdView *> *)views{
     NSLog(@"onAdLoaded");
     [_channel invokeMethod:@"onAdLoaded" arguments:nil];
     if(adv) {
@@ -164,6 +165,8 @@
 - (void)nativeExpressAdViewClosed:(GDTNativeExpressAdView *)nativeExpressAdView{
     NSLog(@"onAdClosed");
     [_channel invokeMethod:@"onAdClosed" arguments:nil];
+    [adv removeFromSuperview];
+    adv = nil;
 }
 
 /**
