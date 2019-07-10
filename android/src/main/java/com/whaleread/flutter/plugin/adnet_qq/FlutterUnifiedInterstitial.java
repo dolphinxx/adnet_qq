@@ -9,7 +9,6 @@ import com.qq.e.comm.util.AdError;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import com.whaleread.flutter.plugin.adnet_qq.AdnetQqPlugin;
 
 public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandler, UnifiedInterstitialADListener {
     private static final String TAG = FlutterUnifiedInterstitial.class.getSimpleName();
