@@ -7,6 +7,7 @@
 #import <Flutter/Flutter.h>
 static NSObject<FlutterPluginRegistrar> *_registrar = nil;
 static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *interstitials = nil;
+
 @implementation AdnetQqPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     _registrar = registrar;
@@ -24,6 +25,10 @@ static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *intersti
 
 + (UIViewController*)getViewController{
     return UIApplication.sharedApplication.keyWindow.rootViewController;
+}
+
++ (void)removeInterstitial:(NSString*)posId {
+    [interstitials removeObjectForKey:posId];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {

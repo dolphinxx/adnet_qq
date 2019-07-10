@@ -10,6 +10,7 @@
 #import "GDTUnifiedInterstitialAd.h"
 #import "FlutterUnifiedInterstitialView.h"
 #import "PluginSettings.h"
+#import "AdnetQqPlugin.h"
 
 @implementation FlutterUnifiedInterstitialView{
     NSString *posId;
@@ -62,6 +63,7 @@
 
 - (void)close{
     self.ad.delegate = nil;
+    [AdnetQqPlugin removeInterstitial:posId];
 }
 
 /**

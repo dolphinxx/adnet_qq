@@ -37,6 +37,10 @@ public class AdnetQqPlugin implements MethodCallHandler {
     registrar.platformViewRegistry().registerViewFactory(PluginSettings.NATIVE_EXPRESS_VIEW_ID, new FlutterNativeExpressViewFactory(registrar.messenger()));
   }
 
+  public static void removeInterstitial(String posId) {
+    unifiedInterstitialMap.remove(posId);
+  }
+
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     switch(call.method) {
