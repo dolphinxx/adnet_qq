@@ -5,6 +5,7 @@ import 'adnet_qq_plugin.dart';
 enum SplashAdEvent {
   onNoAd,
   onAdDismiss,
+  onAdClosed,
   onAdPresent,
   onAdExposure,
   onRequestPermissionsFailed,
@@ -38,6 +39,9 @@ class SplashAd {
           break;
         case 'onAdDismiss':
           event = SplashAdEvent.onAdDismiss;
+          break;
+        case 'onAdClosed':
+          event = SplashAdEvent.onAdClosed;
           break;
         case 'onAdPresent':
           event = SplashAdEvent.onAdPresent;
