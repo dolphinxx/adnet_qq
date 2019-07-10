@@ -55,9 +55,10 @@ public class AdnetQqPlugin implements MethodCallHandler {
           result.error("posId cannot be null!", null, null);
           return;
         }
-        if(!unifiedInterstitialMap.containsKey(posId)) {
-          unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, registrar.messenger()));
+        if(unifiedInterstitialMap.containsKey(posId)) {
+          unifiedInterstitialMap.get(posId).closeAd();
         }
+        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, registrar.messenger()));
         result.success(true);
         break;
       }

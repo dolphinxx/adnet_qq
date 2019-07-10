@@ -36,27 +36,31 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
                 result.success(true);
                 break;
             case "show":
-                Log.d(TAG, "load");
+                Log.d(TAG, "show");
                 showAD();
                 result.success(true);
                 break;
             case "popup":
-                Log.d(TAG, "load");
+                Log.d(TAG, "popup");
                 showAsPopup();
                 result.success(true);
                 break;
             case "close":
-                Log.d(TAG, "load");
-                if (iad != null) {
-                    iad.destroy();
-                    iad = null;
-                }
-                methodChannel.setMethodCallHandler(null);
+                Log.d(TAG, "close");
+                closeAd();
                 result.success(true);
                 break;
             default:
                 result.notImplemented();
         }
+    }
+
+    public void closeAd() {
+        if (iad != null) {
+            iad.destroy();
+            iad = null;
+        }
+        methodChannel.setMethodCallHandler(null);
     }
 
     private UnifiedInterstitialAD getIAD() {
