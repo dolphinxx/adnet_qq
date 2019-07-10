@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Banner;
 import 'package:adnet_qq/adnet_qq.dart';
+import 'main.dart';
 
 class NativeExpressAdDemo extends StatefulWidget {
   final String posId;
@@ -75,7 +76,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
             color: Colors.deepOrange,
           ),
           Divider(),
-          NativeExpressAdWidget('2000629911207832'),
+          NativeExpressAdWidget(config['nativeExpressPosId2']),
           Divider(),
           Container(
             height: 200,
