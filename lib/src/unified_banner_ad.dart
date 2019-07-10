@@ -36,6 +36,14 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
   MethodChannel _methodChannel;
   @override
   Widget build(BuildContext context) {
+    if(defaultTargetPlatform == TargetPlatform.iOS) {
+      return UiKitView(
+          viewType: '$PLUGIN_ID/unified_banner',
+        onPlatformViewCreated: _onPlatformViewCreated,
+        creationParams: {'posId': widget.posId},
+        creationParamsCodec: StandardMessageCodec(),
+      );
+    }
     return AndroidView(
       viewType: '$PLUGIN_ID/unified_banner',
       onPlatformViewCreated: _onPlatformViewCreated,

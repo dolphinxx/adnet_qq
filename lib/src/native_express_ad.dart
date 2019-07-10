@@ -41,6 +41,14 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   @override
   Widget build(BuildContext context) {
+    if(defaultTargetPlatform == TargetPlatform.iOS) {
+      return UiKitView(
+        viewType: '$PLUGIN_ID/native_express',
+        onPlatformViewCreated: _onPlatformViewCreated,
+        creationParams: {'posId': widget.posId, 'count': widget.requestCount},
+        creationParamsCodec: StandardMessageCodec(),
+      );
+    }
     return AndroidView(
       viewType: '$PLUGIN_ID/native_express',
       onPlatformViewCreated: _onPlatformViewCreated,
@@ -140,12 +148,18 @@ class NativeExpressAdWidget extends StatefulWidget {
 
 class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
   double _height = 1.0;
+  NativeExpressAd _ad;
+  @override
+  void initState() {
+    super.initState();
+    _ad = NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, adEventCallback: _adEventCallback,refreshOnCreate: true,);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: _height,
-      child: NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, adEventCallback: _adEventCallback,refreshOnCreate: true,),
+      child: _ad,
     );
   }
 
