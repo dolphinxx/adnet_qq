@@ -43,6 +43,7 @@
         bv = [[GDTUnifiedBannerView alloc]
               initWithFrame:rect appId:[PluginSettings getInstance] -> APP_ID placementId: posId viewController:[AdnetQqPlugin getViewController]
               ];
+        bv.animated = NO;
         bv.delegate = self;
     }
     return bv;
