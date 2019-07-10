@@ -22,20 +22,20 @@
     if([super init]) {
         self->posId = posId;
         NSString *channelName = [NSString stringWithFormat:@"%@_%@",[PluginSettings getInstance]->UNIFIED_INTERSTITIAL_VIEW_ID, posId];
-        NSLog(@"----channelName:%@",channelName);
+        //NSLog(@"----channelName:%@",channelName);
         _channel = [FlutterMethodChannel methodChannelWithName:channelName binaryMessenger:messenger];
         __weak __typeof__(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result){
             [weakSelf onMethodCall:call result: result];
         }];
-        NSLog(@"----init");
+        //NSLog(@"----init");
     }
     return self;
 }
 
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
-    NSLog(@"----onMethodCall");
+    //NSLog(@"----onMethodCall");
     if([@"load" isEqualToString:call.method]) {
         [self loadAd];
         result(@(YES));

@@ -36,14 +36,14 @@
         //    bg.image = [UIImage imageNamed:backgroundImage];
         //}
         //[mainWindow addSubview:bg];
-        NSLog(@"----initWithFrame");
+        //NSLog(@"----initWithFrame");
     }
     return self;
 }
 
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
-    NSLog(@"----onMethodCall");
+    //NSLog(@"----onMethodCall");
     if([@"show" isEqual:call.method]) {
         [self showAd];
         result(@(YES));
@@ -52,7 +52,7 @@
 }
 
 - (void)showAd{
-    NSLog(@"----showAd");
+    //NSLog(@"----showAd");
     if(_splash) {
         return;
     }

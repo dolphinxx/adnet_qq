@@ -71,12 +71,12 @@
 }
 
 - (nonnull UIView *)view {
-    NSLog(@"----view %@",posId);
+    //NSLog(@"----view %@",posId);
     return container;
 }
 
 - (void)refreshAd{
-    NSLog(@"----refreshAd");
+    //NSLog(@"----refreshAd");
     ad = [[GDTNativeExpressAd alloc]
           initWithAppId: [PluginSettings getInstance] -> APP_ID placementId: posId adSize:CGSizeMake(UIApplication.sharedApplication.keyWindow.frame.size.width, -2) ];
     ad.delegate = self;
@@ -85,7 +85,7 @@
 
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
-    NSLog(@"----onMethodCall");
+    //NSLog(@"----onMethodCall");
     if([@"refresh" isEqual:call.method]) {
         [self refreshAd];
         result(@(YES));
