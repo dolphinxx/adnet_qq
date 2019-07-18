@@ -45,8 +45,9 @@ static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *intersti
       NSString* posId = arguments[@"posId"];
       NSString* backgroundImage = arguments[@"backgroundImage"];
       [[[FlutterSplashView alloc] init:posId backgroundImage:backgroundImage binaryMessenger:_registrar.messenger] show];
+      result(@(YES));
   } else if([@"closeSplash"isEqualToString:call.method]) {
-      
+      result(@(YES));
   } else if([@"createUnifiedInterstitialAd" isEqualToString:call.method]) {
       NSDictionary* arguments = call.arguments;
       NSString* posId = arguments[@"posId"];
@@ -54,6 +55,7 @@ static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *intersti
           [interstitials[posId] close];
       }
       interstitials[posId] = [[FlutterUnifiedInterstitialView alloc] init:posId binaryMessenger:_registrar.messenger];
+      result(@(YES));
   } else {
     result(FlutterMethodNotImplemented);
   }

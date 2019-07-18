@@ -98,6 +98,7 @@
         result(@(YES));
         return;
     }
+    result(FlutterMethodNotImplemented);
 }
 
 /**

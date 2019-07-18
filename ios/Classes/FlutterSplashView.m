@@ -48,6 +48,8 @@
         [self showAd];
         result(@(YES));
         return;
+    } else {
+        result(FlutterMethodNotImplemented);
     }
 }
 

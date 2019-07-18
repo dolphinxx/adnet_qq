@@ -45,6 +45,8 @@
     } else if([@"close" isEqualToString:call.method]) {
         [self close];
         result(@(YES));
+    } else {
+        result(FlutterMethodNotImplemented);
     }
 }
 
