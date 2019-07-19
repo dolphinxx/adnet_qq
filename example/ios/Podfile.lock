@@ -1,30 +1,21 @@
 PODS:
   - adnet_qq (0.0.1):
     - Flutter
-    - GDTMobSDK
   - Flutter (1.0.0)
-  - GDTMobSDK (4.10.5):
-    - GDTMobSDK/GDTMobSDK (= 4.10.5)
-  - GDTMobSDK/GDTMobSDK (4.10.5)
 
 DEPENDENCIES:
   - adnet_qq (from `.symlinks/plugins/adnet_qq/ios`)
-  - Flutter (from `.symlinks/flutter/ios-release`)
-
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - GDTMobSDK
+  - Flutter (from `.symlinks/flutter/ios`)
 
 EXTERNAL SOURCES:
   adnet_qq:
     :path: ".symlinks/plugins/adnet_qq/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
 
 SPEC CHECKSUMS:
-  adnet_qq: 2975ebcb9cb2f43addecf4adf5a9a13fe53a0804
+  adnet_qq: bf02cf13a523aa983765876840af73104fed0176
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  GDTMobSDK: 815b36af278faafd38639b78eaa633d4cd211ddd
 
 PODFILE CHECKSUM: aff02bfeed411c636180d6812254b2daeea14d09
 
