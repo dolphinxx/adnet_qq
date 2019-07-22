@@ -20,7 +20,7 @@ A new Flutter plugin for adnet_qq.
   s.library = 'z', 'xml2'
   
   s.vendored_libraries = 'lib/libGDTMobSDK.a'
-  s.requires_arc = true
+  #  s.requires_arc = true
 
   s.ios.deployment_target = '8.0'
 #  s.static_framework = true
