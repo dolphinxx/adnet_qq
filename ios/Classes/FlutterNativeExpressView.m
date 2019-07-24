@@ -120,7 +120,7 @@
  * 拉取原生模板广告失败
  */
 - (void)nativeExpressAdFailToLoad:(GDTNativeExpressAd *)nativeExpressAd error:(NSError *)error{
-    NSLog([NSString stringWithFormat:@"onNoAd %@",error]);
+    NSLog(@"%@", [NSString stringWithFormat:@"onNoAd %@",error]);
     [_channel invokeMethod:@"onNoAd" arguments:nil];
 }
 
