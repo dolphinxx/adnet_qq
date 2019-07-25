@@ -53,6 +53,18 @@
     return [self getView];
 }
 
+- (void)dealloc {
+    [self closeAd];
+}
+
+- (void)closeAd {
+    if(bv) {
+        [bv removeFromSuperview];
+        bv.delegate = nil;
+        bv = nil;
+    }
+}
+
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
     if([@"refresh" isEqual:call.method]) {
@@ -61,8 +73,7 @@
         return;
     }
     if([@"close" isEqual:call.method] && bv) {
-        [bv removeFromSuperview];
-        bv.delegate = nil;
+        [self closeAd];
         result(@(YES));
         return;
     }

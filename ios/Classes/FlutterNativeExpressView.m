@@ -75,6 +75,14 @@
     return container;
 }
 
+- (void)dealloc {
+    if(adv) {
+        [adv removeFromSuperview];
+        ad.delegate = nil;
+        adv = nil;
+    }
+}
+
 - (void)refreshAd{
     //NSLog(@"----refreshAd");
     ad = [[GDTNativeExpressAd alloc]
