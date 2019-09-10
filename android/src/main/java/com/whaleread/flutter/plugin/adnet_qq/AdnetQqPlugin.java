@@ -88,6 +88,7 @@ public class AdnetQqPlugin implements MethodCallHandler {
           splashAd.close();
           splashAd = null;
         }
+        break;
       }
       default:
         result.notImplemented();
