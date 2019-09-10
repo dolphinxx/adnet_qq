@@ -119,9 +119,9 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
     private void checkAndRequestPermission() {
         List<String> lackedPermission = new ArrayList<String>();
         Activity activity = AdnetQqPlugin.getActivity();
-//        if (!(activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
-//            lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
-//        }
+        if (!(activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
+            lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
+        }
 
         if (!(activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
             lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
