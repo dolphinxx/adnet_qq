@@ -87,7 +87,10 @@ public class SplashAd implements MethodChannel.MethodCallHandler, PluginRegistry
 
     public void close() {
         methodChannel.setMethodCallHandler(null);
-        ((ViewGroup)container.getParent()).removeView(container);
+        ViewGroup parent = ((ViewGroup)container.getParent());
+        if(parent != null) {
+            parent.removeView(container);
+        }
         if(splashAD != null) {
             splashAD = null;
         }
