@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
 
@@ -36,6 +36,7 @@ android {
 dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation files('libs/android-query-full.0.26.7.jar')
-    implementation files('libs/GDTUnionSDK.4.28.902.min.jar')
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation files('libs/GDTSDK.tbs.4.80.950.aar')
 }

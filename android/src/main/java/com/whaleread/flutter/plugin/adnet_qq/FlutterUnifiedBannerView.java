@@ -129,4 +129,14 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
         Log.d(TAG, "onADCloseOverlay");
         methodChannel.invokeMethod("onAdCloseOverlay", null);
     }
+
+    @Override
+    public void onInputConnectionLocked() {
+
+    }
+
+    @Override
+    public void onInputConnectionUnlocked() {
+
+    }
 }

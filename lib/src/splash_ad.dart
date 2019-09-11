@@ -8,7 +8,7 @@ enum SplashAdEvent {
   onAdClosed,
   onAdPresent,
   onAdExposure,
-  onRequestPermissionsFailed,
+//  onRequestPermissionsFailed,
 }
 
 typedef SplashAdEventCallback = Function(SplashAdEvent event, dynamic arguments);
@@ -21,15 +21,11 @@ class SplashAd {
   ///
   final String backgroundImage;
 
-  ///
-  /// whether close app when use rejected permissions, default false
-  final bool forcePermissions;
-
   final SplashAdEventCallback adEventCallback;
 
   MethodChannel _methodChannel;
 
-  SplashAd(this.posId, {this.backgroundImage, this.adEventCallback, this.forcePermissions}) {
+  SplashAd(this.posId, {this.backgroundImage, this.adEventCallback}) {
     this._methodChannel = MethodChannel('$PLUGIN_ID/splash');
     this._methodChannel.setMethodCallHandler(_handleMethodCall);
   }
@@ -53,16 +49,16 @@ class SplashAd {
         case 'onAdExposure':
           event = SplashAdEvent.onAdExposure;
           break;
-        case 'onRequestPermissionsFailed':
-          event = SplashAdEvent.onRequestPermissionsFailed;
-          break;
+//        case 'onRequestPermissionsFailed':
+//          event = SplashAdEvent.onRequestPermissionsFailed;
+//          break;
       }
       adEventCallback(event, call.arguments);
     }
   }
 
   Future<void> showAd() async {
-    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'forcePermissions': forcePermissions??false});
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage,});
   }
 
   Future<void> closeAd() async {

@@ -139,16 +139,20 @@ class NativeExpressAdWidget extends StatefulWidget {
   final int requestCount;
   final GlobalKey<NativeExpressAdState> adKey;
   final NativeExpressAdEventCallback adEventCallback;
+  final double loadingHeight;
 
-  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.adEventCallback}):adKey = adKey??GlobalKey();
+  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.adEventCallback, this.loadingHeight: 1.0}):adKey = adKey??GlobalKey();
 
   @override
-  NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState();
+  NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
 }
 
 class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
-  double _height = 1.0;
+  double _height;
   NativeExpressAd _ad;
+
+  NativeExpressAdWidgetState({double height}):_height = height;
+
   @override
   void initState() {
     super.initState();

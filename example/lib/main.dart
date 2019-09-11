@@ -27,8 +27,9 @@ Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
 };
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   try {
-    AdnetQqPlugin.config(appId: config['appId']).then((_) => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage']).showAd());
+    AdnetQqPlugin.config(appId: config['appId'], requestReadPhoneState: 0, requestAccessFineLocation: 0).then((_) => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage']).showAd());
   } on PlatformException {
   }
   runApp(MyApp());

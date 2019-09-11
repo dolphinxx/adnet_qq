@@ -220,4 +220,14 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         view.measure(w, h);
         return new int []{view.getMeasuredWidth(), view.getMeasuredHeight()};
     }
+
+    @Override
+    public void onInputConnectionLocked() {
+
+    }
+
+    @Override
+    public void onInputConnectionUnlocked() {
+
+    }
 }
