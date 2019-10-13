@@ -1,7 +1,7 @@
 PODS:
   - adnet_qq (0.0.1):
     - Flutter
-    - GDTMobSDK
+    - GDTMobSDK (= 4.10.5)
   - Flutter (1.0.0)
   - GDTMobSDK (4.10.5):
     - GDTMobSDK/GDTMobSDK (= 4.10.5)
@@ -22,8 +22,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
 
 SPEC CHECKSUMS:
-  adnet_qq: 3d6678c54e4905b06f78e5ae4893b209a5ecac09
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  adnet_qq: e287b153197c04ceebe980a02c86b45ca59ee57e
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   GDTMobSDK: 815b36af278faafd38639b78eaa633d4cd211ddd
 
 PODFILE CHECKSUM: dbd9a782c24a0b1159694a83b618309af7b3235f
