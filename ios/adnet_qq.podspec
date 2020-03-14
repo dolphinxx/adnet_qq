@@ -15,7 +15,7 @@ A new Flutter plugin for adnet_qq.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'GDTMobSDK'
+  s.dependency 'GDTMobSDK','4.10.5'
   s.frameworks = 'AdSupport', 'CoreLocation', 'QuartzCore', 'SystemConfiguration', 'CoreTelephony', 'Security', 'StoreKit', 'AVFoundation', 'WebKit'
   s.library = 'z', 'xml2'
   
