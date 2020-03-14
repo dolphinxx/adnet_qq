@@ -20,6 +20,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
 //    private FrameLayout container;
     private UnifiedBannerView bv;
     private final MethodChannel methodChannel;
+    private Integer refreshInterval;
 
     private String posId;
 
@@ -33,6 +34,9 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
         this.methodChannel = new MethodChannel(messenger, PluginSettings.UNIFIED_BANNER_VIEW_ID + "_" + id);
         this.methodChannel.setMethodCallHandler(this);
         this.posId = (String)params.get("posId");
+        if(params.containsKey("refreshInterval")) {
+            refreshInterval = (Integer)params.get("refreshInterval");
+        }
     }
 
     @Override
@@ -76,6 +80,9 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
             return this.bv;
         }
         this.bv = new UnifiedBannerView(AdnetQqPlugin.getActivity(), PluginSettings.APP_ID, posId, this);
+        if(refreshInterval != null) {
+            this.bv.setRefresh(refreshInterval);
+        }
         return this.bv;
     }
 
@@ -85,7 +92,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
                 TAG,
                 String.format("onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(),
                         adError.getErrorMsg()));
-        methodChannel.invokeMethod("onNoAd", null);
+        methodChannel.invokeMethod("onNoAd", adError.getErrorCode());
     }
 
     @Override
@@ -132,11 +139,11 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
 
     @Override
     public void onInputConnectionLocked() {
-
+        methodChannel.invokeMethod("onInputConnectionLocked", null);
     }
 
     @Override
     public void onInputConnectionUnlocked() {
-
+        methodChannel.invokeMethod("onInputConnectionUnlocked", null);
     }
 }

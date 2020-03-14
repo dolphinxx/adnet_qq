@@ -68,7 +68,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
           adRemoved ? Container() : Divider(),
           adRemoved ? Container() : Container(
             height: adHeight == null ? 1 : adHeight,
-            child: NativeExpressAd(widget.posId, key: _adKey, adEventCallback: _adEventCallback,refreshOnCreate: true),
+            child: NativeExpressAd(widget.posId, key: _adKey, requestCount: 5, adEventCallback: _adEventCallback,refreshOnCreate: true),
           ),
           Divider(),
           Container(

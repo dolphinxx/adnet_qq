@@ -223,11 +223,11 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
 
     @Override
     public void onInputConnectionLocked() {
-
+        methodChannel.invokeMethod("onInputConnectionLocked", null);
     }
 
     @Override
     public void onInputConnectionUnlocked() {
-
+        methodChannel.invokeMethod("onInputConnectionUnlocked", null);
     }
 }

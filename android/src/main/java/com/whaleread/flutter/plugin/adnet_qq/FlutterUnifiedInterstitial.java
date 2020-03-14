@@ -123,4 +123,9 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
         Log.d(TAG, "onADOpened");
         methodChannel.invokeMethod("onAdOpened", null);
     }
+
+    @Override
+    public void onVideoCached() {
+        methodChannel.invokeMethod("onVideoCached", null);
+    }
 }

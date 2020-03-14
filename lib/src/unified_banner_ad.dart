@@ -26,7 +26,9 @@ class UnifiedBannerAd extends StatefulWidget {
 
   final bool refreshOnCreate;
 
-  UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate}) : super(key: key);
+  final int refreshInterval;
+
+  UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval}) : super(key: key);
 
   @override
   UnifiedBannerAdState createState() => UnifiedBannerAdState();
@@ -36,18 +38,23 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
   MethodChannel _methodChannel;
   @override
   Widget build(BuildContext context) {
+    Map params = Map();
+    params['posId'] = widget.posId;
+    if(widget.refreshInterval != null) {
+      params['refreshInterval'] = widget.refreshInterval;
+    }
     if(defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
           viewType: '$PLUGIN_ID/unified_banner',
         onPlatformViewCreated: _onPlatformViewCreated,
-        creationParams: {'posId': widget.posId},
+        creationParams: params,
         creationParamsCodec: StandardMessageCodec(),
       );
     }
     return AndroidView(
       viewType: '$PLUGIN_ID/unified_banner',
       onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: {'posId': widget.posId},
+      creationParams: params,
       creationParamsCodec: StandardMessageCodec(),
     );
   }

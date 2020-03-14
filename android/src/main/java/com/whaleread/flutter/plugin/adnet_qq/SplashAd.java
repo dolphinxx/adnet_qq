@@ -135,7 +135,7 @@ public class SplashAd implements MethodChannel.MethodCallHandler, SplashADListen
 //            }
 //        }, shouldDelayMills);
         close();
-        methodChannel.invokeMethod("onNoAd", null);
+        methodChannel.invokeMethod("onNoAd", adError.getErrorCode());
     }
 
     @Override
@@ -154,11 +154,18 @@ public class SplashAd implements MethodChannel.MethodCallHandler, SplashADListen
     @Override
     public void onADTick(long millisUntilFinished) {
 //        Log.i("AD_DEMO", "SplashADTick " + millisUntilFinished + "ms");
+        methodChannel.invokeMethod("onAdTick", millisUntilFinished);
     }
 
     @Override
     public void onADExposure() {
         Log.d(TAG, "SplashADExposure");
+        methodChannel.invokeMethod("onAdExposure", null);
+    }
+
+    @Override
+    public void onADLoaded(long l) {
+        methodChannel.invokeMethod("onAdLoaded", l);
     }
 
     @Override
