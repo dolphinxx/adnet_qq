@@ -1,4 +1,5 @@
 import 'package:adnet_qq/adnet_qq.dart';
+import 'package:adnet_qq_example/darkness.dart';
 import 'package:flutter/material.dart' hide Banner;
 
 class UnifiedBannerAdDemo extends StatefulWidget {
@@ -62,6 +63,11 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.pinkAccent,
+          onPressed: () {
+        toggleDarkness();
+      }),
     );
   }
 

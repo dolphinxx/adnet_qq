@@ -7,6 +7,7 @@ import 'package:adnet_qq/adnet_qq.dart';
 import 'unified_banner_ad.dart';
 import 'native_express_ad.dart';
 import 'unified_interstitial_ad.dart';
+import 'darkness.dart';
 
 Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
   'appId': '1105344611',
@@ -42,11 +43,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  ThemeMode _themeMode = ThemeMode.light;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    darknessNotifier.addListener(() {
+      if(this.mounted) {
+        setState(() {
+          _themeMode = darknessNotifier.value;
+        });
+      }
+    });
   }
 
   Future<void> initPlatformState() async {
@@ -57,6 +66,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      themeMode: _themeMode,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
