@@ -79,7 +79,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
         if( this.bv != null) {
             return this.bv;
         }
-        this.bv = new UnifiedBannerView(AdnetQqPlugin.getActivity(), PluginSettings.APP_ID, posId, this);
+        this.bv = new UnifiedBannerView(AdnetQqPlugin.getActivity(), posId, this);
         if(refreshInterval != null) {
             this.bv.setRefresh(refreshInterval);
         }

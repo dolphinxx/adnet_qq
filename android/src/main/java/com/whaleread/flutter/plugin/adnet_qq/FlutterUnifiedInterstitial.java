@@ -18,9 +18,6 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
     private String posId;
 
     public FlutterUnifiedInterstitial(String posId, BinaryMessenger messenger) {
-        if (PluginSettings.APP_ID == null) {
-            throw new IllegalStateException("App Id must be configured before creating ad view");
-        }
         Log.d(TAG, "creating " + FlutterUnifiedInterstitial.class.getName());
         this.posId = posId;
         this.methodChannel = new MethodChannel(messenger, PluginSettings.UNIFIED_INTERSTITIAL_ID + "_" + posId);
@@ -68,7 +65,7 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
         if (iad != null) {
             return iad;
         }
-        iad = new UnifiedInterstitialAD(AdnetQqPlugin.getActivity(), PluginSettings.APP_ID, posId, this);
+        iad = new UnifiedInterstitialAD(AdnetQqPlugin.getActivity(), posId, this);
         return iad;
     }
 

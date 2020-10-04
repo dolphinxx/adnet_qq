@@ -12,6 +12,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.qq.e.comm.managers.GDTADManager;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,6 +121,7 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
           result.error("appId must be specified!", null, null);
           return;
         }
+        GDTADManager.getInstance().initWith(getActivity(), PluginSettings.APP_ID);
         requestReadPhoneState = 0;
         if(((Map)call.arguments).containsKey("requestReadPhoneState")) {
           requestReadPhoneState = (int)((Map)call.arguments).get("requestReadPhoneState");

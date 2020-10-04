@@ -12,21 +12,21 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
         <!-- 声明SDK所需要的组件 -->
-        <service
-            android:name="com.qq.e.comm.DownloadService"
-            android:exported="false"/>
+<!--        <service-->
+<!--            android:name="com.qq.e.comm.DownloadService"-->
+<!--            android:exported="false"/>-->
         <!-- 请开发者注意字母的大小写，ADActivity，而不是AdActivity -->
-        <activity
-            android:name="com.qq.e.ads.ADActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
-        <activity
-            android:name="com.qq.e.ads.PortraitADActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
-        <activity
-            android:name="com.qq.e.ads.LandscapeADActivity"
-            android:screenOrientation="landscape"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+<!--        <activity-->
+<!--            android:name="com.qq.e.ads.ADActivity"-->
+<!--            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>-->
+<!--        <activity-->
+<!--            android:name="com.qq.e.ads.PortraitADActivity"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />-->
+<!--        <activity-->
+<!--            android:name="com.qq.e.ads.LandscapeADActivity"-->
+<!--            android:screenOrientation="sensorLandscape"-->
+<!--            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />-->
         <meta-data android:name="flutterEmbedding" android:value="2"/>
     </application>
 </manifest>

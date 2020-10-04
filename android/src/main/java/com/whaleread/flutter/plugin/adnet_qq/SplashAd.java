@@ -81,7 +81,7 @@ public class SplashAd implements MethodChannel.MethodCallHandler, SplashADListen
     }
 
     private void showAd() {
-        fetchSplashAD(AdnetQqPlugin.getActivity(), null, PluginSettings.APP_ID, posId, this, 0);
+        fetchSplashAD(AdnetQqPlugin.getActivity(), null, posId, this, 0);
     }
 
     /**
@@ -89,22 +89,20 @@ public class SplashAd implements MethodChannel.MethodCallHandler, SplashADListen
      *
      * @param activity        展示广告的activity
      * @param skipContainer   自定义的跳过按钮：传入该view给SDK后，SDK会自动给它绑定点击跳过事件。SkipView的样式可以由开发者自由定制，其尺寸限制请参考activity_splash.xml或者接入文档中的说明。
-     * @param appId           应用ID
      * @param posId           广告位ID
      * @param adListener      广告状态监听器
      * @param fetchDelay      拉取广告的超时时长：取值范围[3000, 5000]，设为0表示使用广点通SDK默认的超时时长。
      */
-    private void fetchSplashAD(Activity activity, View skipContainer,
-                               String appId, String posId, SplashADListener adListener, int fetchDelay) {
+    private void fetchSplashAD(Activity activity, View skipContainer, String posId, SplashADListener adListener, int fetchDelay) {
         Log.d(TAG, "fetching splash Ad");
         if(splashAD != null) {
             return;
         }
 //        fetchSplashADTime = System.currentTimeMillis();
         if(skipContainer == null) {
-            splashAD = new SplashAD(activity, appId, posId, adListener, fetchDelay);
+            splashAD = new SplashAD(activity, posId, adListener, fetchDelay);
         } else {
-            splashAD = new SplashAD(activity, skipContainer, appId, posId, adListener, fetchDelay);
+            splashAD = new SplashAD(activity, skipContainer, posId, adListener, fetchDelay);
         }
         splashAD.fetchAndShowIn(container);
     }

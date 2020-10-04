@@ -38,6 +38,6 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation files('libs/GDTSDK.tbsNormal.4.176.1046.aar')
+    implementation files('libs/GDTSDK.tbsNoPlugin.4.270.1140.aar')
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
 }

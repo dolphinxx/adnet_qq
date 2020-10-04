@@ -94,7 +94,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         /*
          *  如果选择支持视频的模版样式，请使用{@link Constants#NativeExpressSupportVideoPosID}
          */
-        nativeExpressAD = new NativeExpressAD(AdnetQqPlugin.getActivity(), new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT), PluginSettings.APP_ID, posId, this); // 这里的Context必须为Activity
+        nativeExpressAD = new NativeExpressAD(AdnetQqPlugin.getActivity(), new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT), posId, this); // 这里的Context必须为Activity
         nativeExpressAD.setVideoOption(new VideoOption.Builder()
                 .setAutoPlayPolicy(VideoOption.AutoPlayPolicy.WIFI) // 设置什么网络环境下可以自动播放视频
                 .setAutoPlayMuted(true) // 设置自动播放视频时，是否静音
