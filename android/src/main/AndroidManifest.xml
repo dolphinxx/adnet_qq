@@ -27,5 +27,6 @@
             android:name="com.qq.e.ads.LandscapeADActivity"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+        <meta-data android:name="flutterEmbedding" android:value="2"/>
     </application>
 </manifest>

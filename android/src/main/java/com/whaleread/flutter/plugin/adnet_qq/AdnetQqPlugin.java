@@ -3,6 +3,7 @@ package com.whaleread.flutter.plugin.adnet_qq;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -19,17 +20,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
+//import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.flutter.plugin.platform.PlatformViewRegistry;
 
 /** AdnetQqPlugin */
-public class AdnetQqPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
+public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
   private static final String TAG = AdnetQqPlugin.class.getSimpleName();
-  private static Registrar registrar;
   private static AdnetQqPlugin instance;
   private static Map<String, FlutterUnifiedInterstitial> unifiedInterstitialMap = new HashMap<>();
 
@@ -37,25 +42,71 @@ public class AdnetQqPlugin implements MethodCallHandler, PluginRegistry.RequestP
   private List<String> lackedPermission;
   private int requestReadPhoneState;
   private int requestAccessFineLocation;
+  private Activity activity;
+  private FlutterPluginBinding flutterPluginBinding;
+  private static PluginRegistry.Registrar registrar;
 
   private int _requestCode;
 
   static Activity getActivity() {
-    return registrar.activity();
+    return instance.activity;
   }
 
-  /** Plugin registration. */
-  public static void registerWith(Registrar registrar) {
-    AdnetQqPlugin.registrar = registrar;
-    AdnetQqPlugin.instance = new AdnetQqPlugin();
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), PluginSettings.PLUGIN_ID);
-    channel.setMethodCallHandler(instance);
-    registrar.platformViewRegistry().registerViewFactory(PluginSettings.UNIFIED_BANNER_VIEW_ID, new FlutterUnifiedBannerViewFactory(registrar.messenger()));
-    registrar.platformViewRegistry().registerViewFactory(PluginSettings.NATIVE_EXPRESS_VIEW_ID, new FlutterNativeExpressViewFactory(registrar.messenger()));
+  public AdnetQqPlugin() {
+    instance = this;
   }
+
+  private void init(Context applicationContext, BinaryMessenger messenger, PlatformViewRegistry platformViewRegistry) {
+//    AdnetQqPlugin.instance = new AdnetQqPlugin();
+    final MethodChannel channel = new MethodChannel(messenger, PluginSettings.PLUGIN_ID);
+    channel.setMethodCallHandler(instance);
+    platformViewRegistry.registerViewFactory(PluginSettings.UNIFIED_BANNER_VIEW_ID, new FlutterUnifiedBannerViewFactory(messenger));
+    platformViewRegistry.registerViewFactory(PluginSettings.NATIVE_EXPRESS_VIEW_ID, new FlutterNativeExpressViewFactory(messenger));
+  }
+
+//  /** Plugin registration. */
+//  public static void registerWith(PluginRegistry.Registrar registrar) {
+//    AdnetQqPlugin.registrar = registrar;
+//    final AdnetQqPlugin instance = new AdnetQqPlugin();
+//    instance.init(registrar.context(), registrar.messenger(), registrar.platformViewRegistry());
+//  }
 
   static void removeInterstitial(String posId) {
     unifiedInterstitialMap.remove(posId);
+  }
+
+  @Override
+  public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
+    this.flutterPluginBinding = flutterPluginBinding;
+    System.out.println("onAttachedToEngine==========================================================");
+    init(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getPlatformViewRegistry());
+  }
+
+  @Override
+  public void onDetachedFromEngine(FlutterPluginBinding flutterPluginBinding) {
+
+  }
+
+  @Override
+  public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+    this.activity = activityPluginBinding.getActivity();
+    activityPluginBinding.addRequestPermissionsResultListener(this);
+  }
+
+  @Override
+  public void onDetachedFromActivityForConfigChanges() {
+    this.activity = null;
+  }
+
+  @Override
+  public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+    this.activity = activityPluginBinding.getActivity();
+    activityPluginBinding.addRequestPermissionsResultListener(this);
+  }
+
+  @Override
+  public void onDetachedFromActivity() {
+    this.activity = null;
   }
 
   @Override
@@ -78,7 +129,6 @@ public class AdnetQqPlugin implements MethodCallHandler, PluginRegistry.RequestP
         }
         // check permissions
         if (Build.VERSION.SDK_INT >= 23 && (requestReadPhoneState > 0 || requestAccessFineLocation > 0)) {
-          registrar.addRequestPermissionsResultListener(this);
           checkAndRequestPermission();
         }
         result.success(true);
@@ -93,7 +143,7 @@ public class AdnetQqPlugin implements MethodCallHandler, PluginRegistry.RequestP
           //noinspection ConstantConditions
           unifiedInterstitialMap.get(posId).closeAd();
         }
-        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, registrar.messenger()));
+        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, flutterPluginBinding.getBinaryMessenger()));
         result.success(true);
         break;
       }
@@ -106,7 +156,7 @@ public class AdnetQqPlugin implements MethodCallHandler, PluginRegistry.RequestP
         if(splashAd != null) {
           splashAd.close();
         }
-        splashAd = new SplashAd(registrar.activity(), registrar.messenger(), posId, backgroundImage);
+        splashAd = new SplashAd(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), posId, backgroundImage);
         splashAd.show();
         break;
       }
@@ -153,7 +203,7 @@ public class AdnetQqPlugin implements MethodCallHandler, PluginRegistry.RequestP
       // 请求所缺少的权限，在onRequestPermissionsResult中再看是否获得权限，如果获得权限就可以调用SDK，否则不要调用SDK。
       String[] requestPermissions = new String[lackedPermission.size()];
       lackedPermission.toArray(requestPermissions);
-      registrar.addRequestPermissionsResultListener(this);
+//      registrar.addRequestPermissionsResultListener(this);
       _requestCode = Integer.parseInt(new SimpleDateFormat("MMddHHmmss", Locale.CHINA).format(new Date()));
       activity.requestPermissions(requestPermissions, _requestCode);
       Log.d(TAG, "requesting permissions...");
