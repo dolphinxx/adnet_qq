@@ -5,6 +5,7 @@
 #import "FlutterSplashView.h"
 #import "FlutterUnifiedInterstitialView.h"
 #import <Flutter/Flutter.h>
+#import "GDTSDKConfig.h"
 static NSObject<FlutterPluginRegistrar> *_registrar = nil;
 static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *interstitials = nil;
 
@@ -39,6 +40,7 @@ static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *intersti
           return;
       }
       [PluginSettings getInstance] -> APP_ID = arguments[@"appId"];
+      [GDTSDKConfig registerAppId:arguments[@"appId"]];
       result(@(YES));
   } else if([@"showSplash" isEqualToString:call.method]){
       NSDictionary* arguments = call.arguments;

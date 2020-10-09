@@ -15,14 +15,14 @@ A new Flutter plugin for adnet_qq.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'GDTMobSDK','4.10.5'
+  s.dependency 'GDTMobSDK','4.11.11'
   s.frameworks = 'AdSupport', 'CoreLocation', 'QuartzCore', 'SystemConfiguration', 'CoreTelephony', 'Security', 'StoreKit', 'AVFoundation', 'WebKit'
   s.library = 'z', 'xml2'
   
 #  s.vendored_libraries = 'lib/libGDTMobSDK.a'
   #  s.requires_arc = true
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 #  s.static_framework = true
 end
 

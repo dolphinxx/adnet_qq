@@ -58,7 +58,7 @@
     if(_splash) {
         return;
     }
-    _splash = [[GDTSplashAd alloc] initWithAppId:[PluginSettings getInstance] -> APP_ID placementId: posId];
+    _splash = [[GDTSplashAd alloc] initWithPlacementId:posId];
     _splash.delegate = self;
     _splash.fetchDelay = 3;
     [_splash loadAdAndShowInWindow:UIApplication.sharedApplication.keyWindow];

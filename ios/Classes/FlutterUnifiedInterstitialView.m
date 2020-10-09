@@ -54,7 +54,7 @@
     if (self.ad) {
         self.ad.delegate = nil;
     }
-    self.ad = [[GDTUnifiedInterstitialAd alloc] initWithAppId:[PluginSettings getInstance] -> APP_ID placementId:posId];
+    self.ad = [[GDTUnifiedInterstitialAd alloc] initWithPlacementId:posId];
     self.ad.delegate = self;
     [self.ad loadAd];
 }
