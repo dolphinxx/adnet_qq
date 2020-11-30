@@ -41,7 +41,7 @@
         CGRect rect = {CGPointZero, CGSizeMake(375, 60)};
         //NSLog(@"APP_ID:%@,posId:%@,viewController:%@",[PluginSettings getInstance] -> APP_ID,posId, [AdnetQqPlugin getViewController]);
         bv = [[GDTUnifiedBannerView alloc]
-              initWithFrame:rect appId:[PluginSettings getInstance] -> APP_ID placementId: posId viewController:[AdnetQqPlugin getViewController]
+              initWithFrame:rect placementId: posId viewController:[AdnetQqPlugin getViewController]
               ];
         bv.animated = NO;
         bv.delegate = self;

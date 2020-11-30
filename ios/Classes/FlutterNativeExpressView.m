@@ -86,7 +86,7 @@
 - (void)refreshAd{
     //NSLog(@"----refreshAd");
     ad = [[GDTNativeExpressAd alloc]
-          initWithAppId: [PluginSettings getInstance] -> APP_ID placementId: posId adSize:CGSizeMake(UIApplication.sharedApplication.keyWindow.frame.size.width, -2) ];
+          initWithPlacementId: posId adSize:CGSizeMake(UIApplication.sharedApplication.keyWindow.frame.size.width, -2) ];
     ad.delegate = self;
     [ad loadAd:count];
 }
