@@ -38,18 +38,21 @@ class NativeExpressAd extends StatefulWidget {
 
 class NativeExpressAdState extends State<NativeExpressAd> {
   MethodChannel _methodChannel;
+  UniqueKey _key = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
     if(defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
+        key: _key,
         viewType: '$PLUGIN_ID/native_express',
         onPlatformViewCreated: _onPlatformViewCreated,
         creationParams: {'posId': widget.posId, 'count': widget.requestCount},
-        creationParamsCodec: StandardMessageCodec(),
+        creationParamsCodec: const StandardMessageCodec(),
       );
     }
     return AndroidView(
+      key: _key,
       viewType: '$PLUGIN_ID/native_express',
       onPlatformViewCreated: _onPlatformViewCreated,
       creationParams: {'posId': widget.posId, 'count': widget.requestCount},

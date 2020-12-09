@@ -36,6 +36,7 @@ class UnifiedBannerAd extends StatefulWidget {
 
 class UnifiedBannerAdState extends State<UnifiedBannerAd> {
   MethodChannel _methodChannel;
+  UniqueKey _key = UniqueKey();
   @override
   Widget build(BuildContext context) {
     Map params = Map();
@@ -45,17 +46,19 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
     }
     if(defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
-          viewType: '$PLUGIN_ID/unified_banner',
+        key: _key,
+        viewType: '$PLUGIN_ID/unified_banner',
         onPlatformViewCreated: _onPlatformViewCreated,
         creationParams: params,
-        creationParamsCodec: StandardMessageCodec(),
+        creationParamsCodec: const StandardMessageCodec(),
       );
     }
     return AndroidView(
+      key: _key,
       viewType: '$PLUGIN_ID/unified_banner',
       onPlatformViewCreated: _onPlatformViewCreated,
       creationParams: params,
-      creationParamsCodec: StandardMessageCodec(),
+      creationParamsCodec: const StandardMessageCodec(),
     );
   }
 
