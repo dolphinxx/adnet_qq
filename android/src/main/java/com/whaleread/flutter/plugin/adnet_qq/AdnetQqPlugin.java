@@ -38,7 +38,7 @@ import io.flutter.plugin.platform.PlatformViewRegistry;
 public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
   private static final String TAG = AdnetQqPlugin.class.getSimpleName();
   private static AdnetQqPlugin instance;
-  private static Map<String, FlutterUnifiedInterstitial> unifiedInterstitialMap = new HashMap<>();
+  private static final Map<String, FlutterUnifiedInterstitial> unifiedInterstitialMap = new HashMap<>();
 
   private SplashAd splashAd;
   private List<String> lackedPermission;
@@ -80,7 +80,6 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
   @Override
   public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
     this.flutterPluginBinding = flutterPluginBinding;
-    System.out.println("onAttachedToEngine==========================================================");
     init(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getPlatformViewRegistry());
   }
 
@@ -122,13 +121,16 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
           return;
         }
         GDTADManager.getInstance().initWith(getActivity(), PluginSettings.APP_ID);
+        if(arguments.get("adChannel") != null) {
+          com.qq.e.comm.managers.setting.GlobalSetting.setChannel((int)arguments.get("adChannel"));
+        }
         requestReadPhoneState = 0;
-        if(((Map)call.arguments).containsKey("requestReadPhoneState")) {
-          requestReadPhoneState = (int)((Map)call.arguments).get("requestReadPhoneState");
+        if(arguments.containsKey("requestReadPhoneState")) {
+          requestReadPhoneState = (int)arguments.get("requestReadPhoneState");
         }
         requestAccessFineLocation = 0;
-        if(((Map)call.arguments).containsKey("requestAccessFineLocation")) {
-          requestAccessFineLocation = (int)((Map)call.arguments).get("requestAccessFineLocation");
+        if(arguments.containsKey("requestAccessFineLocation")) {
+          requestAccessFineLocation = (int)arguments.get("requestAccessFineLocation");
         }
         // check permissions
         if (Build.VERSION.SDK_INT >= 23 && (requestReadPhoneState > 0 || requestAccessFineLocation > 0)) {
