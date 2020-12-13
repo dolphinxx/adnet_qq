@@ -41,6 +41,10 @@ static NSMutableDictionary<NSString*, FlutterUnifiedInterstitialView*> *intersti
       }
       [PluginSettings getInstance] -> APP_ID = arguments[@"appId"];
       [GDTSDKConfig registerAppId:arguments[@"appId"]];
+      if(arguments[@"adChannel"] && ![arguments[@"adChannel"] isEqual:[NSNull null]]) {
+          NSNumber *_channel = arguments[@"adChannel"];
+          [GDTSDKConfig setChannel:_channel.integerValue];
+      }
       result(@(YES));
   } else if([@"showSplash" isEqualToString:call.method]){
       NSDictionary* arguments = call.arguments;
