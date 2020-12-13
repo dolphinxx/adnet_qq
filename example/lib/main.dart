@@ -93,6 +93,10 @@ class _MyAppState extends State<MyApp> {
               })),
               child: Text('插屏2.0'),
             ),
+            RaisedButton(
+              onPressed: () => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage']).showAd(),
+              child: Text('开屏'),
+            ),
           ],
         ),
       ),
