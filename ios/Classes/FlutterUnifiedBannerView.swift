@@ -65,8 +65,8 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewDidLoad(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        print("onAdReceived")
-        self.channel.invokeMethod("onAdRecieved", arguments: nil);
+        //print("onAdReceived")
+        self.channel.invokeMethod("onAdReceived", arguments: nil);
     }
 
     /**
