@@ -19,6 +19,6 @@ public class FlutterUnifiedBannerViewFactory extends PlatformViewFactory {
     @Override
     public PlatformView create(Context context, int id, Object params) {
         //noinspection unchecked
-        return new FlutterUnifiedBannerView(context, messenger, id, (Map<String, Object>)params);
+        return new FlutterUnifiedBannerView(messenger, id, (Map<String, Object>)params);
     }
 }

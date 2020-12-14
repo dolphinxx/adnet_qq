@@ -1,8 +1,9 @@
 package com.whaleread.flutter.plugin.adnet_qq;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.qq.e.ads.banner2.UnifiedBannerADListener;
 import com.qq.e.ads.banner2.UnifiedBannerView;
@@ -23,9 +24,9 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
     private final MethodChannel methodChannel;
     private Integer refreshInterval;
 
-    private String posId;
+    private final String posId;
 
-    public FlutterUnifiedBannerView(Context context, BinaryMessenger messenger, int id, Map<String, Object> params) {
+    public FlutterUnifiedBannerView(BinaryMessenger messenger, int id, Map<String, Object> params) {
         if(PluginSettings.APP_ID == null) {
             throw new IllegalStateException("App Id must be configured before creating ad view");
         }
@@ -41,7 +42,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
     }
 
     @Override
-    public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
+    public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result result) {
         switch(methodCall.method) {
             case "refresh":
                 getBanner().loadAD();

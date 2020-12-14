@@ -148,20 +148,21 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
           //noinspection ConstantConditions
           unifiedInterstitialMap.get(posId).closeAd();
         }
-        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, flutterPluginBinding.getBinaryMessenger()));
+        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, flutterPluginBinding.getBinaryMessenger(), (Map)call.arguments));
         result.success(true);
         break;
       }
       case "showSplash": {
         String posId = (String)((Map)call.arguments).get("posId");
         String backgroundImage = null;
-        if(((Map)call.arguments).containsKey("backgroundImage")) {
+        if(((Map)call.arguments).get("backgroundImage") != null) {
           backgroundImage = (String)((Map)call.arguments).get("backgroundImage");
         }
+        Integer fetchDelay = (Integer)((Map)call.arguments).get("fetchDelay");
         if(splashAd != null) {
           splashAd.close();
         }
-        splashAd = new SplashAd(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), posId, backgroundImage);
+        splashAd = new SplashAd(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), posId, backgroundImage, fetchDelay);
         splashAd.show();
         break;
       }

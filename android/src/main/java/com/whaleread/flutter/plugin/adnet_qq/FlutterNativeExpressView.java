@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
 import com.qq.e.ads.nativ.NativeExpressAD;
@@ -24,13 +26,26 @@ import io.flutter.plugin.platform.PlatformView;
 
 public class FlutterNativeExpressView implements PlatformView, MethodChannel.MethodCallHandler, NativeExpressAD.NativeExpressADListener, View.OnLayoutChangeListener {
     private static final String TAG = FlutterNativeExpressView.class.getSimpleName();
+    @SuppressWarnings("FieldCanBeLocal")
     private NativeExpressAD nativeExpressAD;
     private NativeExpressADView nativeExpressADView;
     private final MethodChannel methodChannel;
-    private FrameLayout container;
+    private final FrameLayout container;
 
-    private String posId;
+    private final String posId;
     private int count = 5;
+    private Integer minVideoDuration;
+    private Integer maxVideoDuration;
+    private Boolean autoPlayMuted;
+    private Boolean detailPageVideoMuted;
+    // <--- android only ---
+    private Integer autoPlayPolicy;
+    private Integer videoPlayPolicy;
+    private Boolean enableDetailPage;
+    private Boolean enableUserControl;
+    private Boolean needCoverImage;
+    private Boolean needProgressBar;
+    // --- android only --->
 
     public FlutterNativeExpressView(Context context, BinaryMessenger messenger, int id, Map<String, Object> params) {
         if (PluginSettings.APP_ID == null) {
@@ -43,13 +58,46 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         container.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 //        container.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.posId = (String) params.get("posId");
-        if(params.containsKey("count") && params.get("count") != null) {
+        if(params.get("count") != null) {
             this.count = (int)params.get("count");
+        }
+        if(params.get("minVideoDuration") != null) {
+            this.minVideoDuration = (Integer)params.get("minVideoDuration");
+        }
+        if(params.get("maxVideoDuration") != null) {
+            this.maxVideoDuration = (Integer)params.get("maxVideoDuration");
+        }
+        if(params.get("autoPlayMuted") != null) {
+            this.autoPlayMuted = (Boolean)params.get("autoPlayMuted");
+        }
+        if(params.get("detailPageVideoMuted") != null) {
+            this.detailPageVideoMuted = (Boolean)params.get("detailPageVideoMuted");
+        }
+        if(params.get("androidOptions") != null) {
+            @SuppressWarnings("rawtypes") Map options = (Map)params.get("androidOptions");
+            if(options.get("autoPlayPolicy") != null) {
+                this.autoPlayPolicy = (Integer)options.get("autoPlayPolicy");
+            }
+            if(options.get("videoPlayPolicy") != null) {
+                this.videoPlayPolicy = (Integer)options.get("videoPlayPolicy");
+            }
+            if(options.get("enableDetailPage") != null) {
+                this.enableDetailPage = (Boolean)options.get("enableDetailPage");
+            }
+            if(options.get("enableUserControl") != null) {
+                this.enableUserControl = (Boolean)options.get("enableUserControl");
+            }
+            if(options.get("needCoverImage") != null) {
+                this.needCoverImage = (Boolean)options.get("needCoverImage");
+            }
+            if(options.get("needProgressBar") != null) {
+                this.needProgressBar = (Boolean)options.get("needProgressBar");
+            }
         }
     }
 
     @Override
-    public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
+    public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result result) {
         switch (methodCall.method) {
             case "refresh":
                 refreshAd();
@@ -62,15 +110,6 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
                 }
                 result.success(true);
                 break;
-//            case "getSize":
-////                float density = Resources.getSystem().getDisplayMetrics().density;
-//                int[] size = getViewSize(nativeExpressADView);
-//                Log.d("_____",  size[0] + "," + size[1]);
-//                Map<String, Object> data = new HashMap<>();
-//                data.put("width", size[0]);
-//                data.put("height", size[1]);
-//                result.success(data);
-//                break;
             default:
                 result.notImplemented();
         }
@@ -87,6 +126,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         // 使用完了每一个NativeExpressADView之后都要释放掉资源
         if (nativeExpressADView != null) {
             nativeExpressADView.destroy();
+            nativeExpressADView = null;
         }
     }
 
@@ -95,21 +135,41 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
          *  如果选择支持视频的模版样式，请使用{@link Constants#NativeExpressSupportVideoPosID}
          */
         nativeExpressAD = new NativeExpressAD(AdnetQqPlugin.getActivity(), new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT), posId, this); // 这里的Context必须为Activity
-        nativeExpressAD.setVideoOption(new VideoOption.Builder()
-                .setAutoPlayPolicy(VideoOption.AutoPlayPolicy.WIFI) // 设置什么网络环境下可以自动播放视频
-                .setAutoPlayMuted(true) // 设置自动播放视频时，是否静音
-                .build()); // setVideoOption是可选的，开发者可根据需要选择是否配置
+        VideoOption.Builder videoOptionBuilder = new VideoOption.Builder();
+        if(autoPlayPolicy != null) {
+            videoOptionBuilder.setAutoPlayPolicy(autoPlayPolicy); // 设置什么网络环境下可以自动播放视频
+        }
+        videoOptionBuilder.setAutoPlayMuted(autoPlayMuted != null ? autoPlayMuted : true); // 设置自动播放视频时，是否静音
+        if(enableDetailPage != null) {
+            videoOptionBuilder.setEnableDetailPage(enableDetailPage);
+        }
+        if(enableUserControl != null) {
+            videoOptionBuilder.setEnableUserControl(enableUserControl);
+        }
+        if(needCoverImage != null) {
+            videoOptionBuilder.setNeedCoverImage(needCoverImage);
+        }
+        if(needProgressBar != null) {
+            videoOptionBuilder.setNeedProgressBar(needProgressBar);
+        }
+        if(detailPageVideoMuted != null) {
+            videoOptionBuilder.setDetailPageMuted(detailPageVideoMuted);
+        }
+        nativeExpressAD.setVideoOption(videoOptionBuilder.build()); // setVideoOption是可选的，开发者可根据需要选择是否配置
+        if(maxVideoDuration != null) {
+            nativeExpressAD.setMaxVideoDuration(maxVideoDuration);
+        }
+        if(minVideoDuration != null) {
+            nativeExpressAD.setMinVideoDuration(minVideoDuration);
+        }
+        if(videoPlayPolicy != null) {
+            nativeExpressAD.setVideoPlayPolicy(videoPlayPolicy);
+        }
         nativeExpressAD.loadAD(count);
     }
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-
-//    }
-//
-//    @Override
-//    public void onGlobalLayout() {
-//        Log.d("!___", container.getWidth() + "," + container.getHeight() + "," + container.getMeasuredWidth() + "," + container.getMeasuredHeight());
         if(methodChannel != null) {
             DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
             container.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels,
@@ -214,20 +274,20 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         methodChannel.invokeMethod("onAdCloseOverlay", null);
     }
 
-    public static int[] getViewSize(View view) {
-        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        view.measure(w, h);
-        return new int []{view.getMeasuredWidth(), view.getMeasuredHeight()};
-    }
+//    public static int[] getViewSize(View view) {
+//        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//        view.measure(w, h);
+//        return new int []{view.getMeasuredWidth(), view.getMeasuredHeight()};
+//    }
 
-    @Override
-    public void onInputConnectionLocked() {
-        methodChannel.invokeMethod("onInputConnectionLocked", null);
-    }
+//    @Override
+//    public void onInputConnectionLocked() {
+//        methodChannel.invokeMethod("onInputConnectionLocked", null);
+//    }
 
-    @Override
-    public void onInputConnectionUnlocked() {
-        methodChannel.invokeMethod("onInputConnectionUnlocked", null);
-    }
+//    @Override
+//    public void onInputConnectionUnlocked() {
+//        methodChannel.invokeMethod("onInputConnectionUnlocked", null);
+//    }
 }
