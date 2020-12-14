@@ -62,7 +62,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  当接收服务器返回的广告数据成功后调用该函数
      */
     public func unifiedInterstitialSuccess(toLoad:GDTUnifiedInterstitialAd){
-        print("onAdReceived");
+        //print("onAdReceived");
         self.channel.invokeMethod("onAdReceived", arguments:nil);
     }
 
@@ -71,8 +71,8 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  当接收服务器返回的广告数据失败后调用该函数
      */
     public func unifiedInterstitialFail(toLoad:GDTUnifiedInterstitialAd, error: Error) {
-        print("onNoAd \(error)");
-        self.channel.invokeMethod("onNoAd", arguments:nil);
+        //print("onNoAd \(error)");
+        self.channel.invokeMethod("onNoAd", arguments:error.localizedDescription);
     }
 
     /**
@@ -80,7 +80,8 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  插屏2.0广告即将展示回调该函数
      */
     public func unifiedInterstitialWillPresentScreen(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdWillPresentScreen");
+        //print("onAdWillPresentScreen");
+		self.channel.invokeMethod("willPresentScreen", arguments:nil);
     }
 
     /**
@@ -88,7 +89,8 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  插屏2.0广告展示成功回调该函数
      */
     public func unifiedInterstitialDidPresentScreen(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdDidPresentScreen");
+        //print("onAdDidPresentScreen");
+		self.channel.invokeMethod("didPresentScreen", arguments:nil);
     }
 
     /**
@@ -96,7 +98,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  插屏2.0广告展示结束回调该函数
      */
     public func unifiedInterstitialDidDismissScreen(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdClosed");
+        //print("onAdClosed");
         self.channel.invokeMethod("onAdClosed", arguments:nil);
     }
 
@@ -104,7 +106,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  当点击下载应用时会调用系统程序打开其它App或者Appstore时回调
      */
     public func unifiedInterstitialWillLeaveApplication(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdLeftApplication");
+        //print("onAdLeftApplication");
         self.channel.invokeMethod("onAdLeftApplication", arguments:nil);
     }
 
@@ -112,7 +114,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  插屏2.0广告曝光回调
      */
     public func unifiedInterstitialWillExposure(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdExposure");
+        //print("onAdExposure");
         self.channel.invokeMethod("onAdExposure", arguments:nil);
     }
 
@@ -120,7 +122,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  插屏2.0广告点击回调
      */
     public func unifiedInterstitialClicked(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdClicked");
+        //print("onAdClicked");
         self.channel.invokeMethod("onAdClicked", arguments:nil);
     }
 
@@ -128,14 +130,15 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  点击插屏2.0广告以后即将弹出全屏广告页
      */
     public func unifiedInterstitialAdWillPresentFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdWillPresentFullScreenModal");
+        //print("onAdWillPresentFullScreenModal");
+		self.channel.invokeMethod("willPresentFullScreenModal", arguments:nil);
     }
 
     /**
      *  点击插屏2.0广告以后弹出全屏广告页
      */
     public func unifiedInterstitialAdDidPresentFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdOpened");
+        //print("onAdOpened");
         self.channel.invokeMethod("onAdOpened", arguments:nil);
     }
 
@@ -143,13 +146,15 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      *  全屏广告页将要关闭
      */
     public func unifiedInterstitialAdWillDismissFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdWillDismissFullScreenModal");
+        //print("onAdWillDismissFullScreenModal");
+		self.channel.invokeMethod("willDismissFullScreenModal", arguments:nil);
     }
 
     /**
      *  全屏广告页被关闭
      */
     public func unifiedInterstitialAdDidDismissFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
-        print("onAdDidDismissFullScreenModal");
+        //print("onAdDidDismissFullScreenModal");
+		self.channel.invokeMethod("didDismissFullScreenModal", arguments:nil);
     }
 }

@@ -12,6 +12,8 @@ enum UnifiedInterstitialAdEvent {
   onAdClicked,
   onAdLeftApplication,
   onAdOpened,
+  /// android only
+  onVideoCached,
 }
 
 class UnifiedInterstitialAd {
@@ -51,6 +53,9 @@ class UnifiedInterstitialAd {
           break;
         case 'onAdOpened':
           event = UnifiedInterstitialAdEvent.onAdOpened;
+          break;
+        case 'onVideoCached':
+          event = UnifiedInterstitialAdEvent.onVideoCached;
           break;
       }
       adEventCallback(event, call.arguments);

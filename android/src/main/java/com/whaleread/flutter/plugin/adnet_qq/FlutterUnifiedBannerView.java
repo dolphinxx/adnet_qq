@@ -8,6 +8,7 @@ import com.qq.e.ads.banner2.UnifiedBannerADListener;
 import com.qq.e.ads.banner2.UnifiedBannerView;
 import com.qq.e.comm.util.AdError;
 
+import java.util.Locale;
 import java.util.Map;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -92,7 +93,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
                 TAG,
                 String.format("onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(),
                         adError.getErrorMsg()));
-        methodChannel.invokeMethod("onNoAd", adError.getErrorCode());
+        methodChannel.invokeMethod("onNoAd", String.format(Locale.getDefault(), "code:%d, message:%s", adError.getErrorCode(), adError.getErrorMsg()));
     }
 
     @Override
@@ -137,13 +138,13 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
         methodChannel.invokeMethod("onAdCloseOverlay", null);
     }
 
-    @Override
-    public void onInputConnectionLocked() {
-        methodChannel.invokeMethod("onInputConnectionLocked", null);
-    }
-
-    @Override
-    public void onInputConnectionUnlocked() {
-        methodChannel.invokeMethod("onInputConnectionUnlocked", null);
-    }
+//    @Override
+//    public void onInputConnectionLocked() {
+//        methodChannel.invokeMethod("onInputConnectionLocked", null);
+//    }
+//
+//    @Override
+//    public void onInputConnectionUnlocked() {
+//        methodChannel.invokeMethod("onInputConnectionUnlocked", null);
+//    }
 }

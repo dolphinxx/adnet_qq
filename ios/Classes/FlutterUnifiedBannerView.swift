@@ -75,8 +75,8 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewFailed(toLoad:GDTUnifiedBannerView, error: Error)
     {
-        print("onNoAd \(error)")
-        self.channel.invokeMethod("onNoAd", arguments:nil);
+        //print("onNoAd \(error)")
+        self.channel.invokeMethod("onNoAd", arguments:error.localizedDescription);
     }
 
     /**
@@ -84,7 +84,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewWillExpose(_ unifiedBannerView: GDTUnifiedBannerView)
     {
-        print("onAdExposure")
+        //print("onAdExposure")
         self.channel.invokeMethod("onAdExposure", arguments:nil);
     }
 
@@ -93,7 +93,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewClicked(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        print("onAdClicked")
+        //print("onAdClicked")
         self.channel.invokeMethod("onAdClicked", arguments:nil);
     }
 
@@ -110,7 +110,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewDidPresentFullScreenModal(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        print("onAdOpenOverlay")
+        //print("onAdOpenOverlay")
         self.channel.invokeMethod("onAdOpenOverlay", arguments:nil);
     }
 
@@ -127,7 +127,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewDidDismissFullScreenModal(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        print("onAdCloseOverlay")
+        //print("onAdCloseOverlay")
         self.channel.invokeMethod("onAdCloseOverlay", arguments:nil);
     }
 
@@ -136,7 +136,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewWillLeaveApplication(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        print("onAdLeftApplication")
+        //print("onAdLeftApplication")
         self.channel.invokeMethod("onAdLeftApplication", arguments:nil)
     }
 
@@ -145,7 +145,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewWillClose(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        print("onAdClosed")
+        //print("onAdClosed")
         self.dispose()
         self.channel.invokeMethod("onAdClosed", arguments:nil);
         self.bv = nil;
