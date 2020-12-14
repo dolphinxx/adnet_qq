@@ -3,8 +3,9 @@ import 'package:adnet_qq/adnet_qq.dart';
 
 class UnifiedInterstitialAdDemo extends StatefulWidget {
   final String posId;
+  final String fullScreenPosId;
 
-  UnifiedInterstitialAdDemo(this.posId);
+  UnifiedInterstitialAdDemo(this.posId, this.fullScreenPosId);
 
   @override
   UnifiedInterstitialAdDemoState createState() => UnifiedInterstitialAdDemoState();
@@ -12,11 +13,14 @@ class UnifiedInterstitialAdDemo extends StatefulWidget {
 
 class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
   UnifiedInterstitialAd _ad;
+  UnifiedInterstitialAd _fullScreenAd;
+  List<String> events = List();
 
   @override
   void initState() {
     super.initState();
     _ad = UnifiedInterstitialAd(widget.posId, adEventCallback: _adEventCallback);
+    _fullScreenAd = UnifiedInterstitialAd(widget.fullScreenPosId, adEventCallback: _adEventCallback);
   }
 
   @override
@@ -51,21 +55,45 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
           ),
           Row(
             children: <Widget>[
+              RaisedButton(
+                onPressed: () => _fullScreenAd.loadFullScreenAd(),
+                child: Text('加载全屏'),
+              ),
+              RaisedButton(
+                onPressed: () => _fullScreenAd.showFullScreenAd(),
+                child: Text('显示全屏'),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
               Text('广告位ID：'),
               Expanded(
                 child: Text(widget.posId,),
               ),
             ],
-          )
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                return Text(events[index]);
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
   void _adEventCallback(UnifiedInterstitialAdEvent event, dynamic params) {
-    print('ad event: $event');
+    events.insert(0, '${event.toString().split('.')[1]} ${params??""}');
     if(event == UnifiedInterstitialAdEvent.onAdReceived) {
       _ad.showAd();
+    }
+    if(this.mounted) {
+      this.setState(() {
+      });
     }
   }
 }

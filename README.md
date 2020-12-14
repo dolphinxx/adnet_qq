@@ -1,12 +1,14 @@
 # adnet_qq
 
-A new Flutter plugin for adnet_qq.
+A new Flutter plugin for [腾讯优量汇](https://adnet.qq.com/).
 
-Android only currently.
+Support both `Android` and `iOS`.
 
-Only support native_express(原生广告模板方式), splash(开屏广告), unified_banner(Banner 2.0), unified_interstitial(插屏2.0) ads.
+Only support `native_express`(原生广告模板方式), `splash`(开屏广告), `unified_banner`(Banner 2.0), `unified_interstitial`(插屏2.0) ads.
 
-This plugin uses `Android标准版 4.28.902` instead of `Android X5内核加强版 4.28.902`, because the X5 version does not support 64bit.
+This plugin uses `Android X5 内核加强版` for android.
+
+See [腾讯联盟 Android SDK 接入文档](https://developers.adnet.qq.com/doc/android/access_doc) and [腾讯联盟 iOS SDK 接入文档](https://developers.adnet.qq.com/doc/ios/guide) for the detail of the options.
 
 ## Installation
 
@@ -47,8 +49,6 @@ add following to proguard-rules.pro if obfuscate
 ```
 
 ### iOS
-run `flutter build ios`, then open xcode and select all files under `Pods/GDTMobSDK/GDTMobSDK/` then under `Target Membership` panel in right bottom check `adnet_qq` and change value from Project to Public.
-
 modify `ios/Runner/Info.plist`, add following to allow non https requests.
 ```
 <key>NSAppTransportSecurity</key>

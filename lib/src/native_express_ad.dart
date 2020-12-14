@@ -152,7 +152,12 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   Future<void> closeAd() async {
     if(_methodChannel != null) {
-      await _methodChannel.invokeMethod('close');
+      try {
+        await _methodChannel.invokeMethod('close');
+      } catch (_) {
+        // ad may be already closed.
+      }
+      _methodChannel = null;
     }
   }
 
@@ -216,9 +221,11 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
       widget.adEventCallback(event, arguments);
     }
     if(event == NativeExpressAdEvent.onLayout && this.mounted) {
-      this.setState(() {
-        _height = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
-      });
+      if(arguments['width'] > 0 && arguments['height'] > 0) {
+        this.setState(() {
+          _height = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
+        });
+      }
       return;
     }
   }

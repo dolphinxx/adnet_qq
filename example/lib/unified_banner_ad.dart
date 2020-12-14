@@ -14,6 +14,7 @@ class UnifiedBannerAdDemo extends StatefulWidget {
 class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
   bool _adClosed = false;
   GlobalKey<UnifiedBannerAdState> _adKey = GlobalKey();
+  List<String> events = List();
 
   @override
   void initState() {
@@ -60,7 +61,15 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
                 child: Text(widget.posId),
               ),
             ],
-          )
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                return Text(events[index]);
+              },
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -72,12 +81,13 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
   }
 
   void _adEventCallback(UnifiedBannerAdEvent event, dynamic arguments) {
+    events.insert(0, '${event.toString().split('.')[1]} ${arguments??""}');
     if(event == UnifiedBannerAdEvent.onAdClosed) {
-      if(this.mounted) {
-        this.setState(() {
-          _adClosed = true;
-        });
-      }
+      _adClosed = true;
+    }
+    if(this.mounted) {
+      this.setState(() {
+      });
     }
   }
 

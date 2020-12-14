@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart' hide Banner;
 import 'package:adnet_qq/adnet_qq.dart';
 
-class NativeExpressAdDemo extends StatefulWidget {
+class NativeExpressAdWidgetDemo extends StatefulWidget {
   final String posId;
 
-  NativeExpressAdDemo(this.posId);
+  NativeExpressAdWidgetDemo(this.posId);
 
   @override
-  NativeExpressAdDemoState createState() => NativeExpressAdDemoState();
+  NativeExpressAdWidgetDemoState createState() => NativeExpressAdWidgetDemoState();
 }
 
-class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
+class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
   double adHeight;
   bool adRemoved = false;
   GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
@@ -63,17 +63,14 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
           ),
           Container(
             height: 30,
-            color: Colors.blue,
+            color: Colors.deepOrange,
           ),
-          adRemoved ? Container() : Divider(),
-          adRemoved ? Container() : Container(
-            height: adHeight == null ? 1 : adHeight,
-            child: NativeExpressAd(widget.posId, key: _adKey, requestCount: 5, adEventCallback: _adEventCallback,refreshOnCreate: true),
-          ),
+          Divider(),
+          NativeExpressAdWidget(widget.posId, adKey: _adKey, adEventCallback: _adEventCallback,),
           Divider(),
           Container(
             height: 30,
-            color: Colors.deepOrange,
+            color: Colors.amberAccent,
           ),
           Expanded(
             child: ListView.builder(
@@ -90,13 +87,6 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
 
   void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
     events.insert(0, '${event.toString().split('.')[1]} ${arguments??""}');
-    if(event == NativeExpressAdEvent.onLayout) {
-      // 根据选择的广告位模板尺寸计算，这里是1280x720
-      adHeight = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
-    } else if(event == NativeExpressAdEvent.onAdClosed) {
-      // remove ad widget
-      adRemoved = true;
-    }
     if(this.mounted) {
       this.setState(() {
       });
