@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 import 'constants.dart';
 import 'adnet_qq_plugin.dart';
+import 'video_options.dart';
 
 typedef UnifiedInterstitialAdEventCallback = Function(UnifiedInterstitialAdEvent event, dynamic arguments);
 enum UnifiedInterstitialAdEvent {
@@ -14,19 +15,39 @@ enum UnifiedInterstitialAdEvent {
   onAdOpened,
   /// android only
   onVideoCached,
+  /// iOS only
+  onAdWillPresentScreen,
+  /// iOS only
+  onAdDidPresentScreen,
+  /// iOS only
+  onAdWillDismissFullScreenModal,
+  /// iOS only
+  onAdDidDismissFullScreenModal,
+  /// iOS only
+  onAdPlayerStatusChanged,
+  /// iOS only
+  onAdWillPresentVideoVC,
+  /// iOS only
+  onAdDidPresentVideoVC,
+  /// iOS only
+  onAdWillDismissVideoVC,
+  /// iOS only
+  onAdDidDismissVideoVC,
 }
 
 class UnifiedInterstitialAd {
   final String posId;
 
+  final AdVideoOptions videoOptions;
+
   final UnifiedInterstitialAdEventCallback adEventCallback;
 
   MethodChannel _methodChannel;
 
-  UnifiedInterstitialAd(this.posId, {this.adEventCallback}) {
+  UnifiedInterstitialAd(this.posId, {this.videoOptions, this.adEventCallback}) {
     this._methodChannel = MethodChannel('$PLUGIN_ID/unified_interstitial_$posId');
     this._methodChannel.setMethodCallHandler(_handleMethodCall);
-    AdnetQqPlugin.createUnifiedInterstitialAd(posId: posId);
+    AdnetQqPlugin.createUnifiedInterstitialAd(posId: posId, videoOptions: videoOptions);
   }
 
   Future<void> _handleMethodCall(MethodCall call) async {
@@ -57,6 +78,35 @@ class UnifiedInterstitialAd {
         case 'onVideoCached':
           event = UnifiedInterstitialAdEvent.onVideoCached;
           break;
+        case 'onAdWillPresentScreen':
+          event = UnifiedInterstitialAdEvent.onAdWillPresentScreen;
+          break;
+        case 'onAdDidPresentScreen':
+          event = UnifiedInterstitialAdEvent.onAdDidPresentScreen;
+          break;
+        case 'onAdWillDismissFullScreenModal':
+          event = UnifiedInterstitialAdEvent.onAdWillDismissFullScreenModal;
+          break;
+        case 'onAdDidDismissFullScreenModal':
+          event = UnifiedInterstitialAdEvent.onAdDidDismissFullScreenModal;
+          break;
+        case 'onAdPlayerStatusChanged':
+          event = UnifiedInterstitialAdEvent.onAdPlayerStatusChanged;
+          break;
+        case 'onAdWillPresentVideoVC':
+          event = UnifiedInterstitialAdEvent.onAdWillPresentVideoVC;
+          break;
+        case 'onAdDidPresentVideoVC':
+          event = UnifiedInterstitialAdEvent.onAdDidPresentVideoVC;
+          break;
+        case 'onAdWillDismissVideoVC':
+          event = UnifiedInterstitialAdEvent.onAdWillDismissVideoVC;
+          break;
+        case 'onAdDidDismissVideoVC':
+          event = UnifiedInterstitialAdEvent.onAdDidDismissVideoVC;
+          break;
+        default:
+          print('UnifiedInterstitialAd unknown event: ${call.method}');
       }
       adEventCallback(event, call.arguments);
     }
@@ -64,6 +114,10 @@ class UnifiedInterstitialAd {
 
   Future<void> loadAd() async {
     await _methodChannel.invokeMethod('load');
+  }
+
+  Future<void> loadFullScreenAd() async {
+    await _methodChannel.invokeMethod('loadFullScreen');
   }
 
   Future<void> closeAd() async {
@@ -76,5 +130,9 @@ class UnifiedInterstitialAd {
 
   Future<void> showAdAsPopup() async {
     await _methodChannel.invokeMethod('popup');
+  }
+
+  Future<void> showFullScreenAd() async {
+    await _methodChannel.invokeMethod('showFullScreen');
   }
 }

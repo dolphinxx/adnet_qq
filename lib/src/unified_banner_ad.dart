@@ -12,6 +12,10 @@ enum UnifiedBannerAdEvent {
   onAdLeftApplication,
   onAdOpenOverlay,
   onAdCloseOverlay,
+  /// iOS only
+  onAdWillPresentFullScreenModal,
+  /// iOS only
+  onAdWillDismissFullScreenModal,
 }
 
 typedef UnifiedBannerAdEventCallback = Function(UnifiedBannerAdEvent event, dynamic arguments);
@@ -28,7 +32,10 @@ class UnifiedBannerAd extends StatefulWidget {
 
   final int refreshInterval;
 
-  UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval}) : super(key: key);
+  /// iOS only
+  final bool animated;
+
+  UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval, this.animated}) : super(key: key);
 
   @override
   UnifiedBannerAdState createState() => UnifiedBannerAdState();
@@ -45,6 +52,9 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
       params['refreshInterval'] = widget.refreshInterval;
     }
     if(defaultTargetPlatform == TargetPlatform.iOS) {
+      if(widget.animated != null) {
+        params['animated'] = widget.animated;
+      }
       return UiKitView(
         key: _key,
         viewType: '$PLUGIN_ID/unified_banner',
@@ -98,6 +108,14 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
         case 'onAdCloseOverlay':
           event = UnifiedBannerAdEvent.onAdCloseOverlay;
           break;
+        case 'onAdWillPresentFullScreenModal':
+          event = UnifiedBannerAdEvent.onAdWillPresentFullScreenModal;
+          break;
+        case 'onAdWillDismissFullScreenModal':
+          event = UnifiedBannerAdEvent.onAdWillDismissFullScreenModal;
+          break;
+        default:
+          print('UnifiedBannerAd unknown event: ${call.method}');
       }
       widget.adEventCallback(event, call.arguments);
     }

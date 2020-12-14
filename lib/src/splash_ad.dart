@@ -5,10 +5,26 @@ import 'adnet_qq_plugin.dart';
 enum SplashAdEvent {
   onNoAd,
   onAdDismiss,
-  onAdClosed,
   onAdPresent,
   onAdExposure,
-//  onRequestPermissionsFailed,
+  onAdLoaded,
+  onAdClicked,
+  onAdTick,
+  /// android only
+  onRequestPermissionsFailed,
+  /// iOS only
+  onAdClosed,
+  /// iOS only
+  onApplicationWillEnterBackground,
+  /// iOS only
+  onAdWillClose,
+  /// iOS only
+  onAdWillPresentFullScreenModal,
+  /// iOS only
+  onAdDidPresentFullScreenModal,
+  /// iOS only
+  onAdWillDismissFullScreenModal,
+
 }
 
 typedef SplashAdEventCallback = Function(SplashAdEvent event, dynamic arguments);
@@ -21,11 +37,13 @@ class SplashAd {
   ///
   final String backgroundImage;
 
+  final int fetchDelay;
+
   final SplashAdEventCallback adEventCallback;
 
   MethodChannel _methodChannel;
 
-  SplashAd(this.posId, {this.backgroundImage, this.adEventCallback}) {
+  SplashAd(this.posId, {this.backgroundImage, this.fetchDelay, this.adEventCallback}) {
     this._methodChannel = MethodChannel('$PLUGIN_ID/splash');
     this._methodChannel.setMethodCallHandler(_handleMethodCall);
   }
@@ -49,16 +67,42 @@ class SplashAd {
         case 'onAdExposure':
           event = SplashAdEvent.onAdExposure;
           break;
-//        case 'onRequestPermissionsFailed':
-//          event = SplashAdEvent.onRequestPermissionsFailed;
-//          break;
+        case 'onAdLoaded':
+          event = SplashAdEvent.onAdLoaded;
+          break;
+        case 'onAdClicked':
+          event = SplashAdEvent.onAdClicked;
+          break;
+        case 'onAdTick':
+          event = SplashAdEvent.onAdTick;
+          break;
+        case 'onRequestPermissionsFailed':
+          event = SplashAdEvent.onRequestPermissionsFailed;
+          break;
+        case 'onApplicationWillEnterBackground':
+          event = SplashAdEvent.onApplicationWillEnterBackground;
+          break;
+        case 'onAdWillClose':
+          event = SplashAdEvent.onAdWillClose;
+          break;
+        case 'onAdWillPresentFullScreenModal':
+          event = SplashAdEvent.onAdWillPresentFullScreenModal;
+          break;
+        case 'onAdDidPresentFullScreenModal':
+          event = SplashAdEvent.onAdDidPresentFullScreenModal;
+          break;
+        case 'onAdWillDismissFullScreenModal':
+          event = SplashAdEvent.onAdWillDismissFullScreenModal;
+          break;
+        default:
+          print('SplashAd unknown event: ${call.method}');
       }
       adEventCallback(event, call.arguments);
     }
   }
 
   Future<void> showAd() async {
-    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage,});
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'fetchDelay': fetchDelay});
   }
 
   Future<void> closeAd() async {

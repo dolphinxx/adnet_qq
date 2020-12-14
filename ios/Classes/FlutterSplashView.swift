@@ -8,39 +8,21 @@
 import Foundation
 
 public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
-    private static var ad:FlutterSplashView?
     private var splash:GDTSplashAd?
     private let posId: String
     private let channel: FlutterMethodChannel
     private var backgroundImage:String?
-    
-    public static func showAd(_ posId: String, backgroundImage: String?, messenger: FlutterBinaryMessenger) {
-        if ad == nil {
-            ad = FlutterSplashView.init(posId, backgroundImage: backgroundImage, messenger: messenger)
-        }
-        ad?.show()
-    }
+    private var fetchDelay:CGFloat
 
-    init(_ posId: String, backgroundImage: String?, messenger: FlutterBinaryMessenger) {
+    init(_ posId: String, backgroundImage: String?, fetchDelay:CGFloat?, messenger: FlutterBinaryMessenger) {
         self.posId = posId
         self.backgroundImage = backgroundImage
+        self.fetchDelay = fetchDelay ?? 3
         self.channel = FlutterMethodChannel(name: SPLASH_VIEW_ID, binaryMessenger: messenger)
         super.init()
-        self.channel.setMethodCallHandler { [weak self] (flutterMethodCall: FlutterMethodCall, flutterResult: FlutterResult) in self?.onMethodCall(call: flutterMethodCall, result: flutterResult)}
-    }
-
-    private func onMethodCall(call: FlutterMethodCall, result: FlutterResult) {
-        switch call.method {
-        case "show":
-            self.showAd()
-            result(true)
-        default:
-            result(FlutterMethodNotImplemented)
-        }
     }
 
     public func showAd() {
-        print("----showAd");
         if let splash = splash {
             splash.delegate = nil
         }
@@ -50,7 +32,7 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
             splash?.backgroundImage = UIImage.init(named: backgroundImage)
         }
         splash?.delegate = self
-        splash?.fetchDelay = 5
+        splash?.fetchDelay = self.fetchDelay
         splash?.load()
     }
 
@@ -73,23 +55,23 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
      *  开屏广告成功展示
      */
     public func splashAdSuccessPresentScreen(_ splashAd:GDTSplashAd!){
-        print("onAdPresent")
+//        print("onAdPresent")
         channel.invokeMethod("onAdPresent", arguments:nil)
     }
 
     public func splashAdDidLoad(_ splashAd: GDTSplashAd!) {
-        print("onAdDidLoad")
+//        print("onAdDidLoad")
         splash?.show(in: UIApplication.shared.keyWindow, withBottomView: nil, skip: nil)
-        channel.invokeMethod("onAdDidLoad", arguments:nil)
+        channel.invokeMethod("onAdLoaded", arguments:nil)
     }
     
     /**
      *  开屏广告展示失败
      */
     public func splashAdFail(toPresent splashAd:GDTSplashAd!, withError error:Error!){
-        print("onNoAd \(String(describing: error))")
+//        print("onNoAd \(String(describing: error))")
         self.removeAd()
-        channel.invokeMethod("onNoAd", arguments:nil)
+        channel.invokeMethod("onNoAd", arguments:error.localizedDescription)
     }
 
     /**
@@ -97,14 +79,15 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
      *  详解: 当点击下载应用时会调用系统程序打开，应用切换到后台
      */
     public func splashAdApplicationWillEnterBackground(_ splashAd:GDTSplashAd!){
-        print("onAdApplicationWillEnterBackground")
+//        print("onAdApplicationWillEnterBackground")
+        channel.invokeMethod("onApplicationWillEnterBackground", arguments:nil)
     }
 
     /**
      *  开屏广告曝光回调
      */
     public func splashAdExposured(_ splashAd:GDTSplashAd!){
-        print("onAdExposure")
+//        print("onAdExposure")
         channel.invokeMethod("onAdExposure", arguments:nil)
     }
 
@@ -112,7 +95,7 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
      *  开屏广告点击回调
      */
     public func splashAdClicked(_ splashAd:GDTSplashAd!) {
-        print("onAdClicked")
+//        print("onAdClicked")
         channel.invokeMethod("onAdClicked", arguments:nil)
     }
 
@@ -120,14 +103,15 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
      *  开屏广告将要关闭回调
      */
     public func splashAdWillClosed(_ splashAd:GDTSplashAd!){
-        print("onAdWillClosed")
+//        print("onAdWillClosed")
+        channel.invokeMethod("onAdWillClose", arguments:nil)
     }
 
     /**
      *  开屏广告关闭回调
      */
     public func splashAdClosed(_ splashAd:GDTSplashAd!){
-        print("onAdClosed")
+//        print("onAdClosed")
         self.removeAd()
         channel.invokeMethod("onAdClosed", arguments:nil)
     }
@@ -136,28 +120,31 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
      *  开屏广告点击以后即将弹出全屏广告页
      */
     public func splashAdWillPresentFullScreenModal(_ splashAd:GDTSplashAd!){
-        print("onAdWillPresentFullScreenModal")
+//        print("onAdWillPresentFullScreenModal")
+        channel.invokeMethod("onAdWillPresentFullScreenModal", arguments:nil)
     }
 
     /**
      *  开屏广告点击以后弹出全屏广告页
      */
     public func splashAdDidPresentFullScreenModal(_ splashAd:GDTSplashAd!){
-        print("onAdDidPresentFullScreenModal")
+//        print("onAdDidPresentFullScreenModal")
+        channel.invokeMethod("onAdDidPresentFullScreenModal", arguments:nil)
     }
 
     /**
      *  点击以后全屏广告页将要关闭
      */
     public func splashAdWillDismissFullScreenModal(_ splashAd:GDTSplashAd!){
-        print("onAdWillDismissFullScreenModal")
+//        print("onAdWillDismissFullScreenModal")
+        channel.invokeMethod("onAdWillDismissFullScreenModal", arguments:nil)
     }
 
     /**
      *  点击以后全屏广告页已经关闭
      */
     public func splashAdDidDismissFullScreenModal(_ splashAd:GDTSplashAd!){
-        print("onAdDismiss")
+//        print("onAdDismiss")
         self.removeAd()
         channel.invokeMethod("onAdDismiss", arguments:nil)
     }
@@ -167,5 +154,6 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
      */
     public func splashAdLifeTime(_ time:UInt){
         //print("onAdLifeTime");
+        channel.invokeMethod("onAdTick", arguments:time)
     }
 }

@@ -4,6 +4,7 @@ import UIKit
 public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
     static var interstitials: [String:FlutterUnifiedInterstitialView] = [:]
     var pluginRegistrar: FlutterPluginRegistrar
+    var splashAd:FlutterSplashView?
     
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "com.whaleread.flutter.plugin.adnet_qq", binaryMessenger: registrar.messenger())
@@ -38,9 +39,15 @@ public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
             return
         }
         let backgroundImage = args["backgroundImage"] as? String
-        FlutterSplashView.showAd(posId, backgroundImage: backgroundImage, messenger: pluginRegistrar.messenger())
+        let fetchDelay = args["fetchDelay"] as? CGFloat
+        if let splashAd = splashAd {
+            splashAd.close()
+        }
+        splashAd = FlutterSplashView.init(posId, backgroundImage: backgroundImage, fetchDelay: fetchDelay, messenger: pluginRegistrar.messenger())
+        splashAd?.show()
         result(true)
     case "closeSplash":
+        splashAd?.close()
         result(true)
     case "createUnifiedInterstitialAd":
         guard let args = call.arguments as? [String: Any],
@@ -52,7 +59,7 @@ public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
         if(SwiftAdnetQqPlugin.interstitials[posId] != nil) {
             SwiftAdnetQqPlugin.interstitials[posId]?.dispose()
         }
-        SwiftAdnetQqPlugin.interstitials[posId] = FlutterUnifiedInterstitialView(posId, messeneger: pluginRegistrar.messenger())
+        SwiftAdnetQqPlugin.interstitials[posId] = FlutterUnifiedInterstitialView(posId, options: args["iOSOptions"] as? [String : Any], messeneger: pluginRegistrar.messenger())
         result(true)
     default:
         result(FlutterMethodNotImplemented);

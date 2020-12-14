@@ -12,8 +12,35 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
     private let posId: String
     private let channel: FlutterMethodChannel
     
-    init(_ posId: String, messeneger: FlutterBinaryMessenger) {
+    private var minVideoDuration:Int?
+    private var maxVideoDuration:Int?
+    private var autoPlayMuted:Bool?
+    private var detailPageVideoMuted:Bool?
+    
+    // iOS only
+    private var videoAutoPlayOnWWAN:Bool?
+    
+    init(_ posId: String, options:[String:Any]?, messeneger: FlutterBinaryMessenger) {
         self.posId = posId
+        if let options = options {
+            if let minVideoDuration = options["minVideoDuration"] {
+                self.minVideoDuration = minVideoDuration as? Int
+            }
+            if let maxVideoDuration = options["maxVideoDuration"] {
+                self.maxVideoDuration = maxVideoDuration as? Int
+            }
+            if let autoPlayMuted = options["autoPlayMuted"] {
+                self.autoPlayMuted = autoPlayMuted as? Bool
+            }
+            if let detailPageVideoMuted = options["detailPageVideoMuted"] {
+                self.detailPageVideoMuted = detailPageVideoMuted as? Bool
+            }
+            if let _options = options["iOSOptions"] as? [String:Any] {
+                if let videoAutoPlayOnWWAN = _options["videoAutoPlayOnWWAN"] {
+                    self.videoAutoPlayOnWWAN = videoAutoPlayOnWWAN as? Bool
+                }
+            }
+        }
         self.channel = FlutterMethodChannel(name: "\(UNIFIED_INTERSTITIAL_VIEW_ID)_\(posId)", binaryMessenger: messeneger)
         super.init()
         self.channel.setMethodCallHandler { [weak self] (flutterMethodCall: FlutterMethodCall, flutterResult: FlutterResult) in self?.onMethodCall(call: flutterMethodCall, result: flutterResult)}
@@ -24,8 +51,14 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
         case "load":
             self.loadAd()
             result(true)
+        case "loadFullScreen":
+            self.loadFullScreenAd()
+            result(true)
         case "show","popup":
             self.show()
+            result(true)
+        case "showFullScreen":
+            self.showFullScreen()
             result(true)
         case "close", "dispose":
             self.dispose()
@@ -35,18 +68,48 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
         }
     }
     
-    private func loadAd(){
+    private func prepareLoadAd() {
         if (self.ad != nil) {
             self.ad?.delegate = nil;
         }
         self.ad = GDTUnifiedInterstitialAd(placementId: posId);
         self.ad?.delegate = self;
-        self.ad?.load();
+        if let maxVideoDuration = maxVideoDuration {
+            ad?.maxVideoDuration = maxVideoDuration
+        }
+        if let minVideoDuration = minVideoDuration {
+            ad?.minVideoDuration = minVideoDuration
+        }
+        if let videoAutoPlayOnWWAN = videoAutoPlayOnWWAN {
+            ad?.videoAutoPlayOnWWAN = videoAutoPlayOnWWAN
+        }
+        if let autoPlayMuted = autoPlayMuted {
+            ad?.videoMuted = autoPlayMuted
+        }
+        if let detailPageVideoMuted = detailPageVideoMuted {
+            ad?.detailPageVideoMuted = detailPageVideoMuted
+        }
+    }
+
+    private func loadAd(){
+        self.prepareLoadAd()
+        self.ad?.load()
+    }
+    
+    private func loadFullScreenAd() {
+        self.prepareLoadAd()
+        self.ad?.loadFullScreenAd()
     }
 
     private func show() {
         if(UIApplication.shared.keyWindow?.rootViewController != nil){
             self.ad?.present(fromRootViewController: (UIApplication.shared.keyWindow?.rootViewController)!)
+        }
+    }
+    
+    private func showFullScreen() {
+        if(UIApplication.shared.keyWindow?.rootViewController != nil){
+            self.ad?.presentFullScreenAd(fromRootViewController: (UIApplication.shared.keyWindow?.rootViewController)!)
         }
     }
 
@@ -81,7 +144,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      */
     public func unifiedInterstitialWillPresentScreen(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
         //print("onAdWillPresentScreen");
-		self.channel.invokeMethod("willPresentScreen", arguments:nil);
+		self.channel.invokeMethod("onAdWillPresentScreen", arguments:nil);
     }
 
     /**
@@ -90,7 +153,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      */
     public func unifiedInterstitialDidPresentScreen(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
         //print("onAdDidPresentScreen");
-		self.channel.invokeMethod("didPresentScreen", arguments:nil);
+		self.channel.invokeMethod("onAdDidPresentScreen", arguments:nil);
     }
 
     /**
@@ -131,7 +194,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      */
     public func unifiedInterstitialAdWillPresentFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
         //print("onAdWillPresentFullScreenModal");
-		self.channel.invokeMethod("willPresentFullScreenModal", arguments:nil);
+		self.channel.invokeMethod("onAdWillPresentFullScreenModal", arguments:nil);
     }
 
     /**
@@ -147,7 +210,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      */
     public func unifiedInterstitialAdWillDismissFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
         //print("onAdWillDismissFullScreenModal");
-		self.channel.invokeMethod("willDismissFullScreenModal", arguments:nil);
+		self.channel.invokeMethod("onAdWillDismissFullScreenModal", arguments:nil);
     }
 
     /**
@@ -155,6 +218,41 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
      */
     public func unifiedInterstitialAdDidDismissFullScreenModal(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
         //print("onAdDidDismissFullScreenModal");
-		self.channel.invokeMethod("didDismissFullScreenModal", arguments:nil);
+		self.channel.invokeMethod("onAdDidDismissFullScreenModal", arguments:nil);
+    }
+    
+    /**
+     * 插屏2.0视频广告 player 播放状态更新回调
+     */
+    public func unifiedInterstitialAd(_ unifiedInterstitial:GDTUnifiedInterstitialAd, playerStatusChanged:GDTMediaPlayerStatus) {
+        self.channel.invokeMethod("onAdPlayerStatusChanged", arguments:playerStatusChanged.rawValue);
+    }
+
+    /**
+     * 插屏2.0视频广告详情页 WillPresent 回调
+     */
+    public func unifiedInterstitialAdViewWillPresentVideoVC(_ unifiedInterstitial:GDTUnifiedInterstitialAd) {
+        self.channel.invokeMethod("onAdWillPresentVideoVC", arguments:nil);
+    }
+
+    /**
+     * 插屏2.0视频广告详情页 DidPresent 回调
+     */
+    public func unifiedInterstitialAdViewDidPresentVideoVC(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
+        self.channel.invokeMethod("onAdDidPresentVideoVC", arguments:nil);
+    }
+
+    /**
+     * 插屏2.0视频广告详情页 WillDismiss 回调
+     */
+    public func unifiedInterstitialAdViewWillDismissVideoVC(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
+        self.channel.invokeMethod("onAdWillDismissVideoVC", arguments:nil);
+    }
+
+    /**
+     * 插屏2.0视频广告详情页 DidDismiss 回调
+     */
+    public func unifiedInterstitialAdViewDidDismissVideoVC(_ unifiedInterstitial:GDTUnifiedInterstitialAd) {
+        self.channel.invokeMethod("onAdDidDismissVideoVC", arguments:nil);
     }
 }

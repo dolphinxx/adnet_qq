@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'constants.dart';
+import 'video_options.dart';
 
 enum NativeExpressAdEvent {
   onLayout,
@@ -15,6 +16,20 @@ enum NativeExpressAdEvent {
   onAdLeftApplication,
   onAdOpenOverlay,
   onAdCloseOverlay,
+  /// iOS only
+  onAdDidPresentScreen,
+  /// iOS only
+  onAdWillDismissScreen,
+  /// iOS only
+  onAdPlayerStatusChanged,
+  /// iOS only
+  onAdWillPresentVideoVC,
+  /// iOS only
+  onAdDidPresentVideoVC,
+  /// iOS only
+  onAdWillDismissVideoVC,
+  /// iOS only
+  onAdDidDismissVideoVC,
 }
 
 typedef NativeExpressAdEventCallback = Function(NativeExpressAdEvent event, dynamic arguments);
@@ -26,11 +41,13 @@ class NativeExpressAd extends StatefulWidget {
   /// ad count to request, default value is 5
   final int requestCount;
 
+  final AdVideoOptions videoOptions;
+
   final NativeExpressAdEventCallback adEventCallback;
 
   final bool refreshOnCreate;
 
-  const NativeExpressAd(this.posId, {Key key, this.requestCount:5, this.adEventCallback, this.refreshOnCreate}) : super(key: key);
+  const NativeExpressAd(this.posId, {Key key, this.requestCount:5, this.adEventCallback, this.refreshOnCreate, this.videoOptions}) : super(key: key);
 
   @override
   NativeExpressAdState createState() => NativeExpressAdState();
@@ -47,7 +64,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
         key: _key,
         viewType: '$PLUGIN_ID/native_express',
         onPlatformViewCreated: _onPlatformViewCreated,
-        creationParams: {'posId': widget.posId, 'count': widget.requestCount},
+        creationParams: {'posId': widget.posId, 'count': widget.requestCount, ...widget.videoOptions?.getOptions()??{}, 'iOSOptions': widget.videoOptions?.getIOSOptions()},
         creationParamsCodec: const StandardMessageCodec(),
       );
     }
@@ -55,7 +72,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
       key: _key,
       viewType: '$PLUGIN_ID/native_express',
       onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: {'posId': widget.posId, 'count': widget.requestCount},
+      creationParams: {'posId': widget.posId, 'count': widget.requestCount, ...widget.videoOptions?.getOptions()??{}, 'androidOptions': widget.videoOptions?.getAndroidOptions()},
       creationParamsCodec: const StandardMessageCodec(),
     );
   }
@@ -105,6 +122,29 @@ class NativeExpressAdState extends State<NativeExpressAd> {
         case 'onAdCloseOverlay':
           event = NativeExpressAdEvent.onAdCloseOverlay;
           break;
+        case 'onAdDidPresentScreen':
+          event = NativeExpressAdEvent.onAdDidPresentScreen;
+          break;
+        case 'onAdWillDismissScreen':
+          event = NativeExpressAdEvent.onAdWillDismissScreen;
+          break;
+        case 'onAdPlayerStatusChanged':
+          event = NativeExpressAdEvent.onAdPlayerStatusChanged;
+          break;
+        case 'onAdWillPresentVideoVC':
+          event = NativeExpressAdEvent.onAdWillPresentVideoVC;
+          break;
+        case 'onAdDidPresentVideoVC':
+          event = NativeExpressAdEvent.onAdDidPresentVideoVC;
+          break;
+        case 'onAdWillDismissVideoVC':
+          event = NativeExpressAdEvent.onAdWillDismissVideoVC;
+          break;
+        case 'onAdDidDismissVideoVC':
+          event = NativeExpressAdEvent.onAdDidDismissVideoVC;
+          break;
+        default:
+          print('NativeExpressAd unknown event: ${call.method}');
       }
       widget.adEventCallback(event, call.arguments);
     }
@@ -132,7 +172,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   @override
   void dispose() {
-//    closeAd();
+   closeAd();
     super.dispose();
   }
 }
@@ -140,11 +180,12 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 class NativeExpressAdWidget extends StatefulWidget {
   final String posId;
   final int requestCount;
+  final AdVideoOptions videoOptions;
   final GlobalKey<NativeExpressAdState> adKey;
   final NativeExpressAdEventCallback adEventCallback;
   final double loadingHeight;
 
-  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.adEventCallback, this.loadingHeight: 1.0}):adKey = adKey??GlobalKey();
+  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight: 1.0}):adKey = adKey??GlobalKey();
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
@@ -159,7 +200,7 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
   @override
   void initState() {
     super.initState();
-    _ad = NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, adEventCallback: _adEventCallback,refreshOnCreate: true,);
+    _ad = NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,);
   }
 
   @override

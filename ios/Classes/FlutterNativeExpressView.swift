@@ -15,6 +15,14 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     private var adv: GDTNativeExpressAdView?
     private var ad: GDTNativeExpressAd?
     private let count: Int
+    private var minVideoDuration:Int?
+    private var maxVideoDuration:Int?
+    private var autoPlayMuted:Bool?
+    private var detailPageVideoMuted:Bool?
+    // iOS only
+    private var videoAutoPlayOnWWAN:Bool?
+    
+    
     
     init(frame: CGRect, viewId: Int64, args: [String: Any], messeneger: FlutterBinaryMessenger) {
         self.viewId = viewId
@@ -23,6 +31,23 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
             self.count = count
         } else {
             self.count = 5
+        }
+        if let minVideoDuration = args["minVideoDuration"] {
+            self.minVideoDuration = minVideoDuration as? Int
+        }
+        if let maxVideoDuration = args["maxVideoDuration"] {
+            self.maxVideoDuration = maxVideoDuration as? Int
+        }
+        if let autoPlayMuted = args["autoPlayMuted"] {
+            self.autoPlayMuted = autoPlayMuted as? Bool
+        }
+        if let detailPageVideoMuted = args["detailPageVideoMuted"] {
+            self.detailPageVideoMuted = detailPageVideoMuted as? Bool
+        }
+        if let options = args["iOSOptions"] as? [String:Any] {
+            if let videoAutoPlayOnWWAN = options["videoAutoPlayOnWWAN"] {
+                self.videoAutoPlayOnWWAN = videoAutoPlayOnWWAN as? Bool
+            }
         }
         self.container = UIView.init(frame: frame)
         self.channel = FlutterMethodChannel(name: "\(NATIVE_EXPRESS_VIEW_ID)_\(viewId)", binaryMessenger: messeneger)
@@ -49,6 +74,21 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
             return
         }
         self.ad = GDTNativeExpressAd(placementId: posId, adSize: CGSize(width: keyWindow.frame.size.width, height: -2))
+        if let maxVideoDuration = maxVideoDuration {
+            ad?.maxVideoDuration = maxVideoDuration
+        }
+        if let minVideoDuration = minVideoDuration {
+            ad?.minVideoDuration = minVideoDuration
+        }
+        if let videoAutoPlayOnWWAN = videoAutoPlayOnWWAN {
+            ad?.videoAutoPlayOnWWAN = videoAutoPlayOnWWAN
+        }
+        if let autoPlayMuted = autoPlayMuted {
+            ad?.videoMuted = autoPlayMuted
+        }
+        if let detailPageVideoMuted = detailPageVideoMuted {
+            ad?.detailPageVideoMuted = detailPageVideoMuted
+        }
         ad?.delegate = self
         ad?.load(count)
     }
@@ -70,7 +110,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 拉取原生模板广告成功
      */
     public func nativeExpressAdSuccess(toLoad nativeExpressAd:GDTNativeExpressAd! , views:[GDTNativeExpressAdView]!){
-        print("onAdLoaded");
+//        print("onAdLoaded");
         channel.invokeMethod("onAdLoaded", arguments: nil)
         if let adv = adv {
             adv.removeFromSuperview()
@@ -86,15 +126,15 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 拉取原生模板广告失败
      */
     public func nativeExpressAdFail(toLoad nativeExpressAd:GDTNativeExpressAd, error:Error){
-        print("onNoAd \(error)")
-        channel.invokeMethod("onNoAd", arguments:nil)
+//        print("onNoAd \(error)")
+        channel.invokeMethod("onNoAd", arguments:error.localizedDescription)
     }
 
     /**
      * 原生模板广告渲染成功, 此时的 nativeExpressAdView.size.height 根据 size.width 完成了动态更新。
      */
     public func nativeExpressAdViewRenderSuccess(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onRenderSuccess")
+//        print("onRenderSuccess")
         channel.invokeMethod("onRenderSuccess", arguments:nil)
         var params:[String:Any] = [:]
         guard let adv = adv else {
@@ -109,7 +149,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 原生模板广告渲染失败
      */
     public func nativeExpressAdViewRenderFail(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onRenderFail")
+//        print("onRenderFail")
         channel.invokeMethod("onRenderFail", arguments:nil)
     }
 
@@ -117,7 +157,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 原生模板广告曝光回调
      */
     public func nativeExpressAdViewExposure(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdExposure")
+//        print("onAdExposure")
         channel.invokeMethod("onAdExposure", arguments:nil)
     }
 
@@ -125,7 +165,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 原生模板广告点击回调
      */
     public func nativeExpressAdViewClicked(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdClicked")
+//        print("onAdClicked")
         channel.invokeMethod("onAdClicked", arguments:nil)
     }
 
@@ -133,7 +173,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 原生模板广告被关闭
      */
     public func nativeExpressAdViewClosed(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdClosed")
+//        print("onAdClosed")
         channel.invokeMethod("onAdClosed", arguments:nil)
         adv?.removeFromSuperview()
         adv = nil
@@ -143,7 +183,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 点击原生模板广告以后即将弹出全屏广告页
      */
     public func nativeExpressAdViewWillPresentScreen(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdOpenOverlay")
+//        print("onAdOpenOverlay")
         channel.invokeMethod("onAdOpenOverlay", arguments:nil)
     }
 
@@ -151,21 +191,23 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 点击原生模板广告以后弹出全屏广告页
      */
     public func nativeExpressAdViewDidPresentScreen(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdDidPresentScreen")
+//        print("onAdDidPresentScreen")
+        channel.invokeMethod("onAdDidPresentScreen", arguments:nil)
     }
 
     /**
      * 全屏广告页将要关闭
      */
     public func nativeExpressAdViewWillDismissScreen(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdWillDismissScreen")
+//        print("onAdWillDismissScreen")
+        channel.invokeMethod("onAdWillDismissScreen", arguments:nil)
     }
 
     /**
      * 全屏广告页将要关闭
      */
     public func nativeExpressAdViewDidDismissScreen(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdCloseOverlay")
+//        print("onAdCloseOverlay")
         channel.invokeMethod("onAdCloseOverlay", arguments:nil)
     }
 
@@ -173,7 +215,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 详解:当点击应用下载或者广告调用系统程序打开时调用
      */
     public func nativeExpressAdViewApplicationWillEnterBackground(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdLeftApplication")
+//        print("onAdLeftApplication")
         channel.invokeMethod("onAdLeftApplication", arguments:nil)
     }
 
@@ -181,35 +223,40 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      * 原生模板视频广告 player 播放状态更新回调
      */
     public func nativeExpressAdView(_ nativeExpressAdView:GDTNativeExpressAdView, status:GDTMediaPlayerStatus){
-        print("onAdPlayerStatusChanged")
+//        print("onAdPlayerStatusChanged")
+        channel.invokeMethod("onAdPlayerStatusChanged", arguments:status.rawValue)
     }
 
     /**
      * 原生视频模板详情页 WillPresent 回调
      */
     public func nativeExpressAdViewWillPresentVideoVC(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdWillPresentVideoVC")
+//        print("onAdWillPresentVideoVC")
+        channel.invokeMethod("onAdWillPresentVideoVC", arguments:nil)
     }
 
     /**
      * 原生视频模板详情页 DidPresent 回调
      */
     public func nativeExpressAdViewDidPresentVideoVC(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdDidPresentVideoVC")
+//        print("onAdDidPresentVideoVC")
+        channel.invokeMethod("onAdDidPresentVideoVC", arguments:nil)
     }
 
     /**
      * 原生视频模板详情页 WillDismiss 回调
      */
     public func nativeExpressAdViewWillDismissVideoVC(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdWillDismissVideoVC")
+//        print("onAdWillDismissVideoVC")
+        channel.invokeMethod("onAdWillDismissVideoVC", arguments:nil)
     }
 
     /**
      * 原生视频模板详情页 DidDismiss 回调
      */
     public func nativeExpressAdViewDidDismissVideoVC(_ nativeExpressAdView:GDTNativeExpressAdView){
-        print("onAdDidDismissVideoVC")
+//        print("onAdDidDismissVideoVC")
+        channel.invokeMethod("onAdDidDismissVideoVC", arguments:nil)
     }
 }
 

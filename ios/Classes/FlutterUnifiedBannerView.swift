@@ -14,10 +14,19 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
     private let frame: CGRect
     private let posId: String
     private var bv: GDTUnifiedBannerView?
+    private var refreshInterval:Int32?
+    
+    private var animated:Bool?
 
     init(frame: CGRect, viewId: Int64, args: [String: Any], messeneger: FlutterBinaryMessenger) {
         self.viewId = viewId
         self.posId = args["posId"] as! String
+        self.refreshInterval = args["refreshInterval"] as? Int32
+        if let options = args["iOSOptions"] as? [String:Any] {
+            if let animated = options["animated"] {
+                self.animated = animated as? Bool
+            }
+        }
         self.frame = frame
         self.channel = FlutterMethodChannel(name: "\(UNIFIED_BANNER_VIEW_ID)_\(viewId)", binaryMessenger: messeneger)
         super.init()
@@ -41,7 +50,12 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
         let rect = frame.width == 0 ? CGRect(x: 0, y: 0, width: 1, height: 1) : frame
         let bv = GDTUnifiedBannerView.init(frame: rect, placementId: self.posId, viewController: (UIApplication.shared.keyWindow?.rootViewController)!)
         self.bv = bv
-        bv.animated = false
+        if let animated = animated {
+            bv.animated = animated
+        }
+        if let refreshInterval = refreshInterval {
+            bv.autoSwitchInterval = refreshInterval
+        }
         bv.delegate = self
         return bv
     }
@@ -102,7 +116,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewWillPresentFullScreenModal(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        
+        self.channel.invokeMethod("onAdWillPresentFullScreenModal", arguments:nil);
     }
 
     /**
@@ -119,7 +133,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
      */
     public func unifiedBannerViewWillDismissFullScreenModal(_ unifiedBannerView:GDTUnifiedBannerView)
     {
-        
+        self.channel.invokeMethod("onAdWillDismissFullScreenModal", arguments:nil);
     }
 
     /**
