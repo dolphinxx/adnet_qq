@@ -190,6 +190,7 @@ class NativeExpressAdWidget extends StatefulWidget {
   final NativeExpressAdEventCallback adEventCallback;
   final double loadingHeight;
 
+  /// [loadingHeight] should be above 0, otherwise the ad may not be loaded.
   NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight: 1.0}):adKey = adKey??GlobalKey();
 
   @override
