@@ -21,13 +21,15 @@ class _SplashWidgetState extends State<SplashWidget> {
         return;
       }
       if(event == SplashAdEvent.onAdClosed || event == SplashAdEvent.onAdDismiss || event == SplashAdEvent.onNoAd) {
-        // Go to home page when splash is finished.
-        Navigator.of(context, nullOk: true)?.pushReplacementNamed('/');
+        if(this.mounted) {
+          // Go to home page when splash is finished.
+          Navigator.of(context, nullOk: true)?.pushReplacementNamed('/');
+        }
       }
     }).showAd());
     Future.delayed(Duration(seconds: 5), () {
       // If ad is not loaded in 5 seconds, give up this chance.
-      if(!adLoaded) {
+      if(!adLoaded && this.mounted) {
         Navigator.of(context, nullOk: true)?.pushReplacementNamed('/');
       }
     });
