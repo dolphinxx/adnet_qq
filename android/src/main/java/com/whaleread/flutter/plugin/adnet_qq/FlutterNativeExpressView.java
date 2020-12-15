@@ -31,6 +31,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
     private NativeExpressADView nativeExpressADView;
     private final MethodChannel methodChannel;
     private final FrameLayout container;
+    private boolean layoutNotified = false;
 
     private final String posId;
     private int count = 5;
@@ -122,6 +123,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
 
     @Override
     public void dispose() {
+        layoutNotified = false;
         methodChannel.setMethodCallHandler(null);
         // 使用完了每一个NativeExpressADView之后都要释放掉资源
         if (nativeExpressADView != null) {
@@ -131,9 +133,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
     }
 
     private void refreshAd() {
-        /*
-         *  如果选择支持视频的模版样式，请使用{@link Constants#NativeExpressSupportVideoPosID}
-         */
+        layoutNotified = false;
         nativeExpressAD = new NativeExpressAD(AdnetQqPlugin.getActivity(), new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT), posId, this); // 这里的Context必须为Activity
         VideoOption.Builder videoOptionBuilder = new VideoOption.Builder();
         if(autoPlayPolicy != null) {
@@ -177,15 +177,17 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
                     View.MeasureSpec.makeMeasureSpec(0,
                             View.MeasureSpec.UNSPECIFIED));
 
-            final int targetWidth = container.getMeasuredWidth();
-            final int targetHeight = container.getMeasuredHeight();
             float density = displayMetrics.density;
-//            Log.d("-------", targetWidth + "," + targetHeight + "," + density);
-
+            final float width = container.getMeasuredWidth()/density;
+            final float height = container.getMeasuredHeight()/density;
+            if(height < 10 || layoutNotified) {
+                return;
+            }
             Map<String, Object> params = new HashMap<>();
-            params.put("width", targetWidth/density);
-            params.put("height", targetHeight/density);
+            params.put("width", width);
+            params.put("height", height);
             methodChannel.invokeMethod("onLayout", params);
+            layoutNotified = true;
         }
     }
 
