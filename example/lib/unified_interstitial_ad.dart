@@ -15,12 +15,12 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
   UnifiedInterstitialAd _ad;
   UnifiedInterstitialAd _fullScreenAd;
   List<String> events = List();
+  bool _adLoaded;
+  bool _fullScreenAdLoaded;
 
   @override
   void initState() {
     super.initState();
-    _ad = UnifiedInterstitialAd(widget.posId, adEventCallback: _adEventCallback);
-    _fullScreenAd = UnifiedInterstitialAd(widget.fullScreenPosId, adEventCallback: _adEventCallback);
   }
 
   @override
@@ -32,36 +32,61 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
           Row(
             children: <Widget>[
               RaisedButton(
-                onPressed: () => _ad.loadAd(),
-                child: Text('加载广告'),
+                onPressed: () {
+                  if(_ad == null) {
+                    _ad = UnifiedInterstitialAd(widget.posId, adEventCallback: _adEventCallback);
+                  }
+                  _ad.loadAd();
+                },
+                child: Text('加载普通'),
               ),
               RaisedButton(
-                onPressed: () => _ad.closeAd(),
-                child: Text('关闭广告'),
+                onPressed: () {
+                  if(_fullScreenAd == null) {
+                    _fullScreenAd = UnifiedInterstitialAd(widget.fullScreenPosId, adEventCallback: _fullScreenAdEventCallback);
+                  }
+                  _fullScreenAd.loadFullScreenAd();
+                },
+                child: Text('加载全屏'),
               ),
             ],
           ),
           Row(
             children: <Widget>[
               RaisedButton(
-                onPressed: () => _ad.showAd(),
+                onPressed: _adLoaded == true ? () => _ad.showAd() : null,
                 child: Text('显示广告'),
               ),
               RaisedButton(
-                onPressed: () => _ad.showAdAsPopup(),
+                onPressed: _adLoaded == true ? () => _ad.showAdAsPopup() : null,
                 child: Text('弹出广告'),
+              ),
+              RaisedButton(
+                onPressed: _fullScreenAdLoaded == true ? () => _fullScreenAd.showFullScreenAd() : null,
+                child: Text('弹出全屏'),
               ),
             ],
           ),
           Row(
             children: <Widget>[
               RaisedButton(
-                onPressed: () => _fullScreenAd.loadFullScreenAd(),
-                child: Text('加载全屏'),
-              ),
-              RaisedButton(
-                onPressed: () => _fullScreenAd.showFullScreenAd(),
-                child: Text('显示全屏'),
+                onPressed: () {
+                  if(_adLoaded == true) {
+                    _ad.closeAd();
+                    _adLoaded = false;
+                    _ad = null;
+                  }
+                  if(_fullScreenAdLoaded == true) {
+                    _fullScreenAd.closeAd();
+                    _fullScreenAdLoaded = false;
+                    _fullScreenAd = null;
+                  }
+                  if(this.mounted) {
+                    this.setState(() {
+                    });
+                  }
+                },
+                child: Text('关闭广告'),
               ),
             ],
           ),
@@ -89,7 +114,22 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
   void _adEventCallback(UnifiedInterstitialAdEvent event, dynamic params) {
     events.insert(0, '${event.toString().split('.')[1]} ${params??""}');
     if(event == UnifiedInterstitialAdEvent.onAdReceived) {
-      _ad.showAd();
+      _adLoaded = true;
+    } else if(event == UnifiedInterstitialAdEvent.onAdClosed) {
+      _adLoaded = false;
+    }
+    if(this.mounted) {
+      this.setState(() {
+      });
+    }
+  }
+
+  void _fullScreenAdEventCallback(UnifiedInterstitialAdEvent event, dynamic params) {
+    events.insert(0, '${event.toString().split('.')[1]} ${params??""}');
+    if(event == UnifiedInterstitialAdEvent.onAdReceived) {
+      _fullScreenAdLoaded = true;
+    } else if(event == UnifiedInterstitialAdEvent.onAdClosed) {
+      _fullScreenAdLoaded = false;
     }
     if(this.mounted) {
       this.setState(() {
