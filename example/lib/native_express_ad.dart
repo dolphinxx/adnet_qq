@@ -91,7 +91,6 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
   void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
     events.insert(0, '${event.toString().split('.')[1]} ${arguments??""}');
     if(event == NativeExpressAdEvent.onLayout) {
-      // 根据选择的广告位模板尺寸计算，这里是1280x720
       adHeight = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
     } else if(event == NativeExpressAdEvent.onAdClosed) {
       // remove ad widget

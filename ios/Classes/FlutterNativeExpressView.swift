@@ -14,6 +14,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     private let container: UIView
     private var adv: GDTNativeExpressAdView?
     private var ad: GDTNativeExpressAd?
+    private var layoutNotified: Bool = false
     private let count: Int
     private var minVideoDuration:Int?
     private var maxVideoDuration:Int?
@@ -21,9 +22,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     private var detailPageVideoMuted:Bool?
     // iOS only
     private var videoAutoPlayOnWWAN:Bool?
-    
-    
-    
+
     init(frame: CGRect, viewId: Int64, args: [String: Any], messeneger: FlutterBinaryMessenger) {
         self.viewId = viewId
         self.posId = args["posId"] as! String
@@ -61,11 +60,13 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     }
 
     public func dispose() {
+        layoutNotified = false
         if let adv = adv {
             adv.removeFromSuperview();
             ad?.delegate = nil;
             self.adv = nil;
         }
+        container.removeFromSuperview()
     }
 
     public func refreshAd() {
@@ -73,7 +74,13 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
         guard let keyWindow = UIApplication.shared.keyWindow else {
             return
         }
-        self.ad = GDTNativeExpressAd(placementId: posId, adSize: CGSize(width: keyWindow.frame.size.width, height: -2))
+        if let adv = adv {
+            adv.removeFromSuperview();
+            ad?.delegate = nil;
+            self.adv = nil;
+        }
+        layoutNotified = false
+        self.ad = GDTNativeExpressAd(placementId: posId, adSize: CGSize(width: keyWindow.frame.size.width, height: 0))
         if let maxVideoDuration = maxVideoDuration {
             ad?.maxVideoDuration = maxVideoDuration
         }
@@ -136,13 +143,13 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     public func nativeExpressAdViewRenderSuccess(_ nativeExpressAdView:GDTNativeExpressAdView){
 //        print("onRenderSuccess")
         channel.invokeMethod("onRenderSuccess", arguments:nil)
-        var params:[String:Any] = [:]
-        guard let adv = adv else {
-            return
+        // 立即获取height会拿到0（虽然官方文档说已经完成更新），需要延时之后获取
+        DispatchQueue.main.asyncAfter(deadline: .now() - 0.1) {[weak self] in
+            if let adv = self?.adv,adv.bounds.size.height > 0 {
+                self?.layoutNotified = true
+                self?.channel.invokeMethod("onLayout", arguments:["width":adv.bounds.size.width, "height": adv.bounds.size.height])
+            }
         }
-        params["width"] = adv.bounds.size.width
-        params["height"] = adv.bounds.size.height
-        channel.invokeMethod("onLayout", arguments:params)
     }
 
     /**
@@ -159,6 +166,10 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     public func nativeExpressAdViewExposure(_ nativeExpressAdView:GDTNativeExpressAdView){
 //        print("onAdExposure")
         channel.invokeMethod("onAdExposure", arguments:nil)
+        // 因为在nativeExpressAdViewRenderSuccess回调中height可能还未更新（虽然文档说已经更新），所以需要在此回调中再次尝试发送onLayout
+        if !layoutNotified,let adv = adv,adv.bounds.size.height > 0 {
+            channel.invokeMethod("onLayout", arguments:["width":adv.bounds.size.width, "height": adv.bounds.size.height])
+        }
     }
 
     /**

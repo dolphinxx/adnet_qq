@@ -220,6 +220,14 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
     if(widget.adEventCallback != null) {
       widget.adEventCallback(event, arguments);
     }
+    if(event == NativeExpressAdEvent.onAdClosed) {
+      if(this.mounted) {
+        this.setState(() {
+          _height = widget.loadingHeight??0;
+        });
+      }
+      return;
+    }
     if(event == NativeExpressAdEvent.onLayout && this.mounted) {
       if(arguments['width'] > 0 && arguments['height'] > 0) {
         this.setState(() {
