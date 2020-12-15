@@ -47,7 +47,7 @@ public class SplashAd implements SplashADListener {
         }
         this.methodChannel = new MethodChannel(messenger, PluginSettings.PLUGIN_ID + "/splash" );
         this.posId = posId;
-        this.fetchDelay = fetchDelay == null ? 3 : fetchDelay;
+        this.fetchDelay = fetchDelay == null ? 3000 : fetchDelay;
         container = new FrameLayout(context);
         if(backgroundColor != null) {
             container.setBackgroundColor(backgroundColor);
