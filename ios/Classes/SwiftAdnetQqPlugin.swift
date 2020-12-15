@@ -39,11 +39,12 @@ public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
             return
         }
         let backgroundImage = args["backgroundImage"] as? String
+        let backgroundColor = args["backgroundColor"] as? Int
         let fetchDelay = args["fetchDelay"] as? CGFloat
         if let splashAd = splashAd {
             splashAd.close()
         }
-        splashAd = FlutterSplashView.init(posId, backgroundImage: backgroundImage, fetchDelay: fetchDelay, messenger: pluginRegistrar.messenger())
+        splashAd = FlutterSplashView.init(posId, backgroundImage: backgroundImage, backgroundColor: backgroundColor, fetchDelay: fetchDelay, messenger: pluginRegistrar.messenger())
         splashAd?.show()
         result(true)
     case "closeSplash":

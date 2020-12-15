@@ -32,10 +32,19 @@ typedef SplashAdEventCallback = Function(SplashAdEvent event, dynamic arguments)
 class SplashAd {
   final String posId;
 
-  /// splash background image, white if not specified.
+  /// splash container's background image.
   ///
+  /// for android, it is the resource identifier(`packageName:resourcesName[-configQualifier]/fileNameWithoutExtension`)
   ///
+  /// for iOS, it is the name of an assets
   final String backgroundImage;
+
+  /// splash container's background color.
+  ///
+  /// It's an integer representing the color in the default sRGB color space, same as the `Color` in flutter. Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue.
+  ///
+  ///
+  final int backgroundColor;
 
   final int fetchDelay;
 
@@ -43,7 +52,7 @@ class SplashAd {
 
   MethodChannel _methodChannel;
 
-  SplashAd(this.posId, {this.backgroundImage, this.fetchDelay, this.adEventCallback}) {
+  SplashAd(this.posId, {this.backgroundImage, this.backgroundColor, this.fetchDelay, this.adEventCallback}) {
     this._methodChannel = MethodChannel('$PLUGIN_ID/splash');
     this._methodChannel.setMethodCallHandler(_handleMethodCall);
   }
@@ -102,7 +111,7 @@ class SplashAd {
   }
 
   Future<void> showAd() async {
-    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'fetchDelay': fetchDelay});
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'backgroundColor': backgroundColor, 'fetchDelay': fetchDelay});
   }
 
   Future<void> closeAd() async {

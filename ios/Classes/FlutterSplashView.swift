@@ -12,11 +12,13 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
     private let posId: String
     private let channel: FlutterMethodChannel
     private var backgroundImage:String?
+    private var backgroundColor:Int?
     private var fetchDelay:CGFloat
 
-    init(_ posId: String, backgroundImage: String?, fetchDelay:CGFloat?, messenger: FlutterBinaryMessenger) {
+    init(_ posId: String, backgroundImage: String?, backgroundColor: Int?, fetchDelay:CGFloat?, messenger: FlutterBinaryMessenger) {
         self.posId = posId
         self.backgroundImage = backgroundImage
+        self.backgroundColor = backgroundColor
         self.fetchDelay = fetchDelay ?? 3
         self.channel = FlutterMethodChannel(name: SPLASH_VIEW_ID, binaryMessenger: messenger)
         super.init()
@@ -30,6 +32,13 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
         splash = GDTSplashAd.init(placementId: posId)
         if let backgroundImage = self.backgroundImage {
             splash?.backgroundImage = UIImage.init(named: backgroundImage)
+        }
+        if let backgroundColor = backgroundColor {
+            let iBlue = backgroundColor & 0xFF
+                    let iGreen =  (backgroundColor >> 8) & 0xFF
+                    let iRed =  (backgroundColor >> 16) & 0xFF
+                    let iAlpha =  (backgroundColor >> 24) & 0xFF
+            splash?.backgroundColor = UIColor.init(red: CGFloat(iRed)/255, green: CGFloat(iGreen)/255, blue: CGFloat(iBlue)/255, alpha: CGFloat(iAlpha)/255)
         }
         splash?.delegate = self
         splash?.fetchDelay = self.fetchDelay
