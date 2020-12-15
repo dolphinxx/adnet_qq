@@ -19,7 +19,7 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
         self.posId = posId
         self.backgroundImage = backgroundImage
         self.backgroundColor = backgroundColor
-        self.fetchDelay = fetchDelay ?? 3
+        self.fetchDelay = fetchDelay ?? 3000
         self.channel = FlutterMethodChannel(name: SPLASH_VIEW_ID, binaryMessenger: messenger)
         super.init()
     }
