@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +41,7 @@ public class SplashAd implements SplashADListener {
 //    private long fetchSplashADTime = 0;
 //    private Handler handler = new Handler(Looper.getMainLooper());
 
-    public SplashAd(Context context, BinaryMessenger messenger, String posId, String backgroundImage, Integer fetchDelay) {
+    public SplashAd(Context context, BinaryMessenger messenger, String posId, String backgroundImage, Integer backgroundColor, Integer fetchDelay) {
         if(PluginSettings.APP_ID == null) {
             throw new IllegalStateException("App Id must be configured before creating ad view");
         }
@@ -50,7 +49,9 @@ public class SplashAd implements SplashADListener {
         this.posId = posId;
         this.fetchDelay = fetchDelay == null ? 3 : fetchDelay;
         container = new FrameLayout(context);
-        container.setBackgroundColor(Color.WHITE);
+        if(backgroundColor != null) {
+            container.setBackgroundColor(backgroundColor);
+        }
         Activity activity = AdnetQqPlugin.getActivity();
         if(backgroundImage != null) {
             try

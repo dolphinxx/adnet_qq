@@ -158,11 +158,15 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
         if(((Map)call.arguments).get("backgroundImage") != null) {
           backgroundImage = (String)((Map)call.arguments).get("backgroundImage");
         }
+        Integer backgroundColor = null;
+        if(((Map)call.arguments).get("backgroundColor") != null) {
+          backgroundColor = (Integer)((Map)call.arguments).get("backgroundColor");
+        }
         Integer fetchDelay = (Integer)((Map)call.arguments).get("fetchDelay");
         if(splashAd != null) {
           splashAd.close();
         }
-        splashAd = new SplashAd(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), posId, backgroundImage, fetchDelay);
+        splashAd = new SplashAd(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), posId, backgroundImage, backgroundColor, fetchDelay);
         splashAd.show();
         break;
       }
