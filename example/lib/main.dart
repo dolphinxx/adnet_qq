@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:adnet_qq/adnet_qq.dart';
@@ -18,7 +17,7 @@ Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
   'unifiedInterstitialPosId': '1050652855580392',
   'unifiedInterstitialFullScreenPosId': '1050652855580392',
   'splashPosId': '9040714184494018',
-  'splashBackgroundImage': 'LaunchImage'
+  'splashBackgroundImage': 'SplashImage'
 } : {
   'appId': '1101152570',
   'unifiedBannerPosId': '4080052898050840',
@@ -33,7 +32,7 @@ Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    AdnetQqPlugin.config(appId: config['appId'], requestReadPhoneState: 0, requestAccessFineLocation: 0, adChannel: 1).then((_) => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage']).showAd());
+    AdnetQqPlugin.config(appId: config['appId'], requestReadPhoneState: 0, requestAccessFineLocation: 0, adChannel: 1).then((_) => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage'],).showAd());
   } on PlatformException {
   }
   runApp(MyApp());
@@ -103,7 +102,11 @@ class _MyAppState extends State<MyApp> {
               ),
               RaisedButton(
                 onPressed: () => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage'], adEventCallback: _splashAdEventCallback).showAd(),
-                child: Text('开屏'),
+                child: Text('开屏+背景图'),
+              ),
+              RaisedButton(
+                onPressed: () => SplashAd(config['splashPosId'], backgroundColor: Colors.pink.value, adEventCallback: _splashAdEventCallback).showAd(),
+                child: Text('开屏+背景色'),
               ),
               Expanded(
                 child: ListView.builder(
