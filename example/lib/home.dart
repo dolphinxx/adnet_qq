@@ -33,19 +33,19 @@ class _HomeWidgetState extends State<HomeWidget> {
             ),
             RaisedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return NativeExpressAdDemo(config['nativeExpressPosId']);
+                return NativeExpressAdDemo();
               })),
               child: Text('原生模板'),
             ),
             RaisedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return NativeExpressAdWidgetDemo(config['nativeExpressPosId2']);
+                return NativeExpressAdWidgetDemo();
               })),
               child: Text('原生模板 widget'),
             ),
             RaisedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return UnifiedInterstitialAdDemo(config['unifiedInterstitialPosId'], config['unifiedInterstitialFullScreenPosId']);
+                return UnifiedInterstitialAdDemo();
               })),
               child: Text('插屏2.0'),
             ),

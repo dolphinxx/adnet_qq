@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Banner;
 import 'package:adnet_qq/adnet_qq.dart';
+import 'config.dart';
 
 class NativeExpressAdWidgetDemo extends StatefulWidget {
-  final String posId;
-
-  NativeExpressAdWidgetDemo(this.posId);
+  NativeExpressAdWidgetDemo();
 
   @override
   NativeExpressAdWidgetDemoState createState() => NativeExpressAdWidgetDemoState();
@@ -16,9 +16,12 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
   GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
   List<String> events = List();
 
+  String posId;
+
   @override
   void initState() {
     super.initState();
+    posId = config['nativeExpressPosId'].first;
   }
 
   @override
@@ -57,7 +60,7 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
             children: <Widget>[
               Text('广告位ID：'),
               Expanded(
-                child: Text(widget.posId,),
+                child: Text(posId),
               ),
             ],
           ),
@@ -66,7 +69,7 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
             color: Colors.deepOrange,
           ),
           Divider(),
-          NativeExpressAdWidget(widget.posId, adKey: _adKey, adEventCallback: _adEventCallback,),
+          NativeExpressAdWidget(posId, adKey: _adKey, adEventCallback: _adEventCallback,),
           Divider(),
           Container(
             height: 30,

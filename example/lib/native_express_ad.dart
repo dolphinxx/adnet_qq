@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Banner;
 import 'package:adnet_qq/adnet_qq.dart';
+import 'config.dart';
 
 class NativeExpressAdDemo extends StatefulWidget {
-  final String posId;
-
-  NativeExpressAdDemo(this.posId);
+  NativeExpressAdDemo();
 
   @override
   NativeExpressAdDemoState createState() => NativeExpressAdDemoState();
@@ -16,9 +16,13 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
   GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
   List<String> events = List();
 
+  String posId;
+  List<String> posIds = config['nativeExpressPosId'];
+
   @override
   void initState() {
     super.initState();
+    posId = posIds.first;
   }
 
   @override
@@ -57,7 +61,20 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
             children: <Widget>[
               Text('广告位ID：'),
               Expanded(
-                child: Text(widget.posId,),
+                child: CupertinoPicker(
+                  itemExtent: 42,
+                  onSelectedItemChanged: (index) {
+                    posId = posIds[index];
+                    _adKey.currentState?.closeAd();
+                    adHeight = null;
+                    _adKey = GlobalKey();
+                    if(this.mounted) {
+                      this.setState(() {
+                      });
+                    }
+                  },
+                  children: posIds.map((_) => ListTile(title: Text(_),)).toList(),
+                ),
               ),
             ],
           ),
@@ -68,7 +85,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
           adRemoved ? Container() : Divider(),
           adRemoved ? Container() : Container(
             height: adHeight == null ? 1 : adHeight,
-            child: NativeExpressAd(widget.posId, key: _adKey, requestCount: 5, adEventCallback: _adEventCallback,refreshOnCreate: true),
+            child: NativeExpressAd(posId, key: _adKey, requestCount: 5, adEventCallback: _adEventCallback,refreshOnCreate: true),
           ),
           Divider(),
           Container(

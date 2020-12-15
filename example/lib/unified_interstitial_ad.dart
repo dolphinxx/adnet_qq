@@ -1,11 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Banner;
 import 'package:adnet_qq/adnet_qq.dart';
+import 'config.dart';
 
 class UnifiedInterstitialAdDemo extends StatefulWidget {
-  final String posId;
-  final String fullScreenPosId;
-
-  UnifiedInterstitialAdDemo(this.posId, this.fullScreenPosId);
+  UnifiedInterstitialAdDemo();
 
   @override
   UnifiedInterstitialAdDemoState createState() => UnifiedInterstitialAdDemoState();
@@ -13,14 +12,16 @@ class UnifiedInterstitialAdDemo extends StatefulWidget {
 
 class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
   UnifiedInterstitialAd _ad;
-  UnifiedInterstitialAd _fullScreenAd;
   List<String> events = List();
   bool _adLoaded;
-  bool _fullScreenAdLoaded;
+  bool isFullScreen = false;
+  String posId;
+  List<String> posIds = config['unifiedInterstitialPosId'];
 
   @override
   void initState() {
     super.initState();
+    posId = posIds.first;
   }
 
   @override
@@ -33,19 +34,23 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
-                  if(_ad == null) {
-                    _ad = UnifiedInterstitialAd(widget.posId, adEventCallback: _adEventCallback);
+                  if(_ad != null) {
+                    _ad.closeAd();
                   }
+                  isFullScreen = false;
+                  _ad = UnifiedInterstitialAd(posId, adEventCallback: _adEventCallback);
                   _ad.loadAd();
                 },
                 child: Text('加载普通'),
               ),
               RaisedButton(
                 onPressed: () {
-                  if(_fullScreenAd == null) {
-                    _fullScreenAd = UnifiedInterstitialAd(widget.fullScreenPosId, adEventCallback: _fullScreenAdEventCallback);
+                  if(_ad != null) {
+                    _ad.closeAd();
                   }
-                  _fullScreenAd.loadFullScreenAd();
+                  isFullScreen = true;
+                  _ad = UnifiedInterstitialAd(posId, adEventCallback: _adEventCallback);
+                  _ad.loadFullScreenAd();
                 },
                 child: Text('加载全屏'),
               ),
@@ -54,15 +59,15 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
           Row(
             children: <Widget>[
               RaisedButton(
-                onPressed: _adLoaded == true ? () => _ad.showAd() : null,
+                onPressed: _adLoaded == true && !isFullScreen ? () => _ad.showAd() : null,
                 child: Text('显示广告'),
               ),
               RaisedButton(
-                onPressed: _adLoaded == true ? () => _ad.showAdAsPopup() : null,
+                onPressed: _adLoaded == true && !isFullScreen ? () => _ad.showAdAsPopup() : null,
                 child: Text('弹出广告'),
               ),
               RaisedButton(
-                onPressed: _fullScreenAdLoaded == true ? () => _fullScreenAd.showFullScreenAd() : null,
+                onPressed: _adLoaded == true && isFullScreen ? () => _ad.showFullScreenAd() : null,
                 child: Text('弹出全屏'),
               ),
             ],
@@ -75,11 +80,6 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
                     _ad.closeAd();
                     _adLoaded = false;
                     _ad = null;
-                  }
-                  if(_fullScreenAdLoaded == true) {
-                    _fullScreenAd.closeAd();
-                    _fullScreenAdLoaded = false;
-                    _fullScreenAd = null;
                   }
                   if(this.mounted) {
                     this.setState(() {
@@ -94,7 +94,13 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
             children: <Widget>[
               Text('广告位ID：'),
               Expanded(
-                child: Text(widget.posId,),
+                child: CupertinoPicker(
+                  itemExtent: 42,
+                  onSelectedItemChanged: (index) {
+                    posId = posIds[index];
+                  },
+                  children: posIds.map((_) => ListTile(title: Text(_),)).toList(),
+                ),
               ),
             ],
           ),
@@ -117,19 +123,7 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
       _adLoaded = true;
     } else if(event == UnifiedInterstitialAdEvent.onAdClosed) {
       _adLoaded = false;
-    }
-    if(this.mounted) {
-      this.setState(() {
-      });
-    }
-  }
-
-  void _fullScreenAdEventCallback(UnifiedInterstitialAdEvent event, dynamic params) {
-    events.insert(0, '${event.toString().split('.')[1]} ${params??""}');
-    if(event == UnifiedInterstitialAdEvent.onAdReceived) {
-      _fullScreenAdLoaded = true;
-    } else if(event == UnifiedInterstitialAdEvent.onAdClosed) {
-      _fullScreenAdLoaded = false;
+      _ad = null;
     }
     if(this.mounted) {
       this.setState(() {
