@@ -12,6 +12,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.qq.e.comm.managers.GDTADManager;
 
 import java.text.SimpleDateFormat;
@@ -31,7 +33,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-//import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformViewRegistry;
 
 /** AdnetQqPlugin */
@@ -40,13 +41,15 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
   private static AdnetQqPlugin instance;
   private static final Map<String, FlutterUnifiedInterstitial> unifiedInterstitialMap = new HashMap<>();
 
+  private BinaryMessenger messenger;
+  private Context applicationContext;
+  private MethodChannel channel;
+
   private SplashAd splashAd;
   private List<String> lackedPermission;
   private int requestReadPhoneState;
   private int requestAccessFineLocation;
   private Activity activity;
-  private FlutterPluginBinding flutterPluginBinding;
-  private static PluginRegistry.Registrar registrar;
 
   private int _requestCode;
 
@@ -58,34 +61,33 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
     instance = this;
   }
 
-  private void init(Context applicationContext, BinaryMessenger messenger, PlatformViewRegistry platformViewRegistry) {
-//    AdnetQqPlugin.instance = new AdnetQqPlugin();
-    final MethodChannel channel = new MethodChannel(messenger, PluginSettings.PLUGIN_ID);
-    channel.setMethodCallHandler(instance);
-    platformViewRegistry.registerViewFactory(PluginSettings.UNIFIED_BANNER_VIEW_ID, new FlutterUnifiedBannerViewFactory(messenger));
-    platformViewRegistry.registerViewFactory(PluginSettings.NATIVE_EXPRESS_VIEW_ID, new FlutterNativeExpressViewFactory(messenger));
+  public static void registerWith(PluginRegistry.Registrar registrar) {
+    final AdnetQqPlugin instance = new AdnetQqPlugin();
+    instance.onAttachedToEngine(registrar.context(), registrar.messenger(), registrar.platformViewRegistry());
   }
-
-//  /** Plugin registration. */
-//  public static void registerWith(PluginRegistry.Registrar registrar) {
-//    AdnetQqPlugin.registrar = registrar;
-//    final AdnetQqPlugin instance = new AdnetQqPlugin();
-//    instance.init(registrar.context(), registrar.messenger(), registrar.platformViewRegistry());
-//  }
 
   static void removeInterstitial(String posId) {
     unifiedInterstitialMap.remove(posId);
   }
 
-  @Override
-  public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
-    this.flutterPluginBinding = flutterPluginBinding;
-    init(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getPlatformViewRegistry());
+  private void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger, PlatformViewRegistry platformViewRegistry) {
+    this.messenger = messenger;
+    this.applicationContext = applicationContext;
+    this.channel = new MethodChannel(messenger, PluginSettings.PLUGIN_ID);
+    this.channel.setMethodCallHandler(instance);
+    platformViewRegistry.registerViewFactory(PluginSettings.UNIFIED_BANNER_VIEW_ID, new FlutterUnifiedBannerViewFactory(messenger));
+    platformViewRegistry.registerViewFactory(PluginSettings.NATIVE_EXPRESS_VIEW_ID, new FlutterNativeExpressViewFactory(messenger));
   }
 
   @Override
-  public void onDetachedFromEngine(FlutterPluginBinding flutterPluginBinding) {
+  public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
+    this.onAttachedToEngine(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getPlatformViewRegistry());
+  }
 
+  @Override
+  public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    this.channel.setMethodCallHandler(null);
+    this.channel = null;
   }
 
   @Override
@@ -110,8 +112,9 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
     this.activity = null;
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
-  public void onMethodCall(MethodCall call, @SuppressWarnings("NullableProblems") Result result) {
+  public void onMethodCall(@NonNull MethodCall call, @NonNull  Result result) {
     switch(call.method) {
       case "config":
         Map arguments = (Map) call.arguments;
@@ -145,10 +148,9 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
           return;
         }
         if(unifiedInterstitialMap.containsKey(posId)) {
-          //noinspection ConstantConditions
           unifiedInterstitialMap.get(posId).closeAd();
         }
-        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, flutterPluginBinding.getBinaryMessenger(), (Map)call.arguments));
+        unifiedInterstitialMap.put(posId, new FlutterUnifiedInterstitial(posId, messenger, (Map)call.arguments));
         result.success(true);
         break;
       }
@@ -166,7 +168,7 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
         if(splashAd != null) {
           splashAd.close();
         }
-        splashAd = new SplashAd(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger(), posId, backgroundImage, backgroundColor, fetchDelay);
+        splashAd = new SplashAd(applicationContext, messenger, posId, backgroundImage, backgroundColor, fetchDelay);
         splashAd.show();
         break;
       }
