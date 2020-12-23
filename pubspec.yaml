@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  characters: ^1.1.0-nullsafety.5
 
 dev_dependencies:
   flutter_test:
