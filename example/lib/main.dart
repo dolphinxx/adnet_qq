@@ -2,11 +2,7 @@ import 'package:adnet_qq_example/home.dart';
 import 'package:adnet_qq_example/splash_ad.dart';
 import 'package:flutter/material.dart';
 
-
-import 'package:flutter/services.dart';
-import 'package:adnet_qq/adnet_qq.dart';
 import 'darkness.dart';
-import 'config.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     darknessNotifier.addListener(() {
-      if(this.mounted) {
+      if(mounted) {
         setState(() {
           _themeMode = darknessNotifier.value;
         });

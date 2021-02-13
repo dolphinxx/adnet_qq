@@ -12,7 +12,7 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  List<String> splashEvents = List();
+  List<String> splashEvents = [];
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +77,8 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   void _splashAdEventCallback(SplashAdEvent event, dynamic arguments) async {
     splashEvents.insert(0, '${event.toString().split('.')[1]} ${arguments??""}');
-    if(this.mounted) {
-      this.setState(() {
-      });
+    if(mounted) {
+      setState(() {});
     }
   }
 }

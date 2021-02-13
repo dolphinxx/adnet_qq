@@ -53,8 +53,8 @@ class SplashAd {
   MethodChannel _methodChannel;
 
   SplashAd(this.posId, {this.backgroundImage, this.backgroundColor, this.fetchDelay, this.adEventCallback}) {
-    this._methodChannel = MethodChannel('$PLUGIN_ID/splash');
-    this._methodChannel.setMethodCallHandler(_handleMethodCall);
+    _methodChannel = MethodChannel('$PLUGIN_ID/splash');
+    _methodChannel.setMethodCallHandler(_handleMethodCall);
   }
 
   Future<void> _handleMethodCall(MethodCall call) async {

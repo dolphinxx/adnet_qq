@@ -45,8 +45,8 @@ class UnifiedInterstitialAd {
   MethodChannel _methodChannel;
 
   UnifiedInterstitialAd(this.posId, {this.videoOptions, this.adEventCallback}) {
-    this._methodChannel = MethodChannel('$PLUGIN_ID/unified_interstitial_$posId');
-    this._methodChannel.setMethodCallHandler(_handleMethodCall);
+    _methodChannel = MethodChannel('$PLUGIN_ID/unified_interstitial_$posId');
+    _methodChannel.setMethodCallHandler(_handleMethodCall);
     AdnetQqPlugin.createUnifiedInterstitialAd(posId: posId, videoOptions: videoOptions);
   }
 

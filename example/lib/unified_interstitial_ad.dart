@@ -12,7 +12,7 @@ class UnifiedInterstitialAdDemo extends StatefulWidget {
 
 class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
   UnifiedInterstitialAd _ad;
-  List<String> events = List();
+  List<String> events = [];
   bool _adLoaded;
   bool isFullScreen = false;
   String posId;
@@ -81,9 +81,8 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
                     _adLoaded = false;
                     _ad = null;
                   }
-                  if(this.mounted) {
-                    this.setState(() {
-                    });
+                  if(mounted) {
+                    setState(() {});
                   }
                 },
                 child: Text('关闭广告'),
@@ -125,9 +124,8 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
       _adLoaded = false;
       _ad = null;
     }
-    if(this.mounted) {
-      this.setState(() {
-      });
+    if(mounted) {
+      setState(() {});
     }
   }
 }

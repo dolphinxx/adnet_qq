@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:adnet_qq/adnet_qq.dart';
 
@@ -21,7 +20,7 @@ class _SplashWidgetState extends State<SplashWidget> {
         return;
       }
       if(event == SplashAdEvent.onAdClosed || event == SplashAdEvent.onAdDismiss || event == SplashAdEvent.onNoAd) {
-        if(this.mounted) {
+        if(mounted) {
           // Go to home page when splash is finished.
           Navigator.of(context, nullOk: true)?.pushReplacementNamed('/');
         }
@@ -29,7 +28,7 @@ class _SplashWidgetState extends State<SplashWidget> {
     }).showAd());
     Future.delayed(Duration(seconds: 5), () {
       // If ad is not loaded in 5 seconds, give up this chance.
-      if(!adLoaded && this.mounted) {
+      if(!adLoaded && mounted) {
         Navigator.of(context, nullOk: true)?.pushReplacementNamed('/');
       }
     });

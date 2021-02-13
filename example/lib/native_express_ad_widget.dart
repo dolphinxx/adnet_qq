@@ -13,8 +13,8 @@ class NativeExpressAdWidgetDemo extends StatefulWidget {
 class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
   double adHeight;
   bool adRemoved = false;
-  GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
-  List<String> events = List();
+  final GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
+  List<String> events = [];
 
   String posId;
 
@@ -45,8 +45,8 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
               RaisedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
-                  if(this.mounted) {
-                    this.setState(() {
+                  if(mounted) {
+                    setState(() {
                       adRemoved = true;
                       adHeight = null;
                     });
@@ -90,9 +90,8 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
 
   void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
     events.insert(0, '${event.toString().split('.')[1]} ${arguments??""}');
-    if(this.mounted) {
-      this.setState(() {
-      });
+    if(mounted) {
+      setState(() {});
     }
   }
 }

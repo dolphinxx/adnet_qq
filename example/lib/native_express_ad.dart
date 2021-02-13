@@ -14,7 +14,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
   double adHeight;
   bool adRemoved = false;
   GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
-  List<String> events = List();
+  List<String> events = [];
 
   String posId;
   List<String> posIds = config['nativeExpressPosId'];
@@ -46,8 +46,8 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
               RaisedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
-                  if(this.mounted) {
-                    this.setState(() {
+                  if(mounted) {
+                    setState(() {
                       adRemoved = true;
                       adHeight = null;
                     });
@@ -68,9 +68,8 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
                     _adKey.currentState?.closeAd();
                     adHeight = null;
                     _adKey = GlobalKey();
-                    if(this.mounted) {
-                      this.setState(() {
-                      });
+                    if(mounted) {
+                      setState(() {});
                     }
                   },
                   children: posIds.map((_) => ListTile(title: Text(_),)).toList(),
@@ -84,7 +83,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
           ),
           adRemoved ? Container() : Divider(),
           adRemoved ? Container() : Container(
-            height: adHeight == null ? 1 : adHeight,
+            height: adHeight ?? 1,
             child: NativeExpressAd(posId, key: _adKey, requestCount: 5, adEventCallback: _adEventCallback,refreshOnCreate: true),
           ),
           Divider(),
@@ -113,9 +112,8 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
       // remove ad widget
       adRemoved = true;
     }
-    if(this.mounted) {
-      this.setState(() {
-      });
+    if(mounted) {
+      setState(() {});
     }
   }
 }

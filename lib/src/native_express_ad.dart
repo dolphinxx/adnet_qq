@@ -47,7 +47,7 @@ class NativeExpressAd extends StatefulWidget {
 
   final bool refreshOnCreate;
 
-  const NativeExpressAd(this.posId, {Key key, this.requestCount:5, this.adEventCallback, this.refreshOnCreate, this.videoOptions}) : super(key: key);
+  const NativeExpressAd(this.posId, {Key key, this.requestCount = 5, this.adEventCallback, this.refreshOnCreate, this.videoOptions}) : super(key: key);
 
   @override
   NativeExpressAdState createState() => NativeExpressAdState();
@@ -55,7 +55,7 @@ class NativeExpressAd extends StatefulWidget {
 
 class NativeExpressAdState extends State<NativeExpressAd> {
   MethodChannel _methodChannel;
-  UniqueKey _key = UniqueKey();
+  final UniqueKey _key = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +78,10 @@ class NativeExpressAdState extends State<NativeExpressAd> {
   }
 
   void _onPlatformViewCreated(int id) {
-    this._methodChannel = MethodChannel('$PLUGIN_ID/native_express_$id');
-    this._methodChannel.setMethodCallHandler(_handleMethodCall);
-    if(this.widget.refreshOnCreate == true) {
-      this.refreshAd();
+    _methodChannel = MethodChannel('$PLUGIN_ID/native_express_$id');
+    _methodChannel.setMethodCallHandler(_handleMethodCall);
+    if(widget.refreshOnCreate == true) {
+      refreshAd();
     }
   }
 
@@ -191,7 +191,7 @@ class NativeExpressAdWidget extends StatefulWidget {
   final double loadingHeight;
 
   /// [loadingHeight] should be above 0, otherwise the ad may not be loaded.
-  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight: 1.0}):adKey = adKey??GlobalKey();
+  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):adKey = adKey??GlobalKey();
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
@@ -222,16 +222,16 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
       widget.adEventCallback(event, arguments);
     }
     if(event == NativeExpressAdEvent.onAdClosed) {
-      if(this.mounted) {
-        this.setState(() {
+      if(mounted) {
+        setState(() {
           _height = widget.loadingHeight??0;
         });
       }
       return;
     }
-    if(event == NativeExpressAdEvent.onLayout && this.mounted) {
+    if(event == NativeExpressAdEvent.onLayout && mounted) {
       if(arguments['width'] > 0 && arguments['height'] > 0) {
-        this.setState(() {
+        setState(() {
           _height = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
         });
       }

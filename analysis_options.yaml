@@ -1,0 +1,6 @@
+include: package:pedantic/analysis_options.yaml
+
+analyzer:
+  exclude: [build/**,test/**,test_resources/**]
+  errors:
+    omit_local_variable_types: ignore

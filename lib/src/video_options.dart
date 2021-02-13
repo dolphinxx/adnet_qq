@@ -16,7 +16,7 @@ class AdVideoAndroidOptions {
   });
 
   Map getOptions() {
-    Map result = Map();
+    Map result = {};
     if(autoPlayPolicy != null) {
       result['autoPlayPolicy'] = autoPlayPolicy;
     }
@@ -68,7 +68,7 @@ class AdVideoOptions {
     if(_options != null) {
       return _options;
     }
-    Map result = Map();
+    Map result = {};
     if(minVideoDuration != null) {
       result['minVideoDuration'] = minVideoDuration;
     }
@@ -86,16 +86,12 @@ class AdVideoOptions {
   }
 
   Map getAndroidOptions() {
-    if(_androidOptions == null) {
-      _androidOptions = androidOptions?.getOptions() ?? {};
-    }
+    _androidOptions ??= androidOptions?.getOptions() ?? {};
     return _androidOptions;
   }
 
   Map getIOSOptions() {
-    if(_iOSOptions == null) {
-      _iOSOptions = iOSOptions?.getOptions() ?? {};
-    }
+    _iOSOptions ??= iOSOptions?.getOptions() ?? {};
     return _iOSOptions;
   }
 }

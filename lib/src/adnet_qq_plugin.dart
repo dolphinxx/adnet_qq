@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 
 class AdnetQqPlugin {
-  static const MethodChannel channel =
-      const MethodChannel(PLUGIN_ID);
+  static const MethodChannel channel = MethodChannel(PLUGIN_ID);
 
   static bool _initialized = false;
 
@@ -37,7 +36,7 @@ class AdnetQqPlugin {
   /// - 14	AppStore
   /// - 999	其他
   ///
-  static Future<bool> config({@required String appId, int requestReadPhoneState: 0, int requestAccessFineLocation: 0, int adChannel}) async {
+  static Future<bool> config({@required String appId, int requestReadPhoneState = 0, int requestAccessFineLocation = 0, int adChannel}) async {
     if(_initialized) {
       return true;
     }

@@ -43,10 +43,10 @@ class UnifiedBannerAd extends StatefulWidget {
 
 class UnifiedBannerAdState extends State<UnifiedBannerAd> {
   MethodChannel _methodChannel;
-  UniqueKey _key = UniqueKey();
+  final UniqueKey _key = UniqueKey();
   @override
   Widget build(BuildContext context) {
-    Map params = Map();
+    Map params = {};
     params['posId'] = widget.posId;
     if(widget.refreshInterval != null) {
       params['refreshInterval'] = widget.refreshInterval;
@@ -73,10 +73,10 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
   }
 
   void _onPlatformViewCreated(int id) {
-    this._methodChannel = MethodChannel('$PLUGIN_ID/unified_banner_$id');
-    this._methodChannel.setMethodCallHandler(_handleMethodCall);
-    if(this.widget.refreshOnCreate == true) {
-      this.refreshAd();
+    _methodChannel = MethodChannel('$PLUGIN_ID/unified_banner_$id');
+    _methodChannel.setMethodCallHandler(_handleMethodCall);
+    if(widget.refreshOnCreate == true) {
+      refreshAd();
     }
   }
 

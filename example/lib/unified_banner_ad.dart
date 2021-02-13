@@ -13,8 +13,8 @@ class UnifiedBannerAdDemo extends StatefulWidget {
 
 class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
   bool _adClosed = false;
-  GlobalKey<UnifiedBannerAdState> _adKey = GlobalKey();
-  List<String> events = List();
+  final GlobalKey<UnifiedBannerAdState> _adKey = GlobalKey();
+  List<String> events = [];
 
   @override
   void initState() {
@@ -36,8 +36,8 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
             children: <Widget>[
               RaisedButton(
                 onPressed: (){
-                  this.setState(() {
-                    this._adClosed = false;
+                  setState(() {
+                    _adClosed = false;
                   });
                   _adKey.currentState?.refreshAd();
                 },
@@ -46,8 +46,8 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
               RaisedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
-                  if(this.mounted) {
-                    this.setState(() {_adClosed = true;});
+                  if(mounted) {
+                    setState(() {_adClosed = true;});
                   }
                 },
                 child: Text('关闭广告'),
@@ -85,9 +85,8 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
     if(event == UnifiedBannerAdEvent.onAdClosed) {
       _adClosed = true;
     }
-    if(this.mounted) {
-      this.setState(() {
-      });
+    if(mounted) {
+      setState(() {});
     }
   }
 
