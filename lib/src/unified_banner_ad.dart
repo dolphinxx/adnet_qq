@@ -22,7 +22,7 @@ typedef UnifiedBannerAdEventCallback = Function(UnifiedBannerAdEvent event, dyna
 
 class UnifiedBannerAd extends StatefulWidget {
   /// 宽高比
-  static final double ratio = 6.4;
+  static const double ratio = 6.4;
 
   final String posId;
 
@@ -35,7 +35,7 @@ class UnifiedBannerAd extends StatefulWidget {
   /// iOS only
   final bool animated;
 
-  UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval, this.animated}) : super(key: key);
+  const UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval, this.animated}) : super(key: key);
 
   @override
   UnifiedBannerAdState createState() => UnifiedBannerAdState();

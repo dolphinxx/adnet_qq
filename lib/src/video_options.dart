@@ -46,7 +46,7 @@ class AdVideoIOSOptions {
 
   Map getOptions() {
     if(videoAutoPlayOnWWAN == null) {
-      return {};
+      return const {};
     }
     return {'videoAutoPlayOnWWAN': videoAutoPlayOnWWAN};
   }
@@ -86,12 +86,12 @@ class AdVideoOptions {
   }
 
   Map getAndroidOptions() {
-    _androidOptions ??= androidOptions?.getOptions() ?? {};
+    _androidOptions ??= androidOptions?.getOptions() ?? const {};
     return _androidOptions;
   }
 
   Map getIOSOptions() {
-    _iOSOptions ??= iOSOptions?.getOptions() ?? {};
+    _iOSOptions ??= iOSOptions?.getOptions() ?? const {};
     return _iOSOptions;
   }
 }
