@@ -11,17 +11,17 @@ class NativeExpressAdWidgetDemo extends StatefulWidget {
 }
 
 class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
-  double adHeight;
+  double? adHeight;
   bool adRemoved = false;
   final GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
   List<String> events = [];
 
-  String posId;
+  late String posId;
 
   @override
   void initState() {
     super.initState();
-    posId = config['nativeExpressPosId'].first;
+    posId = config['nativeExpressPosId'].first as String;
   }
 
   @override
@@ -32,7 +32,7 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   setState(() {
                     adHeight = null;
@@ -42,7 +42,7 @@ class NativeExpressAdWidgetDemoState extends State<NativeExpressAdWidgetDemo> {
                 },
                 child: Text('刷新广告'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
                   if(mounted) {

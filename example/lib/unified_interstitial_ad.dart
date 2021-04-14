@@ -11,12 +11,12 @@ class UnifiedInterstitialAdDemo extends StatefulWidget {
 }
 
 class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
-  UnifiedInterstitialAd _ad;
+  UnifiedInterstitialAd? _ad;
   List<String> events = [];
-  bool _adLoaded;
+  bool? _adLoaded;
   bool isFullScreen = false;
-  String posId;
-  List<String> posIds = config['unifiedInterstitialPosId'];
+  late String posId;
+  List<String> posIds = config['unifiedInterstitialPosId'] as List<String>;
 
   @override
   void initState() {
@@ -32,25 +32,25 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   if(_ad != null) {
-                    _ad.closeAd();
+                    _ad!.closeAd();
                   }
                   isFullScreen = false;
                   _ad = UnifiedInterstitialAd(posId, adEventCallback: _adEventCallback);
-                  _ad.loadAd();
+                  _ad!.loadAd();
                 },
                 child: Text('加载普通'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   if(_ad != null) {
-                    _ad.closeAd();
+                    _ad!.closeAd();
                   }
                   isFullScreen = true;
                   _ad = UnifiedInterstitialAd(posId, adEventCallback: _adEventCallback);
-                  _ad.loadFullScreenAd();
+                  _ad!.loadFullScreenAd();
                 },
                 child: Text('加载全屏'),
               ),
@@ -58,26 +58,26 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
           ),
           Row(
             children: <Widget>[
-              RaisedButton(
-                onPressed: _adLoaded == true && !isFullScreen ? () => _ad.showAd() : null,
+              ElevatedButton(
+                onPressed: _adLoaded == true && !isFullScreen ? () => _ad?.showAd() : null,
                 child: Text('显示广告'),
               ),
-              RaisedButton(
-                onPressed: _adLoaded == true && !isFullScreen ? () => _ad.showAdAsPopup() : null,
+              ElevatedButton(
+                onPressed: _adLoaded == true && !isFullScreen ? () => _ad?.showAdAsPopup() : null,
                 child: Text('弹出广告'),
               ),
-              RaisedButton(
-                onPressed: _adLoaded == true && isFullScreen ? () => _ad.showFullScreenAd() : null,
+              ElevatedButton(
+                onPressed: _adLoaded == true && isFullScreen ? () => _ad?.showFullScreenAd() : null,
                 child: Text('弹出全屏'),
               ),
             ],
           ),
           Row(
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   if(_adLoaded == true) {
-                    _ad.closeAd();
+                    _ad?.closeAd();
                     _adLoaded = false;
                     _ad = null;
                   }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:adnet_qq/src/video_options.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/material.dart';
 
 import 'constants.dart';
 
@@ -36,11 +35,11 @@ class AdnetQqPlugin {
   /// - 14	AppStore
   /// - 999	其他
   ///
-  static Future<bool> config({@required String appId, int requestReadPhoneState = 0, int requestAccessFineLocation = 0, int adChannel}) async {
+  static Future<bool> config({required String appId, int requestReadPhoneState = 0, int requestAccessFineLocation = 0, int? adChannel}) async {
     if(_initialized) {
       return true;
     }
-    bool result = await channel.invokeMethod('config', {'appId': appId, 'requestReadPhoneState': requestReadPhoneState, 'requestAccessFineLocation': requestAccessFineLocation, 'adChannel': adChannel});
+    bool result = await channel.invokeMethod('config', {'appId': appId, 'requestReadPhoneState': requestReadPhoneState, 'requestAccessFineLocation': requestAccessFineLocation, 'adChannel': adChannel}) ?? false;
     if(result == true) {
       _initialized = true;
     }
@@ -48,7 +47,7 @@ class AdnetQqPlugin {
   }
 
   /// create a UnifiedInterstitialAd, and communicate with it through channel Id '$PLUGIN_ID/unified_interstitial_$posId'
-  static Future<bool> createUnifiedInterstitialAd({@required String posId, AdVideoOptions videoOptions}) async {
-    return await channel.invokeMethod('createUnifiedInterstitialAd', {'posId': posId, ...videoOptions?.getOptions()??{}, 'androidOptions': videoOptions?.getAndroidOptions(), 'iOSOptions': videoOptions?.getIOSOptions()});
+  static Future<bool> createUnifiedInterstitialAd({required String posId, AdVideoOptions? videoOptions}) async {
+    return await channel.invokeMethod<bool>('createUnifiedInterstitialAd', {'posId': posId, ...videoOptions?.getOptions()??{}, 'androidOptions': videoOptions?.getAndroidOptions(), 'iOSOptions': videoOptions?.getIOSOptions()}) ?? false;
   }
 }

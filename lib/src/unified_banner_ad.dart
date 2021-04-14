@@ -26,23 +26,23 @@ class UnifiedBannerAd extends StatefulWidget {
 
   final String posId;
 
-  final UnifiedBannerAdEventCallback adEventCallback;
+  final UnifiedBannerAdEventCallback? adEventCallback;
 
-  final bool refreshOnCreate;
+  final bool? refreshOnCreate;
 
-  final int refreshInterval;
+  final int? refreshInterval;
 
   /// iOS only
-  final bool animated;
+  final bool? animated;
 
-  const UnifiedBannerAd(this.posId, {Key key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval, this.animated}) : super(key: key);
+  const UnifiedBannerAd(this.posId, {Key? key, this.adEventCallback, this.refreshOnCreate, this.refreshInterval, this.animated}) : super(key: key);
 
   @override
   UnifiedBannerAdState createState() => UnifiedBannerAdState();
 }
 
 class UnifiedBannerAdState extends State<UnifiedBannerAd> {
-  MethodChannel _methodChannel;
+  MethodChannel? _methodChannel;
   final UniqueKey _key = UniqueKey();
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
 
   void _onPlatformViewCreated(int id) {
     _methodChannel = MethodChannel('$PLUGIN_ID/unified_banner_$id');
-    _methodChannel.setMethodCallHandler(_handleMethodCall);
+    _methodChannel!.setMethodCallHandler(_handleMethodCall);
     if(widget.refreshOnCreate == true) {
       refreshAd();
     }
@@ -82,7 +82,7 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
 
   Future<void> _handleMethodCall(MethodCall call) async {
     if(widget.adEventCallback != null) {
-      UnifiedBannerAdEvent event;
+      UnifiedBannerAdEvent? event;
       switch(call.method) {
         case 'onNoAd':
           event = UnifiedBannerAdEvent.onNoAd;
@@ -117,19 +117,21 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
         default:
           print('UnifiedBannerAd unknown event: ${call.method}');
       }
-      widget.adEventCallback(event, call.arguments);
+      if(event != null) {
+        widget.adEventCallback!(event, call.arguments);
+      }
     }
   }
 
   Future<void> closeAd() async {
     if(_methodChannel != null) {
-      await _methodChannel.invokeMethod('close');
+      await _methodChannel!.invokeMethod('close');
     }
   }
 
   Future<void> refreshAd() async {
     if(_methodChannel != null) {
-      await _methodChannel.invokeMethod('refresh');
+      await _methodChannel!.invokeMethod('refresh');
     }
   }
 

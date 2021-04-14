@@ -11,13 +11,13 @@ class NativeExpressAdDemo extends StatefulWidget {
 }
 
 class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
-  double adHeight;
+  double? adHeight;
   bool adRemoved = false;
   GlobalKey<NativeExpressAdState> _adKey = GlobalKey();
   List<String> events = [];
 
-  String posId;
-  List<String> posIds = config['nativeExpressPosId'];
+  late String posId;
+  List<String> posIds = config['nativeExpressPosId'] as List<String>;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   setState(() {
                     adHeight = null;
@@ -43,7 +43,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
                 },
                 child: Text('刷新广告'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
                   if(mounted) {
@@ -107,7 +107,7 @@ class NativeExpressAdDemoState extends State<NativeExpressAdDemo> {
   void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
     events.insert(0, '${event.toString().split('.')[1]} ${arguments??""}');
     if(event == NativeExpressAdEvent.onLayout) {
-      adHeight = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
+      adHeight = MediaQuery.of(context).size.width * (arguments['height'] as double) / (arguments['width'] as double);
     } else if(event == NativeExpressAdEvent.onAdClosed) {
       // remove ad widget
       adRemoved = true;

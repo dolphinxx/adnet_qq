@@ -38,11 +38,11 @@ enum UnifiedInterstitialAdEvent {
 class UnifiedInterstitialAd {
   final String posId;
 
-  final AdVideoOptions videoOptions;
+  final AdVideoOptions? videoOptions;
 
-  final UnifiedInterstitialAdEventCallback adEventCallback;
+  final UnifiedInterstitialAdEventCallback? adEventCallback;
 
-  final MethodChannel _methodChannel;
+  late final MethodChannel _methodChannel;
 
   UnifiedInterstitialAd(this.posId, {this.videoOptions, this.adEventCallback}) : _methodChannel = MethodChannel('$PLUGIN_ID/unified_interstitial_$posId') {
     _methodChannel.setMethodCallHandler(_handleMethodCall);
@@ -51,7 +51,7 @@ class UnifiedInterstitialAd {
 
   Future<void> _handleMethodCall(MethodCall call) async {
     if(adEventCallback != null) {
-      UnifiedInterstitialAdEvent event;
+      UnifiedInterstitialAdEvent? event;
       switch (call.method) {
         case 'onNoAd':
           event = UnifiedInterstitialAdEvent.onNoAd;
@@ -107,7 +107,9 @@ class UnifiedInterstitialAd {
         default:
           print('UnifiedInterstitialAd unknown event: ${call.method}');
       }
-      adEventCallback(event, call.arguments);
+      if(event != null) {
+        adEventCallback!(event, call.arguments);
+      }
     }
   }
 

@@ -34,7 +34,7 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
 
           Row(
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: (){
                   setState(() {
                     _adClosed = false;
@@ -43,7 +43,7 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
                 },
                 child: Text('刷新广告'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () async {
                   await _adKey.currentState?.closeAd();
                   if(mounted) {

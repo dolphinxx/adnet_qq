@@ -25,40 +25,40 @@ class _HomeWidgetState extends State<HomeWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return UnifiedBannerAdDemo(config['unifiedBannerPosId']);
+                return UnifiedBannerAdDemo(config['unifiedBannerPosId'] as String);
               })),
               child: Text('横幅2.0'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return NativeExpressAdDemo();
               })),
               child: Text('原生模板'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return NativeExpressAdWidgetDemo();
               })),
               child: Text('原生模板 widget'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return UnifiedInterstitialAdDemo();
               })),
               child: Text('插屏2.0'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).pushReplacementNamed('/splash'),
               child: Text('Splash页'),
             ),
-            RaisedButton(
-              onPressed: () => SplashAd(config['splashPosId'], backgroundImage: config['splashBackgroundImage'], adEventCallback: _splashAdEventCallback).showAd(),
+            ElevatedButton(
+              onPressed: () => SplashAd(config['splashPosId'] as String, backgroundImage: config['splashBackgroundImage'] as String, adEventCallback: _splashAdEventCallback).showAd(),
               child: Text('开屏+背景图'),
             ),
-            RaisedButton(
-              onPressed: () => SplashAd(config['splashPosId'], backgroundColor: Colors.pink.value, adEventCallback: _splashAdEventCallback).showAd(),
+            ElevatedButton(
+              onPressed: () => SplashAd(config['splashPosId'] as String, backgroundColor: Colors.pink.value, adEventCallback: _splashAdEventCallback).showAd(),
               child: Text('开屏+背景色'),
             ),
             Expanded(

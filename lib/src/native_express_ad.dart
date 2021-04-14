@@ -41,20 +41,20 @@ class NativeExpressAd extends StatefulWidget {
   /// ad count to request, default value is 5
   final int requestCount;
 
-  final AdVideoOptions videoOptions;
+  final AdVideoOptions? videoOptions;
 
-  final NativeExpressAdEventCallback adEventCallback;
+  final NativeExpressAdEventCallback? adEventCallback;
 
-  final bool refreshOnCreate;
+  final bool? refreshOnCreate;
 
-  const NativeExpressAd(this.posId, {Key key, this.requestCount = 5, this.adEventCallback, this.refreshOnCreate, this.videoOptions}) : super(key: key);
+  const NativeExpressAd(this.posId, {Key? key, int? requestCount, this.adEventCallback, this.refreshOnCreate, this.videoOptions}) : requestCount = requestCount??5,super(key: key);
 
   @override
   NativeExpressAdState createState() => NativeExpressAdState();
 }
 
 class NativeExpressAdState extends State<NativeExpressAd> {
-  MethodChannel _methodChannel;
+  MethodChannel? _methodChannel;
   final UniqueKey _key = UniqueKey();
 
   @override
@@ -79,7 +79,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   void _onPlatformViewCreated(int id) {
     _methodChannel = MethodChannel('$PLUGIN_ID/native_express_$id');
-    _methodChannel.setMethodCallHandler(_handleMethodCall);
+    _methodChannel!.setMethodCallHandler(_handleMethodCall);
     if(widget.refreshOnCreate == true) {
       refreshAd();
     }
@@ -87,7 +87,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   Future<void> _handleMethodCall(MethodCall call) async {
     if(widget.adEventCallback != null) {
-      NativeExpressAdEvent event;
+      NativeExpressAdEvent? event;
       switch (call.method) {
         case 'onLayout':
           event = NativeExpressAdEvent.onLayout;
@@ -146,14 +146,16 @@ class NativeExpressAdState extends State<NativeExpressAd> {
         default:
           print('NativeExpressAd unknown event: ${call.method}');
       }
-      widget.adEventCallback(event, call.arguments);
+      if(event != null) {
+        widget.adEventCallback!(event, call.arguments);
+      }
     }
   }
 
   Future<void> closeAd() async {
     if(_methodChannel != null) {
       try {
-        await _methodChannel.invokeMethod('close');
+        await _methodChannel!.invokeMethod('close');
       } catch (_) {
         // ad may be already closed.
       }
@@ -163,7 +165,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   Future<void> refreshAd() async {
     if(_methodChannel != null) {
-      await _methodChannel.invokeMethod('refresh');
+      await _methodChannel!.invokeMethod('refresh');
     }
   }
 
@@ -184,24 +186,24 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
 class NativeExpressAdWidget extends StatefulWidget {
   final String posId;
-  final int requestCount;
-  final AdVideoOptions videoOptions;
-  final GlobalKey<NativeExpressAdState> adKey;
-  final NativeExpressAdEventCallback adEventCallback;
-  final double loadingHeight;
+  final int? requestCount;
+  final AdVideoOptions? videoOptions;
+  final GlobalKey<NativeExpressAdState>? adKey;
+  final NativeExpressAdEventCallback? adEventCallback;
+  final double? loadingHeight;
 
   /// [loadingHeight] should be above 0, otherwise the ad may not be loaded.
-  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState> adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):adKey = adKey??GlobalKey();
+  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState>? adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):adKey = adKey??GlobalKey();
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
 }
 
 class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
-  double _height;
-  NativeExpressAd _ad;
+  double? _height;
+  late NativeExpressAd _ad;
 
-  NativeExpressAdWidgetState({double height}):_height = height;
+  NativeExpressAdWidgetState({double? height}):_height = height;
 
   @override
   void initState() {
@@ -219,7 +221,7 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
 
   void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
     if(widget.adEventCallback != null) {
-      widget.adEventCallback(event, arguments);
+      widget.adEventCallback!(event, arguments);
     }
     if(event == NativeExpressAdEvent.onAdClosed) {
       if(mounted) {
@@ -230,9 +232,9 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
       return;
     }
     if(event == NativeExpressAdEvent.onLayout && mounted) {
-      if(arguments['width'] > 0 && arguments['height'] > 0) {
+      if(arguments['width'] as double > 0 && arguments['height'] as double > 0) {
         setState(() {
-          _height = MediaQuery.of(context).size.width * arguments['height'] / arguments['width'];
+          _height = MediaQuery.of(context).size.width * (arguments['height'] as double) / (arguments['width'] as double);
         });
       }
       return;

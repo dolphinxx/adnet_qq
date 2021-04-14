@@ -1,10 +1,10 @@
 class AdVideoAndroidOptions {
-  final int autoPlayPolicy;
-  final int videoPlayPolicy;
-  final bool enableDetailPage;
-  final bool enableUserControl;
-  final bool needCoverImage;
-  final bool needProgressBar;
+  final int? autoPlayPolicy;
+  final int? videoPlayPolicy;
+  final bool? enableDetailPage;
+  final bool? enableUserControl;
+  final bool? needCoverImage;
+  final bool? needProgressBar;
 
   AdVideoAndroidOptions({
       this.autoPlayPolicy,
@@ -40,7 +40,7 @@ class AdVideoAndroidOptions {
 }
 
 class AdVideoIOSOptions {
-  final bool videoAutoPlayOnWWAN;
+  final bool? videoAutoPlayOnWWAN;
 
   AdVideoIOSOptions({this.videoAutoPlayOnWWAN});
 
@@ -53,20 +53,20 @@ class AdVideoIOSOptions {
 }
 
 class AdVideoOptions {
-  final int minVideoDuration;
-  final int maxVideoDuration;
-  final bool autoPlayMuted;
-  final bool detailPageVideoMuted;
-  final AdVideoAndroidOptions androidOptions;
-  final AdVideoIOSOptions iOSOptions;
-  Map _options;
-  Map _androidOptions;
-  Map _iOSOptions;
+  final int? minVideoDuration;
+  final int? maxVideoDuration;
+  final bool? autoPlayMuted;
+  final bool? detailPageVideoMuted;
+  final AdVideoAndroidOptions? androidOptions;
+  final AdVideoIOSOptions? iOSOptions;
+  Map? _options;
+  Map? _androidOptions;
+  Map? _iOSOptions;
   AdVideoOptions({this.minVideoDuration, this.maxVideoDuration, this.autoPlayMuted, this.detailPageVideoMuted, this.androidOptions, this.iOSOptions});
 
   Map getOptions() {
     if(_options != null) {
-      return _options;
+      return _options!;
     }
     Map result = {};
     if(minVideoDuration != null) {
@@ -87,11 +87,11 @@ class AdVideoOptions {
 
   Map getAndroidOptions() {
     _androidOptions ??= androidOptions?.getOptions() ?? const {};
-    return _androidOptions;
+    return _androidOptions!;
   }
 
   Map getIOSOptions() {
     _iOSOptions ??= iOSOptions?.getOptions() ?? const {};
-    return _iOSOptions;
+    return _iOSOptions!;
   }
 }

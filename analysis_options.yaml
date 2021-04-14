@@ -1,6 +1,14 @@
 include: package:pedantic/analysis_options.yaml
 
 analyzer:
-  exclude: [build/**,test/**,test_resources/**]
+  exclude: [build/**,test_resources/**]
+  strong-mode:
+    implicit-casts: false
   errors:
     omit_local_variable_types: ignore
+  enable-experiment:
+    - non-nullable
+linter:
+  rules:
+    - avoid_empty_else
+    - always_declare_return_types

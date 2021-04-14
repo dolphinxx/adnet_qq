@@ -37,20 +37,20 @@ class SplashAd {
   /// for android, it is the resource identifier(`packageName:resourcesName[-configQualifier]/fileNameWithoutExtension`)
   ///
   /// for iOS, it is the name of an assets
-  final String backgroundImage;
+  final String? backgroundImage;
 
   /// splash container's background color.
   ///
   /// It's an integer representing the color in the default sRGB color space, same as the `Color` in flutter. Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue.
   ///
   ///
-  final int backgroundColor;
+  final int? backgroundColor;
 
-  final int fetchDelay;
+  final int? fetchDelay;
 
-  final SplashAdEventCallback adEventCallback;
+  final SplashAdEventCallback? adEventCallback;
 
-  MethodChannel _methodChannel;
+  late MethodChannel _methodChannel;
 
   SplashAd(this.posId, {this.backgroundImage, this.backgroundColor, this.fetchDelay, this.adEventCallback}) {
     _methodChannel = MethodChannel('$PLUGIN_ID/splash');
@@ -59,7 +59,7 @@ class SplashAd {
 
   Future<void> _handleMethodCall(MethodCall call) async {
     if(adEventCallback != null) {
-      SplashAdEvent event;
+      SplashAdEvent? event;
       switch (call.method) {
         case 'onNoAd':
           event = SplashAdEvent.onNoAd;
@@ -106,7 +106,9 @@ class SplashAd {
         default:
           print('SplashAd unknown event: ${call.method}');
       }
-      adEventCallback(event, call.arguments);
+      if(event != null) {
+        adEventCallback!(event, call.arguments);
+      }
     }
   }
 
