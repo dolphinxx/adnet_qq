@@ -162,7 +162,7 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
         }
         Integer backgroundColor = null;
         if(((Map)call.arguments).get("backgroundColor") != null) {
-          backgroundColor = (Integer)((Map)call.arguments).get("backgroundColor");
+          backgroundColor = ((Number)((Map)call.arguments).get("backgroundColor")).intValue();
         }
         Integer fetchDelay = (Integer)((Map)call.arguments).get("fetchDelay");
         if(splashAd != null) {
