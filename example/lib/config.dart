@@ -9,7 +9,8 @@ Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
   ],
   'unifiedInterstitialPosId': ['1050652855580392'],
   'splashPosId': '9040714184494018',
-  'splashBackgroundImage': 'SplashImage'
+  'splashBackgroundImage': 'SplashImage',
+  'splashLogo': 'AppIcon',
 } : {
   'appId': '1101152570',
   'unifiedBannerPosId': '4080052898050840',
@@ -38,5 +39,6 @@ Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
     '8020259898964453'
   ],
   'splashPosId': '8863364436303842593',
-  'splashBackgroundImage': 'com.whaleread.flutter.plugin.adnet_qq_example:mipmap/splash_bg'
+  'splashBackgroundImage': 'com.whaleread.flutter.plugin.adnet_qq_example:mipmap/splash_bg',
+  'splashLogo': 'com.whaleread.flutter.plugin.adnet_qq_example:mipmap/ic_launcher',
 };

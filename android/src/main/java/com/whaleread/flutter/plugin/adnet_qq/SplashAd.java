@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -25,10 +24,12 @@ public class SplashAd implements SplashADListener {
     private final String posId;
     private final FrameLayout container;
     private SplashAD splashAD;
+    private Integer logo;
     /**
      * 拉取广告的超时时长：取值范围[3000, 5000]，设为0表示使用广点通SDK默认的超时时长。
      */
     private final int fetchDelay;
+    private final boolean fullScreen;
 //    /**
 //     * 为防止无广告时造成视觉上类似于"闪退"的情况，设定无广告时页面跳转根据需要延迟一定时间，demo
 //     * 给出的延时逻辑是从拉取广告开始算开屏最少持续多久，仅供参考，开发者可自定义延时逻辑，如果开发者采用demo
@@ -41,23 +42,27 @@ public class SplashAd implements SplashADListener {
 //    private long fetchSplashADTime = 0;
 //    private Handler handler = new Handler(Looper.getMainLooper());
 
-    public SplashAd(Context context, BinaryMessenger messenger, String posId, String backgroundImage, Integer backgroundColor, Integer fetchDelay) {
+    public SplashAd(Context context, BinaryMessenger messenger, String posId, String backgroundImage, Integer backgroundColor, Integer fetchDelay, boolean fullScreen, String logo) {
         if(PluginSettings.APP_ID == null) {
             throw new IllegalStateException("App Id must be configured before creating ad view");
         }
         this.methodChannel = new MethodChannel(messenger, PluginSettings.PLUGIN_ID + "/splash" );
         this.posId = posId;
         this.fetchDelay = fetchDelay == null ? 3000 : fetchDelay;
+        this.fullScreen = fullScreen;
         container = new FrameLayout(context);
         if(backgroundColor != null) {
             container.setBackgroundColor(backgroundColor);
         }
         Activity activity = AdnetQqPlugin.getActivity();
+        PackageManager packageManager = null;
+        if(backgroundImage != null || logo != null) {
+            packageManager = activity.getPackageManager();
+        }
         if(backgroundImage != null) {
             try
             {
-                PackageManager manager = activity.getPackageManager();
-                Resources resources = manager.getResourcesForApplication(backgroundImage.substring(0, backgroundImage.indexOf(":")));
+                Resources resources = packageManager.getResourcesForApplication(backgroundImage.substring(0, backgroundImage.indexOf(":")));
                 int resId = resources.getIdentifier(backgroundImage, null, null);
                 Drawable drawable = resources.getDrawable(resId);
                 container.setBackground(drawable);
@@ -65,12 +70,20 @@ public class SplashAd implements SplashADListener {
                 Log.e(TAG, "failed to set background for splash ad, resource:" + backgroundImage, e);
             }
         }
+        if(logo != null) {
+            try {
+                Resources resources = packageManager.getResourcesForApplication(logo.substring(0, logo.indexOf(":")));
+                this.logo = resources.getIdentifier(logo, null, null);
+            } catch (Exception e) {
+                Log.e(TAG, "failed to set logo for splash ad, resource:" + logo, e);
+            }
+        }
         container.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         activity.addContentView(container, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     public void show() {
-        this.showAd();
+        _showAd();
     }
 
     public void close() {
@@ -84,30 +97,32 @@ public class SplashAd implements SplashADListener {
         }
     }
 
-    private void showAd() {
-        fetchSplashAD(AdnetQqPlugin.getActivity(), null, posId, this);
+    private void _showAd() {
+        fetchSplashAD(AdnetQqPlugin.getActivity(), posId, this);
     }
 
     /**
      * 拉取开屏广告，开屏广告的构造方法有3种，详细说明请参考开发者文档。
      *
      * @param activity        展示广告的activity
-     * @param skipContainer   自定义的跳过按钮：传入该view给SDK后，SDK会自动给它绑定点击跳过事件。SkipView的样式可以由开发者自由定制，其尺寸限制请参考activity_splash.xml或者接入文档中的说明。
      * @param posId           广告位ID
      * @param adListener      广告状态监听器
      */
-    private void fetchSplashAD(Activity activity, @SuppressWarnings("SameParameterValue") View skipContainer, String posId, SplashADListener adListener) {
+    private void fetchSplashAD(Activity activity, String posId, SplashADListener adListener) {
         Log.d(TAG, "fetching splash Ad");
         if(splashAD != null) {
             return;
         }
 //        fetchSplashADTime = System.currentTimeMillis();
-        if(skipContainer == null) {
-            splashAD = new SplashAD(activity, posId, adListener, fetchDelay);
-        } else {
-            splashAD = new SplashAD(activity, skipContainer, posId, adListener, fetchDelay);
+        splashAD = new SplashAD(activity, posId, adListener, fetchDelay);
+        if(this.logo != null) {
+            splashAD.setDeveloperLogo(this.logo);
         }
-        splashAD.fetchAndShowIn(container);
+        if(fullScreen) {
+            splashAD.fetchFullScreenAndShowIn(container);
+        } else {
+            splashAD.fetchAndShowIn(container);
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
+import com.qq.e.ads.cfg.BrowserType;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
 import com.qq.e.ads.nativ.NativeExpressAD;
@@ -39,9 +40,9 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
     private Integer maxVideoDuration;
     private Boolean autoPlayMuted;
     private Boolean detailPageVideoMuted;
+    private String browserType;
     // <--- android only ---
     private Integer autoPlayPolicy;
-    private Integer videoPlayPolicy;
     private Boolean enableDetailPage;
     private Boolean enableUserControl;
     private Boolean needCoverImage;
@@ -74,13 +75,13 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         if(params.get("detailPageVideoMuted") != null) {
             this.detailPageVideoMuted = (Boolean)params.get("detailPageVideoMuted");
         }
+        if(params.get("browserType") != null) {
+            this.browserType = (String)params.get("browserType");
+        }
         if(params.get("androidOptions") != null) {
             @SuppressWarnings("rawtypes") Map options = (Map)params.get("androidOptions");
             if(options.get("autoPlayPolicy") != null) {
                 this.autoPlayPolicy = (Integer)options.get("autoPlayPolicy");
-            }
-            if(options.get("videoPlayPolicy") != null) {
-                this.videoPlayPolicy = (Integer)options.get("videoPlayPolicy");
             }
             if(options.get("enableDetailPage") != null) {
                 this.enableDetailPage = (Boolean)options.get("enableDetailPage");
@@ -156,14 +157,14 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
             videoOptionBuilder.setDetailPageMuted(detailPageVideoMuted);
         }
         nativeExpressAD.setVideoOption(videoOptionBuilder.build()); // setVideoOption是可选的，开发者可根据需要选择是否配置
+        if(browserType != null) {
+            nativeExpressAD.setBrowserType(BrowserType.valueOf(browserType));
+        }
         if(maxVideoDuration != null) {
             nativeExpressAD.setMaxVideoDuration(maxVideoDuration);
         }
         if(minVideoDuration != null) {
             nativeExpressAD.setMinVideoDuration(minVideoDuration);
-        }
-        if(videoPlayPolicy != null) {
-            nativeExpressAD.setVideoPlayPolicy(videoPlayPolicy);
         }
         nativeExpressAD.loadAD(count);
     }

@@ -13,6 +13,9 @@ enum UnifiedInterstitialAdEvent {
   onAdClicked,
   onAdLeftApplication,
   onAdOpened,
+  /// 广告渲染成功，建议在此回调后展示广告
+  onRenderSuccess,
+  onRenderFailed,
   /// android only
   onVideoCached,
   /// iOS only
@@ -103,6 +106,12 @@ class UnifiedInterstitialAd {
           break;
         case 'onAdDidDismissVideoVC':
           event = UnifiedInterstitialAdEvent.onAdDidDismissVideoVC;
+          break;
+        case 'onRenderSuccess':
+          event = UnifiedInterstitialAdEvent.onRenderSuccess;
+          break;
+        case 'onRenderFailed':
+          event = UnifiedInterstitialAdEvent.onRenderFailed;
           break;
         default:
           print('UnifiedInterstitialAd unknown event: ${call.method}');

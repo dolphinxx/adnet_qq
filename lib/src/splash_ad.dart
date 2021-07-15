@@ -48,11 +48,15 @@ class SplashAd {
 
   final int? fetchDelay;
 
+  final String? logo;
+
+  final bool? fullScreen;
+
   final SplashAdEventCallback? adEventCallback;
 
   late MethodChannel _methodChannel;
 
-  SplashAd(this.posId, {this.backgroundImage, this.backgroundColor, this.fetchDelay, this.adEventCallback}) {
+  SplashAd(this.posId, {this.backgroundImage, this.backgroundColor, this.fetchDelay, this.adEventCallback, this.logo, this.fullScreen}) {
     _methodChannel = MethodChannel('$PLUGIN_ID/splash');
     _methodChannel.setMethodCallHandler(_handleMethodCall);
   }
@@ -113,7 +117,7 @@ class SplashAd {
   }
 
   Future<void> showAd() async {
-    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'backgroundColor': backgroundColor, 'fetchDelay': fetchDelay});
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'backgroundColor': backgroundColor, 'fetchDelay': fetchDelay, 'logo': logo, 'fullScreen': fullScreen??false});
   }
 
   Future<void> closeAd() async {

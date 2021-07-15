@@ -5,6 +5,6 @@
 .pub/
 
 build/
-/.idea
+.idea
 *.iml
 /example/ios/.symlinks/

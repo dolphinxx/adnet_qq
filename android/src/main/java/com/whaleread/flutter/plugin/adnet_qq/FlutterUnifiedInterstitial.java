@@ -29,7 +29,6 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
     private Boolean detailPageVideoMuted;
     // <--- android only ---
     private Integer autoPlayPolicy;
-    private Integer videoPlayPolicy;
     private Boolean enableDetailPage;
     private Boolean enableUserControl;
     private Boolean needCoverImage;
@@ -57,9 +56,6 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
             @SuppressWarnings("rawtypes") Map options = (Map)params.get("androidOptions");
             if(options.get("autoPlayPolicy") != null) {
                 this.autoPlayPolicy = (Integer)options.get("autoPlayPolicy");
-            }
-            if(options.get("videoPlayPolicy") != null) {
-                this.videoPlayPolicy = (Integer)options.get("videoPlayPolicy");
             }
             if(options.get("enableDetailPage") != null) {
                 this.enableDetailPage = (Boolean)options.get("enableDetailPage");
@@ -156,9 +152,6 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
         if(maxVideoDuration != null) {
             iad.setMaxVideoDuration(maxVideoDuration);
         }
-        if(videoPlayPolicy != null) {
-            iad.setVideoPlayPolicy(videoPlayPolicy);
-        }
         return iad;
     }
 
@@ -201,6 +194,18 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
         Log.d(TAG, "onADClosed");
         iad = null;
         methodChannel.invokeMethod("onAdClosed", null);
+    }
+
+    @Override
+    public void onRenderSuccess() {
+        Log.d(TAG, "onRenderSuccess");
+        methodChannel.invokeMethod("onRenderSuccess", null);
+    }
+
+    @Override
+    public void onRenderFail() {
+        Log.d(TAG, "onRenderFailed");
+        methodChannel.invokeMethod("onRenderFailed", null);
     }
 
     @Override

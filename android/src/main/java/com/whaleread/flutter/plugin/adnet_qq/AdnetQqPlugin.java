@@ -165,10 +165,18 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
           backgroundColor = ((Number)((Map)call.arguments).get("backgroundColor")).intValue();
         }
         Integer fetchDelay = (Integer)((Map)call.arguments).get("fetchDelay");
+        boolean fullScreen = false;
+        if(((Map)call.arguments).get("fullScreen") != null) {
+          fullScreen = ((Boolean)((Map)call.arguments).get("fullScreen"));
+        }
+        String logo = null;
+        if(((Map)call.arguments).get("logo") != null) {
+          logo = (String)((Map)call.arguments).get("logo");
+        }
         if(splashAd != null) {
           splashAd.close();
         }
-        splashAd = new SplashAd(applicationContext, messenger, posId, backgroundImage, backgroundColor, fetchDelay);
+        splashAd = new SplashAd(applicationContext, messenger, posId, backgroundImage, backgroundColor, fetchDelay, fullScreen, logo);
         splashAd.show();
         break;
       }
@@ -216,7 +224,7 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
       String[] requestPermissions = new String[lackedPermission.size()];
       lackedPermission.toArray(requestPermissions);
 //      registrar.addRequestPermissionsResultListener(this);
-      _requestCode = Integer.parseInt(new SimpleDateFormat("MMddHHmmss", Locale.CHINA).format(new Date()));
+      _requestCode = (int)(System.currentTimeMillis()%10000000);
       activity.requestPermissions(requestPermissions, _requestCode);
       Log.d(TAG, "requesting permissions...");
     }

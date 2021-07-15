@@ -118,7 +118,7 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
 
   void _adEventCallback(UnifiedInterstitialAdEvent event, dynamic params) {
     events.insert(0, '${event.toString().split('.')[1]} ${params??""}');
-    if(event == UnifiedInterstitialAdEvent.onAdReceived) {
+    if(event == UnifiedInterstitialAdEvent.onRenderSuccess) {
       _adLoaded = true;
     } else if(event == UnifiedInterstitialAdEvent.onAdClosed) {
       _adLoaded = false;
