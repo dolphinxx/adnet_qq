@@ -58,7 +58,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: Text('开屏+背景图'),
             ),
             ElevatedButton(
-              onPressed: () => SplashAd(config['splashPosId'] as String, logo: config['splashLogo'] as String, fullScreen: true, adEventCallback: _splashAdEventCallback).showAd(),
+              onPressed: () => SplashAd(config['splashPosId'] as String, logo: config['splashLogo'] as String, fullScreen: 1, adEventCallback: _splashAdEventCallback).showAd(),
               child: Text('全屏开屏'),
             ),
             ElevatedButton(

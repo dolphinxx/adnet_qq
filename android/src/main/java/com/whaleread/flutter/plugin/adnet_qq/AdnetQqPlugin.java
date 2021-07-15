@@ -167,7 +167,7 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
         Integer fetchDelay = (Integer)((Map)call.arguments).get("fetchDelay");
         boolean fullScreen = false;
         if(((Map)call.arguments).get("fullScreen") != null) {
-          fullScreen = ((Boolean)((Map)call.arguments).get("fullScreen"));
+          fullScreen = ((Integer)((Map)call.arguments).get("fullScreen")) == 1;
         }
         String logo = null;
         if(((Map)call.arguments).get("logo") != null) {

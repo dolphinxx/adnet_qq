@@ -48,9 +48,11 @@ class SplashAd {
 
   final int? fetchDelay;
 
+  /// Only available when [fullScreen] is enabled
   final String? logo;
 
-  final bool? fullScreen;
+  /// normal: `0`, full screen: `1`
+  final int? fullScreen;
 
   final SplashAdEventCallback? adEventCallback;
 
@@ -117,7 +119,7 @@ class SplashAd {
   }
 
   Future<void> showAd() async {
-    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'backgroundColor': backgroundColor, 'fetchDelay': fetchDelay, 'logo': logo, 'fullScreen': fullScreen??false});
+    await AdnetQqPlugin.channel.invokeMethod('showSplash', {'posId': posId, 'backgroundImage': backgroundImage, 'backgroundColor': backgroundColor, 'fetchDelay': fetchDelay, 'logo': logo, 'fullScreen': fullScreen??0});
   }
 
   Future<void> closeAd() async {
