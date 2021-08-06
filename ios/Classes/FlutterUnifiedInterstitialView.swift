@@ -255,4 +255,19 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
     public func unifiedInterstitialAdViewDidDismissVideoVC(_ unifiedInterstitial:GDTUnifiedInterstitialAd) {
         self.channel.invokeMethod("onAdDidDismissVideoVC", arguments:nil);
     }
+    
+    /**
+     *  插屏2.0广告渲染成功
+     *  建议在此回调后展示广告
+     */
+    public func unifiedInterstitialRenderSuccess(_ unifiedInterstitial:GDTUnifiedInterstitialAd) {
+        self.channel.invokeMethod("onRenderSuccess", arguments: nil);
+    }
+
+    /**
+     *  插屏2.0广告渲染失败
+     */
+    public func unifiedInterstitialRenderFail(_ unifiedInterstitial:GDTUnifiedInterstitialAd, error:Error) {
+        self.channel.invokeMethod("onRenderFailed", arguments: nil);
+    }
 }

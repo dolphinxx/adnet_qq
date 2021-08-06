@@ -14,17 +14,23 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
     private var backgroundImage:String?
     private var backgroundColor:Int?
     private var fetchDelay:CGFloat
+    private var fullScreen:Bool
+    private var logo:UIImage?
 
-    init(_ posId: String, backgroundImage: String?, backgroundColor: Int?, fetchDelay:CGFloat?, messenger: FlutterBinaryMessenger) {
+    init(_ posId: String, backgroundImage: String?, backgroundColor: Int?, fetchDelay:CGFloat?, fullScreen:Bool, logo:String?, messenger: FlutterBinaryMessenger) {
         self.posId = posId
         self.backgroundImage = backgroundImage
         self.backgroundColor = backgroundColor
         self.fetchDelay = fetchDelay ?? 3000
+        self.fullScreen = fullScreen
+        if let logo = logo {
+            self.logo = UIImage.init(named: logo)
+        }
         self.channel = FlutterMethodChannel(name: SPLASH_VIEW_ID, binaryMessenger: messenger)
         super.init()
     }
 
-    public func showAd() {
+    public func _showAd() {
         if let splash = splash {
             splash.delegate = nil
         }
@@ -42,13 +48,18 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
         }
         splash?.delegate = self
         splash?.fetchDelay = self.fetchDelay
-        splash?.load()
+        if fullScreen {
+            splash?.loadFullScreenAd()
+        } else {
+            splash?.load()
+        }
+        
     }
-
+    
     public func show() {
-        self.showAd()
+        _showAd()
     }
-
+ 
     public func close() {
         self.removeAd()
     }
@@ -70,8 +81,14 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
 
     public func splashAdDidLoad(_ splashAd: GDTSplashAd!) {
 //        print("onAdDidLoad")
-        splash?.show(in: UIApplication.shared.keyWindow, withBottomView: nil, skip: nil)
         channel.invokeMethod("onAdLoaded", arguments:nil)
+        if splash?.isAdValid() == true {
+            if fullScreen {
+                splash?.show(in: UIApplication.shared.keyWindow, withBottomView: nil, skip: nil)
+            } else {
+                splash?.showFullScreenAd(in: UIApplication.shared.keyWindow, withLogoImage: logo, skip: nil)
+            }
+        }
     }
     
     /**
