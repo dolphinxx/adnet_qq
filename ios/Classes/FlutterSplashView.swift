@@ -84,9 +84,9 @@ public class FlutterSplashView: NSObject, GDTSplashAdDelegate {
         channel.invokeMethod("onAdLoaded", arguments:nil)
         if splash?.isAdValid() == true {
             if fullScreen {
-                splash?.show(in: UIApplication.shared.keyWindow, withBottomView: nil, skip: nil)
-            } else {
                 splash?.showFullScreenAd(in: UIApplication.shared.keyWindow, withLogoImage: logo, skip: nil)
+            } else {
+                splash?.show(in: UIApplication.shared.keyWindow, withBottomView: nil, skip: nil)
             }
         }
     }
