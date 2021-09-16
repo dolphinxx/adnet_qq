@@ -9,6 +9,7 @@ Map config = defaultTargetPlatform == TargetPlatform.iOS ? {
   ],
   'unifiedInterstitialPosId': ['1050652855580392'],
   'splashPosId': '9040714184494018',
+  // 'splashPosId': '8071800142568576',
   'splashBackgroundImage': 'SplashImage',
   'splashLogo': 'AppIcon',
 } : {

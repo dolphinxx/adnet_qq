@@ -15,6 +15,7 @@ class _SplashWidgetState extends State<SplashWidget> {
     super.initState();
     // Initialize plugin and show splash here.
     AdnetQqPlugin.config(appId: config['appId'] as String, requestReadPhoneState: 0, requestAccessFineLocation: 0, adChannel: 1).then((_) => SplashAd(config['splashPosId'] as String, backgroundImage: config['splashBackgroundImage'] as String, adEventCallback: (event, _) {
+      print('$event, $_');
       if(event == SplashAdEvent.onAdLoaded) {
         adLoaded = true;
         return;
