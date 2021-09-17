@@ -18,6 +18,8 @@ class AdnetQqPlugin {
   ///
   /// [requestAccessFineLocation] whether request ACCESS_FINE_LOCATION (android only), 0: no, 1: yes, 2: force(exit app when user reject this permission), default 0
   ///
+  /// iOS only option [requestIDFA] indicates whether to request tracking authorization.
+  ///
   /// [adChannel] is one of follows, default to `999`:
   /// - 1	百度
   /// - 2	头条
@@ -35,11 +37,11 @@ class AdnetQqPlugin {
   /// - 14	AppStore
   /// - 999	其他
   ///
-  static Future<bool> config({required String appId, int requestReadPhoneState = 0, int requestAccessFineLocation = 0, int? adChannel}) async {
+  static Future<bool> config({required String appId, int requestReadPhoneState = 0, int requestAccessFineLocation = 0, int requestIDFA = 0, int? adChannel}) async {
     if(_initialized) {
       return true;
     }
-    bool result = await channel.invokeMethod('config', {'appId': appId, 'requestReadPhoneState': requestReadPhoneState, 'requestAccessFineLocation': requestAccessFineLocation, 'adChannel': adChannel}) ?? false;
+    bool result = await channel.invokeMethod('config', {'appId': appId, 'requestReadPhoneState': requestReadPhoneState, 'requestAccessFineLocation': requestAccessFineLocation, 'requestIDFA': requestIDFA, 'adChannel': adChannel}) ?? false;
     if(result == true) {
       _initialized = true;
     }

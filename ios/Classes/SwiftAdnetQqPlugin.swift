@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import AppTrackingTransparency
 
 public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
     static var interstitials: [String:FlutterUnifiedInterstitialView] = [:]
@@ -30,7 +31,22 @@ public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
         
         APP_ID = appId;
         GDTSDKConfig.registerAppId(appId);
-        result(true);
+        
+        let requestIDFA = args["requestIDFA"] as? Int
+        if requestIDFA == 1 {
+            if #available(iOS 14, *) {
+                ATTrackingManager.requestTrackingAuthorization(completionHandler: {status in
+                    // 不管是否授权都得显示广告
+                    result(true)
+                })
+            } else {
+                // Fallback on earlier versions
+                result(true)
+            }
+            return
+        }
+        result(true)
+        return
     case "showSplash":
         guard let args = call.arguments as? [String: Any],
               let posId = args["posId"] as? String
@@ -49,9 +65,11 @@ public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
         splashAd = FlutterSplashView.init(posId, backgroundImage: backgroundImage, backgroundColor: backgroundColor, fetchDelay: fetchDelay, fullScreen: fullScreen == 1, logo: logo, messenger: pluginRegistrar.messenger())
         splashAd?.show()
         result(true)
+        return
     case "closeSplash":
         splashAd?.close()
         result(true)
+        return
     case "createUnifiedInterstitialAd":
         guard let args = call.arguments as? [String: Any],
               let posId = args["posId"] as? String
@@ -64,6 +82,7 @@ public class SwiftAdnetQqPlugin: NSObject, FlutterPlugin {
         }
         SwiftAdnetQqPlugin.interstitials[posId] = FlutterUnifiedInterstitialView(posId, options: args["iOSOptions"] as? [String : Any], messeneger: pluginRegistrar.messenger())
         result(true)
+        return
     default:
         result(FlutterMethodNotImplemented);
     }

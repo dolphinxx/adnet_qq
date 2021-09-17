@@ -14,24 +14,26 @@ class _SplashWidgetState extends State<SplashWidget> {
   void initState() {
     super.initState();
     // Initialize plugin and show splash here.
-    AdnetQqPlugin.config(appId: config['appId'] as String, requestReadPhoneState: 0, requestAccessFineLocation: 0, adChannel: 1).then((_) => SplashAd(config['splashPosId'] as String, backgroundImage: config['splashBackgroundImage'] as String, adEventCallback: (event, _) {
-      print('$event, $_');
-      if(event == SplashAdEvent.onAdLoaded) {
-        adLoaded = true;
-        return;
-      }
-      if(event == SplashAdEvent.onAdClosed || event == SplashAdEvent.onAdDismiss || event == SplashAdEvent.onNoAd) {
-        if(mounted) {
-          // Go to home page when splash is finished.
+    AdnetQqPlugin.config(appId: config['appId'] as String, requestReadPhoneState: 0, requestAccessFineLocation: 0, requestIDFA: 1, adChannel: 1).then((_) {
+      SplashAd(config['splashPosId'] as String, backgroundImage: config['splashBackgroundImage'] as String, adEventCallback: (event, _) {
+        print('$event, $_');
+        if(event == SplashAdEvent.onAdLoaded) {
+          adLoaded = true;
+          return;
+        }
+        if(event == SplashAdEvent.onAdClosed || event == SplashAdEvent.onAdDismiss || event == SplashAdEvent.onNoAd) {
+          if(mounted) {
+            // Go to home page when splash is finished.
+            Navigator.maybeOf(context)?.pushReplacementNamed('/');
+          }
+        }
+      }).showAd();
+      Future.delayed(Duration(seconds: 5), () {
+        // If ad is not loaded in 5 seconds, give up this chance.
+        if(!adLoaded && mounted) {
           Navigator.maybeOf(context)?.pushReplacementNamed('/');
         }
-      }
-    }).showAd());
-    Future.delayed(Duration(seconds: 5), () {
-      // If ad is not loaded in 5 seconds, give up this chance.
-      if(!adLoaded && mounted) {
-        Navigator.maybeOf(context)?.pushReplacementNamed('/');
-      }
+      });
     });
   }
 
