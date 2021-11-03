@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -208,34 +210,49 @@ class NativeExpressAdWidget extends StatefulWidget {
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
 }
 
-class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
+class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with SingleTickerProviderStateMixin {
   double? _height;
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   NativeExpressAdWidgetState({double? height}):_height = height;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    _animation = _controller.drive(CurveTween(curve: Curves.fastOutSlowIn));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: _height,
-      child: NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,),
+    return SizeTransition(
+      sizeFactor: _animation,
+      child: SizedBox(
+        height: _height,
+        child: NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,),
+      ),
     );
   }
 
-  void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) async {
+  void _adEventCallback(NativeExpressAdEvent event, dynamic arguments) {
     if(widget.adEventCallback != null) {
       widget.adEventCallback!(event, arguments);
     }
     if(event == NativeExpressAdEvent.onAdClosed) {
-      if(mounted) {
-        setState(() {
-          _height = widget.loadingHeight??0;
-        });
-      }
+      _controller.reverse().then((value) {
+        if(mounted) {
+          setState(() {
+            _height = widget.loadingHeight??0;
+          });
+        }
+      });
       return;
     }
     if(event == NativeExpressAdEvent.onLayout && mounted) {
@@ -243,6 +260,7 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
         setState(() {
           _height = MediaQuery.of(context).size.width * (arguments['height'] as double) / (arguments['width'] as double);
         });
+        _controller.forward();
       }
       return;
     }
