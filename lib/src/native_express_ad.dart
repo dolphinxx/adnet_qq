@@ -232,6 +232,9 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with Singl
 
   @override
   Widget build(BuildContext context) {
+    if(_height == null) {
+      return const SizedBox.shrink();
+    }
     return SizeTransition(
       sizeFactor: _animation,
       child: SizedBox(
