@@ -202,7 +202,7 @@ class NativeExpressAdWidget extends StatefulWidget {
   final double? loadingHeight;
 
   /// [loadingHeight] should be above 0, otherwise the ad may not be loaded.
-  NativeExpressAdWidget(this.posId, {GlobalKey<NativeExpressAdState>? adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):adKey = adKey??GlobalKey();
+  NativeExpressAdWidget(this.posId, {Key? key, GlobalKey<NativeExpressAdState>? adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):adKey = adKey??GlobalKey(),super(key: key);
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
@@ -210,21 +210,19 @@ class NativeExpressAdWidget extends StatefulWidget {
 
 class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> {
   double? _height;
-  late NativeExpressAd _ad;
 
   NativeExpressAdWidgetState({double? height}):_height = height;
 
   @override
   void initState() {
     super.initState();
-    _ad = NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: _height,
-      child: _ad,
+      child: NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,),
     );
   }
 
