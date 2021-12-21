@@ -204,13 +204,14 @@ class NativeExpressAdWidget extends StatefulWidget {
   final double? loadingHeight;
 
   /// [loadingHeight] should be above 0, otherwise the ad may not be loaded.
-  NativeExpressAdWidget(this.posId, {Key? key, GlobalKey<NativeExpressAdState>? adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):adKey = adKey??GlobalKey(),super(key: key);
+  NativeExpressAdWidget(this.posId, {Key? key, this.adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):super(key: key);
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
 }
 
 class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with SingleTickerProviderStateMixin {
+  late final GlobalKey<NativeExpressAdState>? _adKey;
   double? _height;
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -220,6 +221,7 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with Singl
   @override
   void initState() {
     super.initState();
+    _adKey = widget.adKey ?? GlobalKey();
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     _animation = _controller.drive(CurveTween(curve: Curves.fastOutSlowIn));
   }
@@ -239,7 +241,7 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with Singl
       sizeFactor: _animation,
       child: SizedBox(
         height: _height,
-        child: NativeExpressAd(widget.posId, key: widget.adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,),
+        child: NativeExpressAd(widget.posId, key: _adKey, requestCount: widget.requestCount, videoOptions: widget.videoOptions, adEventCallback: _adEventCallback,refreshOnCreate: true,),
       ),
     );
   }
