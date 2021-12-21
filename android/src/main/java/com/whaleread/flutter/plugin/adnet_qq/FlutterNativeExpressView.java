@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
-import com.qq.e.ads.cfg.BrowserType;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
 import com.qq.e.ads.nativ.NativeExpressAD;
@@ -40,7 +39,7 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
     private Integer maxVideoDuration;
     private Boolean autoPlayMuted;
     private Boolean detailPageVideoMuted;
-    private String browserType;
+//    private String browserType;
     // <--- android only ---
     private Integer autoPlayPolicy;
     private Boolean enableDetailPage;
@@ -74,9 +73,6 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
         }
         if(params.get("detailPageVideoMuted") != null) {
             this.detailPageVideoMuted = (Boolean)params.get("detailPageVideoMuted");
-        }
-        if(params.get("browserType") != null) {
-            this.browserType = (String)params.get("browserType");
         }
         if(params.get("androidOptions") != null) {
             @SuppressWarnings("rawtypes") Map options = (Map)params.get("androidOptions");
@@ -157,9 +153,6 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
             videoOptionBuilder.setDetailPageMuted(detailPageVideoMuted);
         }
         nativeExpressAD.setVideoOption(videoOptionBuilder.build()); // setVideoOption是可选的，开发者可根据需要选择是否配置
-        if(browserType != null) {
-            nativeExpressAD.setBrowserType(BrowserType.valueOf(browserType));
-        }
         if(maxVideoDuration != null) {
             nativeExpressAD.setMaxVideoDuration(maxVideoDuration);
         }
@@ -265,16 +258,6 @@ public class FlutterNativeExpressView implements PlatformView, MethodChannel.Met
     @Override
     public void onADLeftApplication(NativeExpressADView nativeExpressADView) {
         methodChannel.invokeMethod("onAdLeftApplication", null);
-    }
-
-    @Override
-    public void onADOpenOverlay(NativeExpressADView nativeExpressADView) {
-        methodChannel.invokeMethod("onAdOpenOverlay", null);
-    }
-
-    @Override
-    public void onADCloseOverlay(NativeExpressADView nativeExpressADView) {
-        methodChannel.invokeMethod("onAdCloseOverlay", null);
     }
 
 //    public static int[] getViewSize(View view) {

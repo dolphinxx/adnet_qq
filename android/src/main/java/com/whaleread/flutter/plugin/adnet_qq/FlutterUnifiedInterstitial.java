@@ -77,12 +77,12 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
         switch (methodCall.method) {
             case "load":
                 Log.d(TAG, "load");
-                getIAD().loadAD();
+                createIAD().loadAD();
                 result.success(true);
                 break;
             case "loadFullScreen":
                 Log.d(TAG, "loadFullScreen");
-                getIAD().loadFullScreenAD();
+                createIAD().loadFullScreenAD();
                 result.success(true);
                 break;
             case "show":
@@ -116,13 +116,17 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
             iad.destroy();
             iad = null;
         }
+        cleanup();
+    }
+
+    private void cleanup() {
         methodChannel.setMethodCallHandler(null);
         AdnetQqPlugin.removeInterstitial(posId);
     }
 
-    private UnifiedInterstitialAD getIAD() {
-        if (iad != null) {
-            return iad;
+    private UnifiedInterstitialAD createIAD() {
+        if(iad != null) {
+            iad.destroy();
         }
         iad = new UnifiedInterstitialAD(AdnetQqPlugin.getActivity(), posId, this);
         VideoOption.Builder videoOptionBuilder = new VideoOption.Builder();
@@ -155,6 +159,13 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
         return iad;
     }
 
+    private UnifiedInterstitialAD getIAD() {
+        if (iad != null) {
+            return iad;
+        }
+        return createIAD();
+    }
+
     private void showAD() {
         getIAD().show();
     }
@@ -174,6 +185,7 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
     public void onNoAD(AdError adError) {
         Log.d(TAG, String.format("onNoAD，eCode = %d, eMsg = %s", adError.getErrorCode(), adError.getErrorMsg()));
         iad = null;
+        cleanup();
         methodChannel.invokeMethod("onNoAd", adError.getErrorCode());
     }
 
@@ -193,6 +205,7 @@ public class FlutterUnifiedInterstitial implements MethodChannel.MethodCallHandl
     public void onADClosed() {
         Log.d(TAG, "onADClosed");
         iad = null;
+        cleanup();
         methodChannel.invokeMethod("onAdClosed", null);
     }
 

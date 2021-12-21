@@ -125,7 +125,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
     public func unifiedBannerViewDidPresentFullScreenModal(_ unifiedBannerView:GDTUnifiedBannerView)
     {
         //print("onAdOpenOverlay")
-        self.channel.invokeMethod("onAdOpenOverlay", arguments:nil);
+        self.channel.invokeMethod("onAdDidPresentFullScreenModal", arguments:nil);
     }
 
     /**
@@ -142,7 +142,7 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
     public func unifiedBannerViewDidDismissFullScreenModal(_ unifiedBannerView:GDTUnifiedBannerView)
     {
         //print("onAdCloseOverlay")
-        self.channel.invokeMethod("onAdCloseOverlay", arguments:nil);
+        self.channel.invokeMethod("onAdDidDismissFullScreenModal", arguments:nil);
     }
 
     /**

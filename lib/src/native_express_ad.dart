@@ -16,12 +16,14 @@ enum NativeExpressAdEvent {
   onAdClicked,
   onAdClosed,
   onAdLeftApplication,
-  onAdOpenOverlay,
-  onAdCloseOverlay,
   /// iOS only
   onAdDidPresentScreen,
   /// iOS only
   onAdWillDismissScreen,
+  /// iOS only
+  onAdWillPresentScreen,
+  /// iOS only
+  onAdDidDismissScreen,
   /// iOS only
   onAdPlayerStatusChanged,
   /// iOS only
@@ -32,12 +34,6 @@ enum NativeExpressAdEvent {
   onAdWillDismissVideoVC,
   /// iOS only
   onAdDidDismissVideoVC,
-}
-
-abstract class NativeExpressAdBrowserType {
-  static const String Default = 'Default';
-  static const String Inner = 'Inner';
-  static const String Sys = 'Sys';
 }
 
 typedef NativeExpressAdEventCallback = Function(NativeExpressAdEvent event, dynamic arguments);
@@ -53,12 +49,9 @@ class NativeExpressAd extends StatefulWidget {
 
   final NativeExpressAdEventCallback? adEventCallback;
 
-  /// Android only
-  final String? browserType;
-
   final bool? refreshOnCreate;
 
-  const NativeExpressAd(this.posId, {Key? key, int? requestCount, this.adEventCallback, this.refreshOnCreate, this.videoOptions, this.browserType}) : requestCount = requestCount??5,super(key: key);
+  const NativeExpressAd(this.posId, {Key? key, int? requestCount, this.adEventCallback, this.refreshOnCreate, this.videoOptions}) : requestCount = requestCount??5,super(key: key);
 
   @override
   NativeExpressAdState createState() => NativeExpressAdState();
@@ -83,7 +76,7 @@ class NativeExpressAdState extends State<NativeExpressAd> {
       key: _key,
       viewType: '$PLUGIN_ID/native_express',
       onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: {'posId': widget.posId, 'count': widget.requestCount, 'browserType': widget.browserType, ...widget.videoOptions?.getOptions()??{}, 'androidOptions': widget.videoOptions?.getAndroidOptions()},
+      creationParams: {'posId': widget.posId, 'count': widget.requestCount, ...widget.videoOptions?.getOptions()??{}, 'androidOptions': widget.videoOptions?.getAndroidOptions()},
       creationParamsCodec: const StandardMessageCodec(),
     );
   }
@@ -127,17 +120,17 @@ class NativeExpressAdState extends State<NativeExpressAd> {
         case 'onAdLeftApplication':
           event = NativeExpressAdEvent.onAdLeftApplication;
           break;
-        case 'onAdOpenOverlay':
-          event = NativeExpressAdEvent.onAdOpenOverlay;
-          break;
-        case 'onAdCloseOverlay':
-          event = NativeExpressAdEvent.onAdCloseOverlay;
-          break;
         case 'onAdDidPresentScreen':
           event = NativeExpressAdEvent.onAdDidPresentScreen;
           break;
         case 'onAdWillDismissScreen':
           event = NativeExpressAdEvent.onAdWillDismissScreen;
+          break;
+        case 'onAdWillPresentScreen':
+          event = NativeExpressAdEvent.onAdWillPresentScreen;
+          break;
+        case 'onAdDidDismissScreen':
+          event = NativeExpressAdEvent.onAdDidDismissScreen;
           break;
         case 'onAdPlayerStatusChanged':
           event = NativeExpressAdEvent.onAdPlayerStatusChanged;

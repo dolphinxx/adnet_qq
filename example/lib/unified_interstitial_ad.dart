@@ -25,6 +25,12 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
   }
 
   @override
+  void dispose() {
+    _ad?.closeAd();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
@@ -33,9 +39,9 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
           Row(
             children: <Widget>[
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if(_ad != null) {
-                    _ad!.closeAd();
+                    await _ad!.closeAd();
                   }
                   isFullScreen = false;
                   _ad = UnifiedInterstitialAd(posId, adEventCallback: _adEventCallback);
@@ -44,9 +50,9 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
                 child: Text('加载普通'),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if(_ad != null) {
-                    _ad!.closeAd();
+                    await _ad!.closeAd();
                   }
                   isFullScreen = true;
                   _ad = UnifiedInterstitialAd(posId, adEventCallback: _adEventCallback);
@@ -75,9 +81,9 @@ class UnifiedInterstitialAdDemoState extends State<UnifiedInterstitialAdDemo> {
           Row(
             children: <Widget>[
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if(_adLoaded == true) {
-                    _ad?.closeAd();
+                    await _ad?.closeAd();
                     _adLoaded = false;
                     _ad = null;
                   }

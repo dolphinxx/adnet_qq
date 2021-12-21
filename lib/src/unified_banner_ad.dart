@@ -10,12 +10,14 @@ enum UnifiedBannerAdEvent {
   onAdClosed,
   onAdClicked,
   onAdLeftApplication,
-  onAdOpenOverlay,
-  onAdCloseOverlay,
   /// iOS only
   onAdWillPresentFullScreenModal,
   /// iOS only
   onAdWillDismissFullScreenModal,
+  /// iOS only
+  onAdDidPresentFullScreenModal,
+  /// iOS only
+  onAdDidDismissFullScreenModal,
 }
 
 typedef UnifiedBannerAdEventCallback = Function(UnifiedBannerAdEvent event, dynamic arguments);
@@ -102,17 +104,17 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
         case 'onAdLeftApplication':
           event = UnifiedBannerAdEvent.onAdLeftApplication;
           break;
-        case 'onAdOpenOverlay':
-          event = UnifiedBannerAdEvent.onAdOpenOverlay;
-          break;
-        case 'onAdCloseOverlay':
-          event = UnifiedBannerAdEvent.onAdCloseOverlay;
-          break;
         case 'onAdWillPresentFullScreenModal':
           event = UnifiedBannerAdEvent.onAdWillPresentFullScreenModal;
           break;
         case 'onAdWillDismissFullScreenModal':
           event = UnifiedBannerAdEvent.onAdWillDismissFullScreenModal;
+          break;
+        case 'onAdDidPresentFullScreenModal':
+          event = UnifiedBannerAdEvent.onAdDidPresentFullScreenModal;
+          break;
+        case 'onAdDidDismissFullScreenModal':
+          event = UnifiedBannerAdEvent.onAdDidDismissFullScreenModal;
           break;
         default:
           print('UnifiedBannerAd unknown event: ${call.method}');

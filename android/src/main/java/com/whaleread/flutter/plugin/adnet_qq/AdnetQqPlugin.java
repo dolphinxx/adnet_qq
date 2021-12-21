@@ -14,14 +14,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.qq.e.comm.managers.GDTADManager;
+import com.qq.e.comm.managers.GDTAdSdk;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -123,7 +120,7 @@ public class AdnetQqPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
           result.error("appId must be specified!", null, null);
           return;
         }
-        GDTADManager.getInstance().initWith(getActivity(), PluginSettings.APP_ID);
+        GDTAdSdk.init(getActivity(), PluginSettings.APP_ID);
         if(arguments.get("adChannel") != null) {
           com.qq.e.comm.managers.setting.GlobalSetting.setChannel((int)arguments.get("adChannel"));
         }

@@ -195,7 +195,7 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
      */
     public func nativeExpressAdViewWillPresentScreen(_ nativeExpressAdView:GDTNativeExpressAdView){
 //        print("onAdOpenOverlay")
-        channel.invokeMethod("onAdOpenOverlay", arguments:nil)
+        channel.invokeMethod("onAdWillPresentScreen", arguments:nil)
     }
 
     /**
@@ -215,11 +215,11 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     }
 
     /**
-     * 全屏广告页将要关闭
+     * 全屏广告页已经关闭
      */
     public func nativeExpressAdViewDidDismissScreen(_ nativeExpressAdView:GDTNativeExpressAdView){
 //        print("onAdCloseOverlay")
-        channel.invokeMethod("onAdCloseOverlay", arguments:nil)
+        channel.invokeMethod("onAdDidDismissScreen", arguments:nil)
     }
 
     /**
