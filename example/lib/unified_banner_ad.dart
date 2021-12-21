@@ -23,13 +23,23 @@ class UnifiedBannerAdDemoState extends State<UnifiedBannerAdDemo> {
 
   @override
   Widget build(BuildContext context) {
+    Widget? ad;
+    if(!_adClosed) {
+      ad = UnifiedBannerAd(widget.posId, key: _adKey, adEventCallback: _adEventCallback,refreshOnCreate: true);
+      if (Theme.of(context).brightness == Brightness.dark) {
+        ad = ColorFiltered(
+          colorFilter: ColorFilter.mode(Color(0xC0000000), BlendMode.darken),
+          child: ad,
+        );
+      }
+    }
     return Scaffold(
       appBar: AppBar(),
       body: Column(
         children: <Widget>[
           Container(
             height: _adClosed ? 0 : MediaQuery.of(context).size.width / UnifiedBannerAd.ratio,
-            child: _adClosed ? Container() : UnifiedBannerAd(widget.posId, key: _adKey, adEventCallback: _adEventCallback,refreshOnCreate: true),
+            child: ad,
           ),
 
           Row(

@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'constants.dart';
 
@@ -53,24 +55,42 @@ class UnifiedBannerAdState extends State<UnifiedBannerAd> {
     if(widget.refreshInterval != null) {
       params['refreshInterval'] = widget.refreshInterval;
     }
+    String viewType = '$PLUGIN_ID/unified_banner';
     if(defaultTargetPlatform == TargetPlatform.iOS) {
       if(widget.animated != null) {
         params['animated'] = widget.animated;
       }
       return UiKitView(
         key: _key,
-        viewType: '$PLUGIN_ID/unified_banner',
+        viewType: viewType,
         onPlatformViewCreated: _onPlatformViewCreated,
         creationParams: params,
         creationParamsCodec: const StandardMessageCodec(),
       );
     }
-    return AndroidView(
+    return PlatformViewLink(
       key: _key,
-      viewType: '$PLUGIN_ID/unified_banner',
-      onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: params,
-      creationParamsCodec: const StandardMessageCodec(),
+      viewType: viewType,
+      surfaceFactory:
+          (BuildContext context, PlatformViewController controller) {
+        return AndroidViewSurface(
+          controller: controller as AndroidViewController,
+          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+        );
+      },
+      onCreatePlatformView: (PlatformViewCreationParams _params) {
+        return PlatformViewsService.initSurfaceAndroidView(
+          id: _params.id,
+          viewType: viewType,
+          layoutDirection: TextDirection.ltr,
+          creationParams: params,
+          creationParamsCodec: const StandardMessageCodec(),
+        )
+          ..addOnPlatformViewCreatedListener(_params.onPlatformViewCreated)
+          ..addOnPlatformViewCreatedListener(_onPlatformViewCreated)
+          ..create();
+      },
     );
   }
 

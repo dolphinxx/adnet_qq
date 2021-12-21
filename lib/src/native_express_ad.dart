@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'constants.dart';
 import 'video_options.dart';
@@ -63,21 +65,39 @@ class NativeExpressAdState extends State<NativeExpressAd> {
 
   @override
   Widget build(BuildContext context) {
+    String viewType = '$PLUGIN_ID/native_express';
     if(defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
         key: _key,
-        viewType: '$PLUGIN_ID/native_express',
+        viewType: viewType,
         onPlatformViewCreated: _onPlatformViewCreated,
         creationParams: {'posId': widget.posId, 'count': widget.requestCount, ...widget.videoOptions?.getOptions()??{}, 'iOSOptions': widget.videoOptions?.getIOSOptions()},
         creationParamsCodec: const StandardMessageCodec(),
       );
     }
-    return AndroidView(
+    return PlatformViewLink(
       key: _key,
-      viewType: '$PLUGIN_ID/native_express',
-      onPlatformViewCreated: _onPlatformViewCreated,
-      creationParams: {'posId': widget.posId, 'count': widget.requestCount, ...widget.videoOptions?.getOptions()??{}, 'androidOptions': widget.videoOptions?.getAndroidOptions()},
-      creationParamsCodec: const StandardMessageCodec(),
+      viewType: viewType,
+      surfaceFactory:
+          (BuildContext context, PlatformViewController controller) {
+        return AndroidViewSurface(
+          controller: controller as AndroidViewController,
+          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+        );
+      },
+      onCreatePlatformView: (PlatformViewCreationParams _params) {
+        return PlatformViewsService.initSurfaceAndroidView(
+          id: _params.id,
+          viewType: viewType,
+          layoutDirection: TextDirection.ltr,
+          creationParams: {'posId': widget.posId, 'count': widget.requestCount, ...widget.videoOptions?.getOptions()??{}, 'androidOptions': widget.videoOptions?.getAndroidOptions()},
+          creationParamsCodec: const StandardMessageCodec(),
+        )
+          ..addOnPlatformViewCreatedListener(_params.onPlatformViewCreated)
+          ..addOnPlatformViewCreatedListener(_onPlatformViewCreated)
+          ..create();
+      },
     );
   }
 
