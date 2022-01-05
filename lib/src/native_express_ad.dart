@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' show min;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -214,10 +215,10 @@ class NativeExpressAdWidget extends StatefulWidget {
   final AdVideoOptions? videoOptions;
   final GlobalKey<NativeExpressAdState>? adKey;
   final NativeExpressAdEventCallback? adEventCallback;
-  final double? loadingHeight;
+  final double loadingHeight;
 
   /// [loadingHeight] should be above 0, otherwise the ad may not be loaded.
-  NativeExpressAdWidget(this.posId, {Key? key, this.adKey, this.requestCount, this.videoOptions, this.adEventCallback, this.loadingHeight = 1.0}):super(key: key);
+  NativeExpressAdWidget(this.posId, {Key? key, this.adKey, this.requestCount, this.videoOptions, this.adEventCallback, double? loadingHeight}):loadingHeight = loadingHeight?? 1.0,super(key: key);
 
   @override
   NativeExpressAdWidgetState createState() => NativeExpressAdWidgetState(height: loadingHeight);
@@ -225,17 +226,17 @@ class NativeExpressAdWidget extends StatefulWidget {
 
 class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with SingleTickerProviderStateMixin {
   late final GlobalKey<NativeExpressAdState>? _adKey;
-  double? _height;
+  double _height;
   late AnimationController _controller;
   late Animation<double> _animation;
 
-  NativeExpressAdWidgetState({double? height}):_height = height;
+  NativeExpressAdWidgetState({required double height}):_height = height;
 
   @override
   void initState() {
     super.initState();
     _adKey = widget.adKey ?? GlobalKey();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300), value: 1.0);
     _animation = _controller.drive(CurveTween(curve: Curves.fastOutSlowIn));
   }
 
@@ -263,11 +264,11 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with Singl
     if(widget.adEventCallback != null) {
       widget.adEventCallback!(event, arguments);
     }
-    if(event == NativeExpressAdEvent.onAdClosed) {
+    if(event == NativeExpressAdEvent.onAdClosed || event == NativeExpressAdEvent.onNoAd) {
       _controller.reverse().then((value) {
         if(mounted) {
           setState(() {
-            _height = widget.loadingHeight??0;
+            _height = 0;
           });
         }
       });
@@ -275,8 +276,10 @@ class NativeExpressAdWidgetState extends State<NativeExpressAdWidget> with Singl
     }
     if(event == NativeExpressAdEvent.onLayout && mounted) {
       if(arguments['width'] as double > 0 && arguments['height'] as double > 0) {
+        double _initialHeight = _height;
         setState(() {
           _height = MediaQuery.of(context).size.width * (arguments['height'] as double) / (arguments['width'] as double);
+          _controller.value = min(1.0, _initialHeight / _height);
         });
         _controller.forward();
       }
