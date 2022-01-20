@@ -160,8 +160,8 @@ public class FlutterUnifiedBannerView:NSObject, FlutterPlatformView, GDTUnifiedB
     public func unifiedBannerViewWillClose(_ unifiedBannerView:GDTUnifiedBannerView)
     {
         //print("onAdClosed")
-        self.dispose()
         self.channel.invokeMethod("onAdClosed", arguments:nil);
+        channel.setMethodCallHandler(nil);
         self.bv = nil;
     }
 }

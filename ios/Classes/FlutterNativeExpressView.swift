@@ -66,7 +66,8 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
             ad?.delegate = nil;
             self.adv = nil;
         }
-        container.removeFromSuperview()
+        container.removeFromSuperview();
+        channel.setMethodCallHandler(nil);
     }
 
     public func refreshAd() {
@@ -186,8 +187,8 @@ public class FlutterNativeExpressView: NSObject, FlutterPlatformView, GDTNativeE
     public func nativeExpressAdViewClosed(_ nativeExpressAdView:GDTNativeExpressAdView){
 //        print("onAdClosed")
         channel.invokeMethod("onAdClosed", arguments:nil)
-        adv?.removeFromSuperview()
-        adv = nil
+        channel.setMethodCallHandler(nil);
+        adv = nil;
     }
 
     /**

@@ -163,6 +163,7 @@ public class FlutterUnifiedInterstitialView: NSObject, GDTUnifiedInterstitialAdD
     public func unifiedInterstitialDidDismissScreen(_ unifiedInterstitial:GDTUnifiedInterstitialAd){
         //print("onAdClosed");
         self.channel.invokeMethod("onAdClosed", arguments:nil);
+        self.dispose();
     }
 
     /**
