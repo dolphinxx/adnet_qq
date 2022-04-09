@@ -17,7 +17,7 @@ A new flutter plugin project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
-  s.dependency 'GDTMobSDK','4.13.51'
+  s.dependency 'GDTMobSDK','4.13.60'
   s.frameworks = 'AdSupport', 'CoreLocation', 'QuartzCore', 'SystemConfiguration', 'CoreTelephony', 'Security', 'StoreKit', 'AVFoundation', 'WebKit'
   s.library = 'z', 'xml2'
   #s.static_framework = true
