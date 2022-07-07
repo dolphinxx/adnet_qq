@@ -3,6 +3,8 @@ package com.whaleread.flutter.plugin.adnet_qq;
 import android.util.Log;
 import android.view.View;
 
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import com.qq.e.ads.banner2.UnifiedBannerADListener;
@@ -19,7 +21,7 @@ import io.flutter.plugin.platform.PlatformView;
 
 public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.MethodCallHandler, UnifiedBannerADListener {
     private static final String TAG = FlutterUnifiedBannerView.class.getSimpleName();
-//    private FrameLayout container;
+    private final FrameLayout container;
     private UnifiedBannerView bv;
     private final MethodChannel methodChannel;
     private Integer refreshInterval;
@@ -31,8 +33,8 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
             throw new IllegalStateException("App Id must be configured before creating ad view");
         }
         Log.d(TAG, "creating " + FlutterUnifiedBannerView.class.getName());
-//        this.container = new FrameLayout(context);
-//        this.container.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        this.container = new FrameLayout(AdnetQqPlugin.getActivity());
+        this.container.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         this.methodChannel = new MethodChannel(messenger, PluginSettings.UNIFIED_BANNER_VIEW_ID + "_" + id);
         this.methodChannel.setMethodCallHandler(this);
         this.posId = (String)params.get("posId");
@@ -62,7 +64,7 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
 
     @Override
     public View getView() {
-        return getBanner();
+        return container;
     }
 
     @Override
@@ -82,6 +84,8 @@ public class FlutterUnifiedBannerView implements PlatformView, MethodChannel.Met
             return this.bv;
         }
         this.bv = new UnifiedBannerView(AdnetQqPlugin.getActivity(), posId, this);
+        this.container.removeAllViews();
+        this.container.addView(this.bv);
         if(refreshInterval != null) {
             this.bv.setRefresh(refreshInterval);
         }
