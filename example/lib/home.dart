@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:adnet_qq/adnet_qq.dart';
 import 'unified_banner_ad.dart';
+import 'unified_banner_ad_wrapped.dart';
 import 'native_express_ad.dart';
 import 'native_express_ad_widget.dart';
 import 'unified_interstitial_ad.dart';
@@ -30,6 +31,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                 return UnifiedBannerAdDemo(config['unifiedBannerPosId'] as String);
               })),
               child: Text('横幅2.0'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return UnifiedBannerAdWrappedDemo(config['unifiedBannerPosId'] as String);
+              })),
+              child: Text('横幅 wrapped'),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
